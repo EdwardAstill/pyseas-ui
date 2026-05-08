@@ -1,0 +1,210 @@
+# pyseas-ui
+
+Domain-neutral React component library for web-based engineering workbench applications. Provides the visual layer — layout, primitives, and theming — shared by `pyseas-yard-gui` and `pyseas-dock-gui`. No engineering logic, no domain wording, no API calls.
+
+---
+
+## What it is
+
+A collection of controlled, composable UI primitives and a workbench layout skeleton. The visual language is dense, precise, and flat: compact controls, square corners, monospace labels, dark-first theming. It is designed for engineering tooling, not consumer or marketing interfaces.
+
+## What it is NOT
+
+- No Yard or Dock domain logic (no padeye geometry, no lift conditions, no check results)
+- No engineering math or unit conversion
+- No API calls or data fetching
+- No application or project state
+- No domain wording in prop names or default labels
+- No marketing patterns (hero sections, feature cards, pricing grids)
+
+---
+
+## Status
+
+Version 0.1.0. Pre-publish. `private: true` in `package.json` — not published to npm. Consumed by sibling apps via local path or workspace links only.
+
+---
+
+## Installing locally
+
+In a consuming app's `package.json`, add a path reference:
+
+```json
+{
+  "dependencies": {
+    "pyseas-ui": "file:../pyseas-ui"
+  }
+}
+```
+
+Or, if both packages share a workspace root (e.g. a Bun or pnpm workspace), declare it as a workspace dependency:
+
+```json
+{
+  "dependencies": {
+    "pyseas-ui": "workspace:*"
+  }
+}
+```
+
+Then run `bun install` (or the workspace manager's equivalent) in the consuming app.
+
+---
+
+## CSS import
+
+The package ships a single CSS file containing all design tokens and component styles. Import it once, near the root of the consuming app (e.g. in `main.tsx` or the top-level entry module):
+
+```ts
+import 'pyseas-ui/dist/pyseas-ui.css'
+```
+
+This must load before any `pyseas-ui` component renders. Without it the theme tokens are absent and components will be unstyled.
+
+---
+
+## Theming
+
+Wrap the application (or any sub-tree) in `<ThemeProvider>`. Pass the resolved theme value — `ThemeProvider` does not read `prefers-color-scheme` or localStorage itself; the caller must supply the resolved string.
+
+```tsx
+import { ThemeProvider } from 'pyseas-ui'
+
+function App() {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+
+  // Persist across sessions
+  useEffect(() => {
+    localStorage.setItem('app-theme', theme)
+  }, [theme])
+
+  return (
+    <ThemeProvider theme={theme}>
+      {/* rest of app */}
+    </ThemeProvider>
+  )
+}
+```
+
+On mount, read the stored value:
+
+```tsx
+const stored = localStorage.getItem('app-theme') as 'dark' | 'light' | null
+const [theme, setTheme] = useState<'dark' | 'light'>(stored ?? 'dark')
+```
+
+---
+
+## Component catalogue
+
+| Component | Purpose |
+|---|---|
+| `ThemeProvider` | Mounts `--ps-*` CSS tokens; switches dark / light |
+| `Panel` | Rectangular container with optional title bar and header action slot |
+| `Tabs` | Controlled horizontal tab strip; caller renders panel body |
+| `Toolbar` | Horizontal row of tightly-spaced small controls |
+| `Button` | Action button — variants: `default`, `primary`, `danger`, `ghost` |
+| `IconButton` | Square icon-only button; same variant / size model as `Button` |
+| `TextField` | Controlled single-line text input |
+| `NumberField` | Controlled numeric input; exposes parsed `number \| null` |
+| `Select` | Controlled single-select dropdown |
+| `Checkbox` | Controlled checkbox with optional label; supports indeterminate |
+| `Toggle` | Controlled boolean toggle switch |
+| `Modal` / `Dialog` | Overlay shell with focus trap and Escape-to-close; no built-in form wiring |
+| `StatusBadge` | Inline status badge — `ok`, `warn`, `err`, `info` |
+| `Result` | Display row for a pre-computed result: label, value, unit, status, utilisation |
+| `LogView` | Scrollable monospace area for streamed text; auto-scrolls to bottom |
+| `WorkbenchLayout` | Four-pane workbench skeleton with rail, setup, diagram, analysis, and results slots |
+
+Full prop interfaces are in [`docs/component-contract.md`](docs/component-contract.md).
+
+---
+
+## WorkbenchLayout example
+
+```tsx
+import 'pyseas-ui/dist/pyseas-ui.css'
+import { ThemeProvider, WorkbenchLayout, Panel } from 'pyseas-ui'
+
+function MyApp() {
+  return (
+    <ThemeProvider theme="dark">
+      <div style={{ height: '100vh', overflow: 'hidden' }}>
+        <WorkbenchLayout
+          rail={<NavRail />}
+          setupPanel={
+            <Panel title="Setup" style={{ height: '100%' }}>
+              {/* input fields */}
+            </Panel>
+          }
+          diagramPanel={
+            <Panel title="Diagram" style={{ height: '100%' }}>
+              {/* SVG or canvas */}
+            </Panel>
+          }
+          analysisPanel={
+            <Panel title="Analysis" style={{ height: '100%' }}>
+              {/* options and controls */}
+            </Panel>
+          }
+          resultsPanel={
+            <Panel title="Results" style={{ height: '100%' }}>
+              {/* Result rows, LogView */}
+            </Panel>
+          }
+        />
+      </div>
+    </ThemeProvider>
+  )
+}
+```
+
+Default column proportions: `48px 240px 1fr 280px 300px` (rail, setup, diagram, analysis, results). Slots set to `undefined` collapse to zero. The layout does not scroll the viewport — each pane manages its own overflow.
+
+---
+
+## Boundaries with pyseas-yard-gui and pyseas-dock-gui
+
+`pyseas-ui` owns:
+
+- Presentation primitives (buttons, fields, panels, badges, log view)
+- Workbench layout skeleton
+- Design tokens (`--ps-*` CSS custom properties)
+- Theme switching mechanics
+
+Consuming apps (`pyseas-yard-gui`, `pyseas-dock-gui`) own:
+
+- All domain wording (lift conditions, check names, standard references, padeye geometry labels)
+- Engineering calculations and unit conversion
+- API calls and data fetching
+- Project and session state
+- Persistence (localStorage keys, file I/O)
+- Pass / fail logic and utilisation ratios (values are passed to `<Result>` as pre-computed strings)
+
+Neither library nor app should encode the other's concerns.
+
+---
+
+## Development
+
+```sh
+bun install          # install dependencies
+bun run dev          # start Vite dev server (serves examples/showcase)
+bun run typecheck    # TypeScript type-check (no emit)
+bun run build        # build library to dist/
+bun test             # run tests
+```
+
+The dev server serves `examples/` as the root. Open `http://localhost:5173` to see the component showcase.
+
+Build output goes to `dist/`:
+- `dist/pyseas-ui.es.js` — ES module bundle
+- `dist/pyseas-ui.css` — all tokens and styles
+- `dist/types/` — TypeScript declarations
+
+---
+
+## Further reading
+
+- [`docs/ui-brief.md`](docs/ui-brief.md) — visual language, token reference, anti-goals
+- [`docs/component-contract.md`](docs/component-contract.md) — full prop interfaces and component responsibilities

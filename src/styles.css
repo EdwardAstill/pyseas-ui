@@ -1,0 +1,45 @@
+/* pyseas-ui — package-wide base styles. Import this once per app. */
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background-color: var(--ps-surface);
+  color: var(--ps-text);
+  font-family: var(--ps-font-sans);
+  font-size: var(--ps-text-md);
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--ps-font-mono);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--ps-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

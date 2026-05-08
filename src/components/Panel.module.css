@@ -1,0 +1,37 @@
+.panel {
+  background: var(--ps-panel);
+  border: 1px solid var(--ps-border);
+  border-radius: var(--ps-radius-none);
+  display: flex;
+  flex-direction: column;
+}
+
+.titleBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ps-space-xs) var(--ps-space-md);
+  border-bottom: 1px solid var(--ps-border);
+  min-height: 28px;
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--ps-font-mono);
+  font-size: var(--ps-text-sm);
+  color: var(--ps-text);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-xs);
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+}

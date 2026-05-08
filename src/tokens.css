@@ -1,0 +1,54 @@
+/* pyseas-ui design tokens — dark-first, light via [data-theme="dark"] override */
+
+:root {
+  /* --- Colour tokens (dark defaults) --- */
+  --ps-surface: #0f0f0f;
+  --ps-panel: #1a1a1a;
+  --ps-panel-elevated: #222222;
+  --ps-border: rgba(255, 255, 255, 0.08);
+  --ps-border-strong: rgba(255, 255, 255, 0.18);
+  --ps-text: #e8e8e8;
+  --ps-text-muted: #888888;
+  --ps-accent: #4d9cff;
+  --ps-danger: #dd3333;
+  --ps-success: #3a9e6a;
+  --ps-warning: #c88a18;
+  --ps-info: #5588bb;
+  --ps-overlay: rgba(0, 0, 0, 0.6);
+
+  /* --- Spacing scale --- */
+  --ps-space-xs: 4px;
+  --ps-space-sm: 8px;
+  --ps-space-md: 12px;
+  --ps-space-lg: 20px;
+  --ps-space-xl: 32px;
+
+  /* --- Radius scale --- */
+  --ps-radius-none: 0px;
+  --ps-radius-xs: 2px;
+  --ps-radius-sm: 4px;
+
+  /* --- Type scale --- */
+  --ps-font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+  --ps-font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
+  --ps-text-xs: 10.5px;
+  --ps-text-sm: 11px;
+  --ps-text-md: 12px;
+  --ps-text-lg: 13px;
+}
+
+[data-theme="light"] {
+  --ps-surface: #f0f0f0;
+  --ps-panel: #ffffff;
+  --ps-panel-elevated: #f7f7f7;
+  --ps-border: rgba(0, 0, 0, 0.1);
+  --ps-border-strong: rgba(0, 0, 0, 0.22);
+  --ps-text: #111111;
+  --ps-text-muted: #666666;
+  --ps-accent: #0068d6;
+  --ps-danger: #c02020;
+  --ps-success: #1d7a4e;
+  --ps-warning: #a06800;
+  --ps-info: #2255aa;
+  --ps-overlay: rgba(0, 0, 0, 0.4);
+}
