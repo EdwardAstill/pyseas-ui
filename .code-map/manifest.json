@@ -1,0 +1,273 @@
+{
+  "files": {
+    "server.ts": {
+      "content_hash": "bb200e6d2121a419ef5692bcc863e22324d1b982e8b0fa215a54d17ddb2e0231",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/menu.tsx": {
+      "content_hash": "50053ae04399a67655b7a93d2d51c42d585de4d482b15629b55a689d77276817",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/showcase/app.tsx": {
+      "content_hash": "85f0e8c4e0d9213daab4ee496b861a859a40881dbd891a38ab1e13ba8b9e5e22",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/showcase/bios95.tsx": {
+      "content_hash": "180fb94626d9c1a3d81215dbc3d5999dccb5b5d8da94e7c143111478773984c9",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/showcase/brutalist.tsx": {
+      "content_hash": "e7c899d0c436dff9d7f354dfcee30663a84e29c473f72ba0ef23f06c61ab8cea",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/showcase/dock.tsx": {
+      "content_hash": "f4a39a39ac14dd97293287a7f0c258e03e3537600462297dfbb2eefb26329eab",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/showcase/feature.tsx": {
+      "content_hash": "8c99cafe8d088a10ca9bc2d4eace9924a14ad39dbdae6d9f262b3b56e5382c55",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/showcase/flightdeck.tsx": {
+      "content_hash": "95f61d1b3bd96afbcdf02f47844f92921d70c9e97753d4f94c7b430c45266d5b",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/showcase/logbook.tsx": {
+      "content_hash": "6615acdd1256ec6a3e04d5c634a6f1546023428971897761671910246f24ca8e",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/showcase/oxide.tsx": {
+      "content_hash": "9d8ad638b270836d1209abe4221b1c4658f3147f976e59237319aa053fdeab85",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/showcase/posting.tsx": {
+      "content_hash": "2e8d7f56f015f45743387b999be86cc827360a8331ab72c9574cff1dbba94e49",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/style/app.tsx": {
+      "content_hash": "01ca6b30c4e0207f261b7ebe8bbc77085ade073d37497c2cd773717e9e38a9ab",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/terminal/themes.ts": {
+      "content_hash": "1a719ceccd63d7f13caef66729dbb92daa32d4b12185fcf53ce978b84d10e78c",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/frontend.tsx": {
+      "content_hash": "cbc1059341836459ee2465404e6f30c66dc413cd84a83506e2cb278493cf5da7",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/components/Layouts.tsx": {
+      "content_hash": "e870ae33b4bcc2b4efdc67a9b46936f2d40a6a11e5c741d73da421dba830e9ed",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Catppuccin.tsx": {
+      "content_hash": "0c57a838be566b3ef3866982f229d828dfdcb6ce8095847af74981888b048c7e",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Claymorphism.tsx": {
+      "content_hash": "cee56d9143791797e0e1deb47e23cb43fd8a3e886b80533b1a4bf25b6194a229",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Cyberpunk.tsx": {
+      "content_hash": "5acc3a474409e60b6c25b0c4663eb7a8fe5cf87472b20f82addfd3cbd88e5a73",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/DockPack.tsx": {
+      "content_hash": "4270e8e53409e80dd1c756b44ed5aadcf8d78b7239ee3fde6ddda334935d744f",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/EngPro.tsx": {
+      "content_hash": "3372825820a575740f2dd0f68d753137b94d9744c3ca8075fb3dc99dcc18569e",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Glass.tsx": {
+      "content_hash": "37579344a2577bd6f58f730fafa0227ac2919dfe142593fcdd9ab85689d26513",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Hermes.tsx": {
+      "content_hash": "618f31cbc74c05dd78b9735760ecf0938852c18b355d98cb8aeaf404316588fa",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/ModernRetro.tsx": {
+      "content_hash": "7b1cd21a79d59fcfa8cc2fb4271afcf4e1cab53d29d43544d07d89e06818b169",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/MusicPlayer.tsx": {
+      "content_hash": "6c9980d4029f71c56b77980e4c91ab6cae6a42e18ad473df174bfd0e5a6ed433",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Neobrutalism.tsx": {
+      "content_hash": "799dc7e48413aef859bd645f104b8cd98ccecfb6d7d7728a15bf7d6def01908e",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Neobrutalism2.tsx": {
+      "content_hash": "22731f4e0fa1c6cf526410f5e1119ea522deaa14cc3da4cf70b8e37314b32bd1",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Neumorphism.tsx": {
+      "content_hash": "f76933ae49d31604bae7493c05dbd80629247562e8ba63f59f4deb810036e666",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Pastel.tsx": {
+      "content_hash": "725290c89998aebf32362ceb0f58a1eae4c93a8f9a47c1549d15cc9cecd233d4",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Productivity.tsx": {
+      "content_hash": "38ce5d55c89bfbf91085514ecc774c40b4f7e7b1dfe6938ac63481b7f0f3f7f4",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/RetroOS.tsx": {
+      "content_hash": "0d7f6bb336ec1fabd6322147a379a5e76fd0d2908c66968e4783e3f20791c121",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/ShadcnDark.tsx": {
+      "content_hash": "a401ea85b74adf0c7d8f38f07fd473e104ef04f0763ba165be6090bfe5485f00",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Swiss.tsx": {
+      "content_hash": "d742909bc54b0418d581f80c425cce01f98e4fbb3f56d2036b13d6adf5c30dd1",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Terminal.tsx": {
+      "content_hash": "1ecd6eb1afd284e4e0afd019a155a5803b02a02376db207a9551058b5015542c",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Terminal2.tsx": {
+      "content_hash": "4733f2be9f1257f377525dc6c9752c357339caefaa59789bd000bcc94fe4f753",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Vaporwave.tsx": {
+      "content_hash": "42e5488176c6bc962c84b4037d81c79bb528b9f9ac3a65ab2b58c1ce8f38999c",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/Y2K.tsx": {
+      "content_hash": "50664fe00bbbfc7f673078ff69dcd14900547f2b25d1ff5955fa42b7d6fac9e0",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/iOS.tsx": {
+      "content_hash": "83dab30442d40adb934687fc0de6a41930dbd5e2262aecffb5b19af4ebc54cb6",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/index.ts": {
+      "content_hash": "88b47e45f3ee350ba2e79f45fb51ec069b56f8e2348dc1f0b7a1ec89f3ca1af3",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/showcase/themes/types.ts": {
+      "content_hash": "e9cc1560d4acdeb38df5752699771f498beda39882e939cd4e82f4828a28028d",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/style/StyleGuide.tsx": {
+      "content_hash": "56b79fc2a51f7390f7ceda13b9ed87942055c0c40df371c7f981c4539f09a219",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/style/themeEnhancements.ts": {
+      "content_hash": "7b23e658e2413da364e710e580a96bcf9366f7370162bf180c36c4a39a76dc53",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/App.tsx": {
+      "content_hash": "aa7766e4c13a11a866ef26fa998f0a020095fb9a3b558a97c6619c298743c84d",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/math/force.ts": {
+      "content_hash": "5da0a848d650a1eb4ccd8c3c94e06953ad9e48d41d50b3f7db3141e47ddc3a3d",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/math/gamma.ts": {
+      "content_hash": "78be03f31ff9b7ec19dd7de6e5604b044d446f0a6b9af2dc8c87e784512f3721",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/math/index.ts": {
+      "content_hash": "da91b4600eabbd4e8ee10217adfb6088e095934ccbbd32fc21df2216192d4c0f",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/math/linalg.ts": {
+      "content_hash": "83312c73c2eae1a86f304b4f93d3cd0732620f41cb556a03a5501db23c018611",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/math/random.ts": {
+      "content_hash": "a5937646b38c3bf167ebf4a83ccf90170bb93c6b3b28ec43e6027431582aa078",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/primitives/index.tsx": {
+      "content_hash": "ba01b0fe87362328551b5579ad52ae9c476d69e73537a10ab324627600ed823f",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/primitives/styles.ts": {
+      "content_hash": "86b584c1b03475e34b8987763456d13e731718c607fc98ffcb828acff148484d",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/registry.ts": {
+      "content_hash": "d874ce79209d6e3feca458c28f4348b32bf7149710e998a35787d7e2c936d980",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/bayes-coin.tsx": {
+      "content_hash": "dc7d9c76828ff483828a273e41f55872453cdcab786bc99ee65b3c607eb418e0",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/cellular-automaton.tsx": {
+      "content_hash": "66e50380ecd13945f71ec8c79c2fcc9748de4c19e140df660b2910435d53bf71",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/dijkstra-pathfinder.tsx": {
+      "content_hash": "11024be71a774fb73e12f80bfdaaa6b9e5669297fb27986c4332bd6bef2c5da5",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/distribution-explorer.tsx": {
+      "content_hash": "08eb6bbbb510aa57332febf841eea381caac2293a5078dcc80fe15c42ff7e9e4",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/force-graph.tsx": {
+      "content_hash": "66bbf8e0753c016dcde85c2be32e6123fc6c542731c9f8e571d20664c260d399",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/fourier-builder.tsx": {
+      "content_hash": "3c99d378e981d074e72f53792b3fac40883edac80a38bc0f276a287be4f93c37",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/gradient-descent.tsx": {
+      "content_hash": "90f9142ca3235e3418c18366b1efbfec732be3d121e992ad76eb7ff20e9289f1",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/kmeans-clustering.test.ts": {
+      "content_hash": "1a745448a4eefb31ce6d3ed2b84eea021d4987955e53733d578883f83174bb29",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/kmeans-clustering.tsx": {
+      "content_hash": "363f89206889af783866569df084caf56535336a546c3e1a87e5f41b3ce5d14e",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/lorenz-attractor.tsx": {
+      "content_hash": "7812310015ec9ac2a6e2d02d9a4e9b6c95113e8a00cec24cd149a23d696b0b33",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/matrix-transformation.tsx": {
+      "content_hash": "b2cb61ed48b7721eccf1f45e344043c49570f8ae941e1136ce6b16b7b62d3919",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/neuron-firing.tsx": {
+      "content_hash": "02c82b387f277dca21cec7616d0a6e3d9a7959f657f1c33dc4d5380b13981589",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/sort-tracer.tsx": {
+      "content_hash": "d9392ad1376a93d9e8af09eba323065954e1b2f625de3ad1ad86d26bfdd2ae66",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    },
+    "src/web/viz/widgets/wave-interference.tsx": {
+      "content_hash": "2f6bb93743a3f3d1edf46fca4eee1d6876458bc8b5e5bd560ec818cb3d878613",
+      "last_indexed": "2026-05-07T10:49:29+00:00"
+    }
+  },
+  "grammar_versions": {
+    "javascript": "unknown",
+    "python": "unknown",
+    "rust": "unknown",
+    "typescript": "unknown"
+  },
+  "languages": [
+    "python",
+    "typescript",
+    "javascript",
+    "rust"
+  ],
+  "last_built": "2026-05-07T10:49:29+00:00"
+}
