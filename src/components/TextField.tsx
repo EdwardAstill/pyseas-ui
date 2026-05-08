@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react'
 import styles from './fields.module.css'
+import { cx } from './cx'
+import { FieldRoot } from './FieldRoot'
 
 export interface TextFieldProps {
   value: string
@@ -28,11 +30,10 @@ export function TextField({
   autoFocus,
   style,
 }: TextFieldProps) {
-  const inputCls = [styles.input, error ? styles.inputError : ''].filter(Boolean).join(' ')
+  const inputCls = cx(styles.input, error && styles.inputError)
 
   return (
-    <div className={styles.fieldRoot} style={style}>
-      {label !== undefined && <label className={styles.label}>{label}</label>}
+    <FieldRoot label={label} hint={hint} style={style}>
       <input
         className={inputCls}
         type="text"
@@ -45,7 +46,6 @@ export function TextField({
         autoFocus={autoFocus}
         aria-invalid={error === true}
       />
-      {hint !== undefined && <span className={styles.hint}>{hint}</span>}
-    </div>
+    </FieldRoot>
   )
 }

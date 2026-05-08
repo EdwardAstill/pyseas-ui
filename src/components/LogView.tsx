@@ -1,5 +1,6 @@
 import { useEffect, useRef, type CSSProperties } from 'react'
 import styles from './LogView.module.css'
+import { cx } from './cx'
 
 export interface LogViewProps {
   lines: string[]
@@ -35,7 +36,7 @@ export function LogView({ lines, maxHeight = '100%', wrapLines = false, style }:
     userScrolledRef.current = !atBottom
   }
 
-  const cls = [styles.logView, wrapLines ? styles.wrap : ''].filter(Boolean).join(' ')
+  const cls = cx(styles.logView, wrapLines && styles.wrap)
 
   return (
     <div

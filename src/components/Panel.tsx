@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import styles from './Panel.module.css'
+import { cx } from './cx'
 
 export interface PanelProps {
   title?: string
@@ -10,7 +11,7 @@ export interface PanelProps {
 }
 
 export function Panel({ title, headerActions, children, className, style }: PanelProps) {
-  const cls = [styles.panel, className].filter(Boolean).join(' ')
+  const cls = cx(styles.panel, className)
   return (
     <div className={cls} style={style}>
       {(title !== undefined || headerActions !== undefined) && (

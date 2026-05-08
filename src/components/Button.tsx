@@ -1,8 +1,9 @@
 import type { CSSProperties, MouseEventHandler, ReactNode } from 'react'
 import styles from './Button.module.css'
+import { cx } from './cx'
+import { variantClass, sizeClass, type ButtonVariant, type ButtonSize } from './buttonClasses'
 
-export type ButtonVariant = 'default' | 'primary' | 'danger' | 'ghost'
-export type ButtonSize = 'sm' | 'md'
+export type { ButtonVariant, ButtonSize }
 
 export interface ButtonProps {
   variant?: ButtonVariant
@@ -18,18 +19,6 @@ export interface ButtonProps {
   style?: CSSProperties
 }
 
-const variantClass: Record<ButtonVariant, string> = {
-  default: styles.variantDefault ?? '',
-  primary: styles.variantPrimary ?? '',
-  danger: styles.variantDanger ?? '',
-  ghost: styles.variantGhost ?? '',
-}
-
-const sizeClass: Record<ButtonSize, string> = {
-  sm: styles.sm ?? '',
-  md: styles.md ?? '',
-}
-
 export function Button({
   variant = 'default',
   size = 'md',
@@ -43,14 +32,7 @@ export function Button({
   autoFocus,
   style,
 }: ButtonProps) {
-  const cls = [
-    styles.button,
-    sizeClass[size],
-    variantClass[variant],
-    loading ? styles.loading : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  const cls = cx(styles.button, sizeClass[size], variantClass[variant], loading && styles.loading)
 
   return (
     <button

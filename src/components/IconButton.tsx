@@ -1,7 +1,8 @@
 import type { CSSProperties, MouseEventHandler, ReactNode } from 'react'
 import styles from './Button.module.css'
 import iconStyles from './IconButton.module.css'
-import type { ButtonVariant, ButtonSize } from './Button'
+import { variantClass, sizeClass, type ButtonVariant, type ButtonSize } from './buttonClasses'
+import { cx } from './cx'
 
 export interface IconButtonProps {
   icon: ReactNode
@@ -15,18 +16,6 @@ export interface IconButtonProps {
   style?: CSSProperties
 }
 
-const variantClass: Record<ButtonVariant, string> = {
-  default: styles.variantDefault ?? '',
-  primary: styles.variantPrimary ?? '',
-  danger: styles.variantDanger ?? '',
-  ghost: styles.variantGhost ?? '',
-}
-
-const sizeClass: Record<ButtonSize, string> = {
-  sm: styles.sm ?? '',
-  md: styles.md ?? '',
-}
-
 export function IconButton({
   icon,
   variant = 'default',
@@ -38,15 +27,7 @@ export function IconButton({
   type = 'button',
   style,
 }: IconButtonProps) {
-  const cls = [
-    styles.button,
-    iconStyles.iconButton,
-    sizeClass[size],
-    variantClass[variant],
-    loading ? styles.loading : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  const cls = cx(styles.button, iconStyles.iconButton, sizeClass[size], variantClass[variant], loading && styles.loading)
 
   return (
     <button

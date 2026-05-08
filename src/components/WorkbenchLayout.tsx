@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import styles from './WorkbenchLayout.module.css'
+import { cx } from './cx'
 
 export interface WorkbenchLayoutProps {
   rail: ReactNode
@@ -42,7 +43,7 @@ export function WorkbenchLayout({
     '--_row-bottom': rowBottom,
   } as CSSProperties
 
-  const cls = [styles.workbench, className].filter(Boolean).join(' ')
+  const cls = cx(styles.workbench, className)
 
   return (
     <div className={cls} style={{ ...cssVars, ...style }}>

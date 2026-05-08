@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react'
 import styles from './fields.module.css'
+import { cx } from './cx'
+import { FieldRoot } from './FieldRoot'
 
 export interface SelectOption {
   value: string
@@ -28,11 +30,10 @@ export function Select({
   label,
   style,
 }: SelectProps) {
-  const selectCls = [styles.select, error ? styles.selectError : ''].filter(Boolean).join(' ')
+  const selectCls = cx(styles.select, error && styles.selectError)
 
   return (
-    <div className={styles.fieldRoot} style={style}>
-      {label !== undefined && <label className={styles.label}>{label}</label>}
+    <FieldRoot label={label} style={style}>
       <select
         className={selectCls}
         value={value === null ? '' : value}
@@ -51,6 +52,6 @@ export function Select({
           </option>
         ))}
       </select>
-    </div>
+    </FieldRoot>
   )
 }

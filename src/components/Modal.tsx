@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import styles from './Modal.module.css'
+import { cx } from './cx'
 
 export type ModalSize = 'sm' | 'md' | 'lg'
 
@@ -40,7 +41,7 @@ export function Modal({ open, onClose, title, size = 'md', children }: ModalProp
 
   if (!open) return null
 
-  const dialogCls = [styles.dialog, sizeClass[size]].filter(Boolean).join(' ')
+  const dialogCls = cx(styles.dialog, sizeClass[size])
 
   return createPortal(
     <div

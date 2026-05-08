@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react'
 import styles from './fields.module.css'
+import { cx } from './cx'
+import { FieldRoot } from './FieldRoot'
 
 export interface NumberFieldProps {
   value: number | null
@@ -30,7 +32,7 @@ export function NumberField({
   hint,
   style,
 }: NumberFieldProps) {
-  const inputCls = [styles.input, error ? styles.inputError : ''].filter(Boolean).join(' ')
+  const inputCls = cx(styles.input, error && styles.inputError)
 
   function handleChange(raw: string) {
     if (raw === '' || raw === '-') {
@@ -42,8 +44,7 @@ export function NumberField({
   }
 
   return (
-    <div className={styles.fieldRoot} style={style}>
-      {label !== undefined && <label className={styles.label}>{label}</label>}
+    <FieldRoot label={label} hint={hint} style={style}>
       <input
         className={inputCls}
         type="number"
@@ -57,7 +58,6 @@ export function NumberField({
         readOnly={readOnly}
         aria-invalid={error === true}
       />
-      {hint !== undefined && <span className={styles.hint}>{hint}</span>}
-    </div>
+    </FieldRoot>
   )
 }

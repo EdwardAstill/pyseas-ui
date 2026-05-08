@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import styles from './StatusBadge.module.css'
+import { cx } from './cx'
 
 export type StatusVariant = 'ok' | 'warn' | 'err' | 'info'
 
@@ -17,7 +18,7 @@ const variantClass: Record<StatusVariant, string> = {
 }
 
 export function StatusBadge({ variant, label, style }: StatusBadgeProps) {
-  const cls = [styles.badge, variantClass[variant]].filter(Boolean).join(' ')
+  const cls = cx(styles.badge, variantClass[variant])
   return (
     <span className={cls} style={style}>
       {label !== undefined ? label : variant}

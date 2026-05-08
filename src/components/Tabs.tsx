@@ -1,4 +1,5 @@
 import styles from './Tabs.module.css'
+import { cx } from './cx'
 
 export interface TabItem {
   value: string
@@ -14,19 +15,13 @@ export interface TabsProps {
 }
 
 export function Tabs({ items, value, onChange, className }: TabsProps) {
-  const cls = [styles.tabs, className].filter(Boolean).join(' ')
+  const cls = cx(styles.tabs, className)
   return (
     <div className={cls} role="tablist">
       {items.map((item) => {
         const isActive = item.value === value
         const isDisabled = item.disabled === true
-        const tabCls = [
-          styles.tab,
-          isActive ? styles.tabActive : '',
-          isDisabled ? styles.tabDisabled : '',
-        ]
-          .filter(Boolean)
-          .join(' ')
+        const tabCls = cx(styles.tab, isActive && styles.tabActive, isDisabled && styles.tabDisabled)
         return (
           <button
             key={item.value}
