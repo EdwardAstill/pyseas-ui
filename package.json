@@ -5,7 +5,8 @@
     "ui": "./bin/ui"
   },
   "scripts": {
-    "dev": "fuser -k 3000/tcp 2>/dev/null; bun --hot server.ts &"
+    "ui": "bun ./bin/ui",
+    "dev": "bun --hot server.ts"
   },
   "dependencies": {
     "react": "^19.0.0",

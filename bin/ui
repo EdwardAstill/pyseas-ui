@@ -1,37 +1,56 @@
-#!/usr/bin/env bash
-# ui — launch the browser style reference.
+#!/usr/bin/env bun
+import { existsSync, realpathSync } from "node:fs";
+import { dirname, join } from "node:path";
 
-set -euo pipefail
+const scriptPath = realpathSync(import.meta.path);
+const root = dirname(dirname(scriptPath));
+const command = Bun.argv[2] ?? "";
 
-SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
-ROOT="$(cd "$(dirname "$SCRIPT_PATH")/.." && pwd)"
-
-usage() {
-  cat <<EOF
-ui — living browser style reference
+function usage() {
+  console.log(`ui - living browser style reference
 
 Usage:
   ui                 start the main web site at http://localhost:3000/
-  ui help            show this message
-EOF
+  ui help            show this message`);
 }
 
-install_web_deps() {
-  if [ ! -d "$ROOT/node_modules" ]; then
-    echo "→ installing web deps with bun"
-    (cd "$ROOT" && bun install)
-  fi
+async function run(command) {
+  const proc = Bun.spawn(command, {
+    cwd: root,
+    stdin: "inherit",
+    stdout: "inherit",
+    stderr: "inherit",
+  });
+
+  const code = await proc.exited;
+  if (code !== 0) {
+    process.exit(code);
+  }
 }
 
-run_web() {
-  install_web_deps
-  cd "$ROOT"
-  echo "→ web site: http://localhost:3000/"
-  exec bun --hot server.ts
+async function installWebDeps() {
+  if (!existsSync(join(root, "node_modules"))) {
+    console.log("-> installing web deps with bun");
+    await run(["bun", "install"]);
+  }
 }
 
-case "${1:-}" in
-  "") run_web ;;
-  help | -h | --help) usage ;;
-  *) usage; exit 1 ;;
-esac
+async function runWeb() {
+  await installWebDeps();
+  console.log("-> web site: http://localhost:3000/");
+  await run(["bun", "--hot", "server.ts"]);
+}
+
+switch (command) {
+  case "":
+    await runWeb();
+    break;
+  case "help":
+  case "-h":
+  case "--help":
+    usage();
+    break;
+  default:
+    usage();
+    process.exit(1);
+}

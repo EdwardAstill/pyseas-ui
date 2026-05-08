@@ -36,7 +36,7 @@ ui help                        show CLI help
 
 ```
 ui/
-├── bin/ui                      # dispatcher (bash)
+├── bin/ui                      # dispatcher (Bun)
 ├── index.html                  # web entry
 ├── server.ts                   # bun dev server
 ├── src/
