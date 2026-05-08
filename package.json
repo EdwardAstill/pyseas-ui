@@ -16,11 +16,14 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/pyseas-ui.es.js"
     },
-    "./dist/pyseas-ui.css": "./dist/pyseas-ui.css"
+    "./dist/pyseas-ui.css": {
+      "types": "./dist/pyseas-ui.d.css.ts",
+      "default": "./dist/pyseas-ui.css"
+    }
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build && tsc -p tsconfig.build.json",
+    "build": "vite build && tsc -p tsconfig.build.json && node scripts/write-css-dts.mjs",
     "typecheck": "tsc -b --noEmit",
     "test": "bun test",
     "lint": "eslint src examples tests"

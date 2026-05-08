@@ -1,14 +1,14 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 1px var(--ps-space-xs);
-  border-radius: var(--ps-radius-xs);
+  padding: 0 var(--ps-space-xs);
+  border-radius: var(--ps-radius-none);
   font-family: var(--ps-font-mono);
   font-size: var(--ps-text-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  line-height: 16px;
+  line-height: 18px;
   user-select: none;
 }
 

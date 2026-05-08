@@ -2,17 +2,21 @@
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid var(--ps-border);
+  height: 32px;
+  align-items: stretch;
+  padding: 0 12px;
+  flex-shrink: 0;
 }
 
 .tab {
-  font-family: var(--ps-font-mono);
+  font-family: var(--ps-font-sans);
   font-size: var(--ps-text-sm);
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
   color: var(--ps-text-muted);
   cursor: pointer;
-  padding: var(--ps-space-xs) var(--ps-space-md);
+  padding: 0 12px;
   margin-bottom: -1px;
   transition: color 0.1s, border-color 0.1s;
   outline: none;

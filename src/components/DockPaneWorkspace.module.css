@@ -1,0 +1,245 @@
+.workspace {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+  background: var(--ps-surface);
+  color: var(--ps-text);
+  user-select: none;
+}
+
+.resizing {
+  cursor: col-resize;
+}
+
+.split {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.splitRow {
+  flex-direction: row;
+}
+
+.splitCol {
+  flex-direction: column;
+}
+
+.splitChild {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.resizeHandle {
+  position: relative;
+  z-index: 8;
+  flex: 0 0 1px;
+  background: var(--ps-border);
+  outline: none;
+}
+
+.resizeHandle::before,
+.resizeHandle::after {
+  content: "";
+  position: absolute;
+}
+
+.resizeHandle::before {
+  z-index: 1;
+}
+
+.resizeHandle::after {
+  z-index: 0;
+  background: transparent;
+  transition: background 0.08s ease;
+}
+
+.resizeHandle:hover::after {
+  background: color-mix(in srgb, var(--ps-accent) 10%, transparent);
+}
+
+.resizeVertical {
+  width: 1px;
+  cursor: col-resize;
+}
+
+.resizeVertical::before {
+  inset: 0 -4px;
+}
+
+.resizeVertical::after {
+  inset: 0 -2px;
+}
+
+.resizeHorizontal {
+  height: 1px;
+  cursor: row-resize;
+}
+
+.resizeHorizontal::before {
+  inset: -4px 0;
+}
+
+.resizeHorizontal::after {
+  inset: -2px 0;
+}
+
+.leaf {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--ps-panel);
+}
+
+.dropActive {
+  outline: 1px solid color-mix(in srgb, var(--ps-accent) 24%, transparent);
+  outline-offset: -1px;
+}
+
+.tabStrip {
+  flex: 0 0 32px;
+  height: 32px;
+  min-height: 32px;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  border-bottom: 1px solid var(--ps-border);
+  background: var(--ps-surface);
+  cursor: grab;
+}
+
+.tabStrip:active {
+  cursor: grabbing;
+}
+
+.tab {
+  flex: 0 1 auto;
+  max-width: 180px;
+  min-width: 54px;
+  height: 100%;
+  border: 0;
+  border-right: 1px solid var(--ps-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ps-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  font-family: var(--ps-font-sans);
+  font-size: var(--ps-text-md);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tab span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab:hover {
+  color: var(--ps-text);
+  background: var(--ps-panel-elevated);
+}
+
+.tabActive {
+  color: var(--ps-text);
+  background: var(--ps-panel);
+}
+
+.leafToolbar {
+  flex: 0 0 auto;
+  min-width: 0;
+  margin-left: auto;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  border-left: 1px solid var(--ps-border);
+  background: var(--ps-surface);
+  cursor: default;
+}
+
+.panelBody {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ps-panel);
+}
+
+.dropIndicator {
+  pointer-events: none;
+  position: absolute;
+  z-index: 12;
+  border: 2px solid color-mix(in srgb, var(--ps-accent) 72%, transparent);
+  background: color-mix(in srgb, var(--ps-accent) 8%, transparent);
+}
+
+.dropLeft {
+  inset: 32px auto 0 0;
+  width: 34%;
+}
+
+.dropRight {
+  inset: 32px 0 0 auto;
+  width: 34%;
+}
+
+.dropTop {
+  inset: 32px 0 auto 0;
+  height: calc((100% - 32px) * 0.34);
+}
+
+.dropBottom {
+  inset: auto 0 0 0;
+  height: calc((100% - 32px) * 0.34);
+}
+
+.dropCenter {
+  inset: 32px 0 0 0;
+}
+
+@media (max-width: 760px) {
+  .workspace {
+    height: auto;
+    min-height: 100%;
+    overflow: auto;
+  }
+
+  .split,
+  .splitRow,
+  .splitCol {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+
+  .splitChild {
+    flex: 0 0 auto !important;
+    min-height: 220px;
+    overflow: visible;
+  }
+
+  .resizeHandle {
+    display: none;
+  }
+}

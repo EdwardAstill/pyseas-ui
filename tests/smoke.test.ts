@@ -22,7 +22,18 @@ import type {
   ResultProps,
   ResultStatus,
   LogViewProps,
+  DrawingDownload,
+  DrawingSource,
+  DrawingViewerProps,
+  DrawingViewerStatus,
   WorkbenchLayoutProps,
+  DockPaneWorkspaceProps,
+  DockAppShellProps,
+  DockTopBarProps,
+  DockIconSidebarProps,
+  DockIconSidebarItem,
+  DockStatusBarProps,
+  DockLayoutNode,
 } from '../src/index'
 
 // Type-level smoke: all exports resolve. Runtime check: basic instantiation.
@@ -80,6 +91,16 @@ test('all component types are importable', () => {
   const lvProps: LogViewProps = { lines: ['line1'] }
   expect(lvProps.lines[0]).toBe('line1')
 
+  const drawingSource: DrawingSource = { kind: 'svg', content: '<svg />' }
+  const drawingStatus: DrawingViewerStatus = 'ready'
+  const drawingDownload: DrawingDownload = { href: '/drawing.dxf', label: 'DXF' }
+  const drawingProps: DrawingViewerProps = {
+    source: drawingSource,
+    status: drawingStatus,
+    download: drawingDownload,
+  }
+  expect(drawingProps.source?.kind).toBe('svg')
+
   const wbProps: WorkbenchLayoutProps = {
     rail: null,
     setupPanel: null,
@@ -88,6 +109,26 @@ test('all component types are importable', () => {
     resultsPanel: null,
   }
   expect(wbProps.railWidth).toBeUndefined()
+
+  const dockLayout: DockLayoutNode<'one'> = { type: 'leaf', id: 'leaf', tabs: ['one'], activeTab: 'one' }
+  const dockProps: DockPaneWorkspaceProps<'one'> = {
+    defaultLayout: dockLayout,
+    renderPanel: () => null,
+  }
+  expect(dockProps.defaultLayout.type).toBe('leaf')
+
+  const shellProps: DockAppShellProps = { children: null }
+  expect(shellProps.children).toBeNull()
+
+  const topbarProps: DockTopBarProps = { title: 'Title' }
+  expect(topbarProps.title).toBe('Title')
+
+  const sidebarItem: DockIconSidebarItem = { id: 'parts', label: 'Parts', icon: null }
+  const sidebarProps: DockIconSidebarProps = { items: [sidebarItem] }
+  expect(sidebarProps.items[0].id).toBe('parts')
+
+  const statusProps: DockStatusBarProps = { left: 'ready' }
+  expect(statusProps.left).toBe('ready')
 })
 
 test('named exports are present', async () => {
@@ -109,7 +150,13 @@ test('named exports are present', async () => {
     'StatusBadge',
     'Result',
     'LogView',
+    'DrawingViewer',
     'WorkbenchLayout',
+    'DockPaneWorkspace',
+    'DockAppShell',
+    'DockTopBar',
+    'DockIconSidebar',
+    'DockStatusBar',
   ]
   for (const name of expected) {
     expect(typeof (mod as Record<string, unknown>)[name]).toBe('function')

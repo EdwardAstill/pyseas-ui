@@ -1,3 +1,5 @@
+import './styles.css'
+
 // pyseas-ui public API
 
 export { ThemeProvider } from './components/ThemeProvider'
@@ -45,5 +47,52 @@ export type { ResultProps, ResultStatus } from './components/Result'
 export { LogView } from './components/LogView'
 export type { LogViewProps } from './components/LogView'
 
+export { DrawingViewer } from './components/DrawingViewer'
+export type {
+  DrawingDownload,
+  DrawingSource,
+  DrawingViewerProps,
+  DrawingViewerStatus,
+} from './components/DrawingViewer'
+
 export { WorkbenchLayout } from './components/WorkbenchLayout'
 export type { WorkbenchLayoutProps } from './components/WorkbenchLayout'
+
+export { DockPaneWorkspace } from './components/DockPaneWorkspace'
+export type { DockPaneWorkspaceProps } from './components/DockPaneWorkspace'
+
+export { DockAppShell, DockTopBar, DockIconSidebar, DockStatusBar } from './components/DockShell'
+export type {
+  DockAppShellProps,
+  DockTopBarProps,
+  DockIconSidebarProps,
+  DockIconSidebarItem,
+  DockStatusBarProps,
+} from './components/DockShell'
+
+export {
+  cloneDockLayout,
+  computeDockDropEdge,
+  findDockLeafById,
+  findDockLeafOfTab,
+  insertDockLeafAt,
+  insertDockTabAt,
+  moveDockGroup,
+  moveDockTab,
+  normalizeDockSizes,
+  removeDockLeafById,
+  setDockActiveTab,
+  setDockSplitSizesAtPath,
+} from './components/dockPaneLayout'
+export type {
+  DockDropEdge,
+  DockLayoutNode,
+  DockLeafNode,
+  DockLeafSearchResult,
+  DockPoint,
+  DockRect,
+  DockSplitDirection,
+  DockSplitNode,
+  MoveDockGroupOptions,
+  MoveDockTabOptions,
+} from './components/dockPaneLayout'

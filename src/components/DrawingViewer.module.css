@@ -1,0 +1,160 @@
+.viewer {
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 32px minmax(0, 1fr);
+  background: var(--ps-panel);
+  color: var(--ps-text);
+  overflow: hidden;
+}
+
+.toolbar {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--ps-space-sm);
+  border-bottom: 1px solid var(--ps-border);
+  background: color-mix(in srgb, var(--ps-panel-elevated) 42%, transparent);
+  padding: 0 var(--ps-space-sm);
+}
+
+.toolbarGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.toolbarMeta {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ps-space-sm);
+  overflow: hidden;
+}
+
+.zoomLabel,
+.metadata,
+.downloadLink,
+.textButton {
+  font-family: var(--ps-font-mono);
+  font-size: var(--ps-text-xs);
+  line-height: 1;
+}
+
+.zoomLabel {
+  color: var(--ps-text-muted);
+  white-space: nowrap;
+}
+
+.metadata {
+  min-width: 0;
+  color: var(--ps-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.textButton,
+.downloadLink {
+  min-height: 24px;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--ps-radius-none);
+  background: transparent;
+  color: var(--ps-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  text-decoration: none;
+}
+
+.textButton {
+  cursor: pointer;
+}
+
+.textButton:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.textButton:not(:disabled):hover,
+.downloadLink:hover {
+  border-color: var(--ps-border-strong);
+  background: color-mix(in srgb, var(--ps-accent) 6%, transparent);
+}
+
+.viewport {
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(var(--ps-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ps-border) 1px, transparent 1px),
+    var(--ps-panel-elevated);
+  background-size: 32px 32px;
+  touch-action: none;
+  user-select: none;
+}
+
+.interactive {
+  cursor: grab;
+}
+
+.interactive:active {
+  cursor: grabbing;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.svgSlot,
+.image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.svgSlot > svg {
+  display: block;
+  max-width: calc(100% - 28px);
+  max-height: calc(100% - 28px);
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+.image {
+  max-width: calc(100% - 28px);
+  max-height: calc(100% - 28px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.stateText {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ps-text-muted);
+  font-family: var(--ps-font-mono);
+  font-size: var(--ps-text-sm);
+  padding: var(--ps-space-md);
+  text-align: center;
+}

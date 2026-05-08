@@ -12,7 +12,7 @@
   grid-column: 1;
   grid-row: 1;
   border-right: 1px solid var(--ps-border);
-  background: var(--ps-panel);
+  background: var(--ps-surface);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -34,6 +34,7 @@
   flex-direction: column;
   border-right: 1px solid var(--ps-border);
   border-bottom: 1px solid var(--ps-border);
+  background: var(--ps-panel);
 }
 
 .cell:nth-child(2n) {

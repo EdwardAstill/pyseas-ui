@@ -5,9 +5,9 @@
   gap: var(--ps-space-xs);
   border: 1px solid var(--ps-border-strong);
   border-radius: var(--ps-radius-none);
-  background: var(--ps-panel-elevated);
-  color: var(--ps-text);
-  font-family: var(--ps-font-mono);
+  background: transparent;
+  color: var(--ps-text-muted);
+  font-family: var(--ps-font-sans);
   cursor: pointer;
   user-select: none;
   transition: background 0.1s, border-color 0.1s, color 0.1s, opacity 0.1s;
@@ -22,28 +22,28 @@
 
 /* Sizes */
 .sm {
-  height: 22px;
-  padding: 0 var(--ps-space-sm);
+  height: 24px;
+  padding: 0 10px;
   font-size: var(--ps-text-xs);
 }
 
 .md {
   height: 28px;
-  padding: 0 var(--ps-space-md);
+  padding: 0 12px;
   font-size: var(--ps-text-sm);
 }
 
 /* Variants */
 .variantDefault:hover:not(:disabled) {
-  background: var(--ps-panel-elevated);
-  border-color: var(--ps-accent);
+  background: color-mix(in srgb, var(--ps-accent) 4%, transparent);
+  border-color: color-mix(in srgb, var(--ps-accent) 16%, transparent);
   color: var(--ps-text);
 }
 
 .variantPrimary {
   background: var(--ps-accent);
   border-color: var(--ps-accent);
-  color: #fff;
+  color: var(--ps-surface);
 }
 
 .variantPrimary:hover:not(:disabled) {
@@ -68,7 +68,7 @@
 
 .variantGhost:hover:not(:disabled) {
   color: var(--ps-text);
-  background: var(--ps-panel-elevated);
+  background: color-mix(in srgb, var(--ps-accent) 6%, transparent);
 }
 
 /* States */

@@ -1,52 +1,20 @@
+import { DrawingViewer } from '../src/index'
+
+const sampleDrawing = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-label="Sample drawing">
+  <rect x="28" y="46" width="176" height="72" fill="none" stroke="currentColor" stroke-width="2"/>
+  <circle cx="116" cy="82" r="20" fill="none" stroke="currentColor" stroke-width="2"/>
+  <path d="M116 82 L116 24" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <path d="M36 132 L196 132" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="116" y="148" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor">300 mm</text>
+</svg>`
+
 export function DemoDiagram() {
   return (
-    <div
-      style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 'var(--ps-space-md)',
-        overflow: 'auto',
-      }}
-    >
-      <svg
-        width="200"
-        height="160"
-        viewBox="0 0 200 160"
-        style={{ opacity: 0.7 }}
-        aria-label="Geometry diagram"
-      >
-        <rect
-          x="30" y="40" width="140" height="80"
-          fill="none" stroke="var(--ps-text-muted)" strokeWidth="1.5"
-        />
-        <circle
-          cx="100" cy="80" r="18"
-          fill="none" stroke="var(--ps-text-muted)" strokeWidth="1.5"
-        />
-        <defs>
-          <marker id="arrowUp" markerWidth="6" markerHeight="6" refX="3" refY="6" orient="auto">
-            <path d="M0,6 L3,0 L6,6" fill="var(--ps-accent)" />
-          </marker>
-        </defs>
-        <line
-          x1="100" y1="10" x2="100" y2="38"
-          stroke="var(--ps-accent)" strokeWidth="1.5" markerEnd="url(#arrowUp)"
-        />
-        <line
-          x1="30" y1="135" x2="170" y2="135"
-          stroke="var(--ps-text-muted)" strokeWidth="1" strokeDasharray="3 3"
-        />
-        <text x="100" y="150" textAnchor="middle" fontSize="10"
-          fill="var(--ps-text-muted)" fontFamily="var(--ps-font-mono)">
-          300 mm
-        </text>
-        <text x="100" y="25" textAnchor="middle" fontSize="10"
-          fill="var(--ps-accent)" fontFamily="var(--ps-font-mono)">
-          F = 250 kN
-        </text>
-      </svg>
-    </div>
+    <DrawingViewer
+      source={{ kind: 'svg', content: sampleDrawing }}
+      metadata="sample svg"
+      download={{ href: '#', label: 'DXF' }}
+    />
   )
 }

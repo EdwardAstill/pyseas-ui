@@ -351,6 +351,44 @@ interface LogViewProps {
 
 ---
 
+## `<DrawingViewer>`
+
+Source-agnostic drawing preview surface for engineering workbenches. Supports
+inline SVG, SVG URLs, image URLs, loading/error/empty states, pan, zoom, fit
+reset, metadata display, and an optional download link.
+
+```tsx
+type DrawingSource =
+  | { kind: 'svg'; content: string; label?: string }
+  | { kind: 'svg-url'; url: string; label?: string }
+  | { kind: 'image'; url: string; label?: string };
+
+type DrawingViewerStatus = 'idle' | 'loading' | 'error' | 'ready';
+
+interface DrawingDownload {
+  href: string;
+  filename?: string;
+  label?: string;
+}
+
+interface DrawingViewerProps {
+  source?: DrawingSource | null;
+  status?: DrawingViewerStatus;
+  error?: string | null;
+  emptyMessage?: string;
+  loadingMessage?: string;
+  metadata?: ReactNode;
+  download?: DrawingDownload | null;
+  className?: string;
+  style?: CSSProperties;
+}
+```
+
+**Not responsible for:** DXF parsing, CAD geometry generation, API calls,
+engineering units, layer semantics, entity selection, or domain-specific labels.
+
+---
+
 ## `<WorkbenchLayout>`
 
 Four-pane workbench skeleton. All slots are optional ReactNode. Handles proportional column layout; individual pane scroll is managed by the panel content.

@@ -1,27 +1,30 @@
 .panel {
   background: var(--ps-panel);
-  border: 1px solid var(--ps-border);
+  border: 0;
   border-radius: var(--ps-radius-none);
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  min-height: 0;
 }
 
 .titleBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--ps-space-xs) var(--ps-space-md);
+  padding: 0 var(--ps-space-md);
   border-bottom: 1px solid var(--ps-border);
-  min-height: 28px;
+  min-height: 32px;
   flex-shrink: 0;
+  background: color-mix(in srgb, var(--ps-panel-elevated) 42%, transparent);
 }
 
 .title {
-  font-family: var(--ps-font-mono);
+  font-family: var(--ps-font-sans);
   font-size: var(--ps-text-sm);
-  color: var(--ps-text);
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  color: var(--ps-text-muted);
+  font-weight: 500;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 

@@ -1,14 +1,19 @@
 .fieldRoot {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ps-space-xs);
+  display: grid;
+  grid-template-columns: minmax(96px, 34%) minmax(90px, 1fr);
+  align-items: center;
+  gap: var(--ps-space-sm);
+  min-height: 28px;
 }
 
 .label {
-  font-family: var(--ps-font-mono);
-  font-size: var(--ps-text-xs);
+  font-family: var(--ps-font-sans);
+  font-size: var(--ps-text-sm);
   color: var(--ps-text-muted);
   user-select: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .hint {
@@ -16,16 +21,17 @@
   font-size: var(--ps-text-xs);
   color: var(--ps-text-muted);
   opacity: 0.75;
+  grid-column: 2;
 }
 
 .input {
-  background: var(--ps-surface);
-  border: 1px solid var(--ps-border-strong);
-  border-radius: var(--ps-radius-xs);
+  background: var(--ps-panel-elevated);
+  border: 1px solid var(--ps-border);
+  border-radius: var(--ps-radius-none);
   color: var(--ps-text);
   font-family: var(--ps-font-mono);
-  font-size: var(--ps-text-sm);
-  height: 24px;
+  font-size: var(--ps-text-md);
+  height: 28px;
   padding: 0 var(--ps-space-sm);
   outline: none;
   transition: border-color 0.1s;
@@ -37,7 +43,7 @@
 }
 
 .input:focus {
-  border-color: var(--ps-accent);
+  border-color: color-mix(in srgb, var(--ps-accent) 28%, transparent);
 }
 
 .input:disabled {
@@ -57,13 +63,13 @@
 /* Select */
 .select {
   appearance: none;
-  background: var(--ps-surface);
-  border: 1px solid var(--ps-border-strong);
-  border-radius: var(--ps-radius-xs);
+  background: var(--ps-panel-elevated);
+  border: 1px solid var(--ps-border);
+  border-radius: var(--ps-radius-none);
   color: var(--ps-text);
   font-family: var(--ps-font-mono);
-  font-size: var(--ps-text-sm);
-  height: 24px;
+  font-size: var(--ps-text-md);
+  height: 28px;
   padding: 0 var(--ps-space-sm);
   padding-right: 24px;
   outline: none;
@@ -76,7 +82,7 @@
 }
 
 .select:focus {
-  border-color: var(--ps-accent);
+  border-color: color-mix(in srgb, var(--ps-accent) 28%, transparent);
 }
 
 .select:disabled {
@@ -95,11 +101,12 @@
   gap: var(--ps-space-sm);
   cursor: pointer;
   user-select: none;
+  min-height: 28px;
 }
 
 .checkboxInput {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   accent-color: var(--ps-accent);
   cursor: pointer;
   flex-shrink: 0;
@@ -111,7 +118,7 @@
 }
 
 .checkboxLabel {
-  font-family: var(--ps-font-mono);
+  font-family: var(--ps-font-sans);
   font-size: var(--ps-text-sm);
   color: var(--ps-text);
 }
@@ -187,7 +194,18 @@
 }
 
 .toggleLabel {
-  font-family: var(--ps-font-mono);
+  font-family: var(--ps-font-sans);
   font-size: var(--ps-text-sm);
   color: var(--ps-text);
+}
+
+@media (max-width: 700px) {
+  .fieldRoot {
+    grid-template-columns: 1fr;
+    gap: var(--ps-space-xs);
+  }
+
+  .hint {
+    grid-column: 1;
+  }
 }
