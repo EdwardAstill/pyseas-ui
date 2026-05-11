@@ -12,7 +12,7 @@ export function DxfView() {
     const viewer = new DxfViewer(container, {
       clearColor: new THREE.Color(0x1a1a1a),
       autoResize: true,
-    }) as { Load: (opts: { url: string; progressCbk: () => void }) => Promise<void>; Destroy: () => void }
+    })
 
     viewer
       .Load({
