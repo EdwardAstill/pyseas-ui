@@ -87,7 +87,7 @@ function parseViewArgs(args) {
   const dot = filePath.lastIndexOf('.')
   const ext = dot === -1 ? '' : filePath.slice(dot).toLowerCase()
   if (!allowed.includes(ext)) {
-    usageError(`unsupported format \`${ext}\`; supported: .dxf, .stl, .step`)
+    usageError(`unsupported format \`${ext}\`; supported: .dxf, .stl, .step, .stp`)
   }
   return resolve(filePath)
 }
