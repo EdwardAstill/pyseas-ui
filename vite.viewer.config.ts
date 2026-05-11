@@ -83,6 +83,11 @@ function cadFilePlugin(): Plugin {
 export default defineConfig({
   plugins: [react(), cadFilePlugin()],
   root: resolve(__dirname, 'viewer'),
+  resolve: {
+    alias: {
+      'opentype.js': resolve(__dirname, 'node_modules/opentype.js/dist/opentype.js'),
+    },
+  },
   optimizeDeps: {
     exclude: ['occt-import-js'],
   },

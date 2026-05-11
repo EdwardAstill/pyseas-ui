@@ -11,6 +11,11 @@ export default defineConfig(({ command }) => {
 
   return {
     plugins: [react()],
+    resolve: {
+      alias: {
+        'opentype.js': resolve(__dirname, 'node_modules/opentype.js/dist/opentype.js'),
+      },
+    },
 
     // Dev server: serve the examples showcase
     root: isServe ? 'examples' : '.',

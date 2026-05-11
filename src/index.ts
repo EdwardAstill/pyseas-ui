@@ -55,6 +55,14 @@ export type {
   DrawingViewerStatus,
 } from './components/DrawingViewer'
 
+export { CadDxfViewer, CadStepViewer } from './components/CadViewer'
+export type {
+  CadDxfViewerProps,
+  CadStepViewerProps,
+  CadViewerDownload,
+  CadViewerStatus,
+} from './components/CadViewer'
+
 export { WorkbenchLayout } from './components/WorkbenchLayout'
 export type { WorkbenchLayoutProps } from './components/WorkbenchLayout'
 

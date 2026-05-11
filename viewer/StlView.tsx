@@ -31,6 +31,7 @@ export function StlView() {
 
     let cancelled = false
     let loadedMesh: THREE.Mesh | null = null
+    let loadedEdges: THREE.LineSegments | null = null
 
     const loader = new STLLoader()
     loader.load('/__pyseas/file', (geometry) => {
@@ -41,14 +42,31 @@ export function StlView() {
       geometry.computeBoundingSphere()
       const sphere = geometry.boundingSphere
       if (sphere) {
-        camera.position.copy(sphere.center).add(new THREE.Vector3(0, 0, sphere.radius * 3))
+        const r = sphere.radius
+        camera.position.copy(sphere.center).add(new THREE.Vector3(0, 0, r * 3))
+        camera.near = r * 0.01
+        camera.far = r * 100
+        camera.updateProjectionMatrix()
         controls.target.copy(sphere.center)
         controls.update()
       }
-      const material = new THREE.MeshPhongMaterial({ color: 0x6688aa, specular: 0x222222, shininess: 40 })
+      const material = new THREE.MeshPhongMaterial({
+        color: 0x6688aa,
+        specular: 0x222222,
+        shininess: 40,
+        polygonOffset: true,
+        polygonOffsetFactor: 4,
+        polygonOffsetUnits: 4,
+      })
       const mesh = new THREE.Mesh(geometry, material)
       loadedMesh = mesh
       scene.add(mesh)
+
+      const edgesGeometry = new THREE.EdgesGeometry(geometry, 20)
+      const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 })
+      const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial)
+      loadedEdges = edges
+      scene.add(edges)
     })
 
     let frameId = 0
@@ -74,6 +92,10 @@ export function StlView() {
       if (loadedMesh) {
         loadedMesh.geometry.dispose()
         ;(loadedMesh.material as THREE.Material).dispose()
+      }
+      if (loadedEdges) {
+        loadedEdges.geometry.dispose()
+        ;(loadedEdges.material as THREE.Material).dispose()
       }
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement)
       renderer.dispose()

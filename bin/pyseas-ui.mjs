@@ -196,6 +196,10 @@ async function runView(rawArgs) {
 
   const command = ['bun', 'run', 'vite', '--config', 'vite.viewer.config.ts', '--open']
   const env = { ...process.env, PYSEAS_VIEW_FILE: absPath }
+  if (env.BROWSER) {
+    const browser = browserExecutable(env.BROWSER)
+    if (browser && !Bun.which(browser)) delete env.BROWSER
+  }
   await spawnAndWait(command, env)
 }
 
