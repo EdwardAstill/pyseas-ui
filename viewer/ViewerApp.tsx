@@ -8,8 +8,6 @@ interface FileMeta {
   name: string
 }
 
-const SUPPORTED = ['dxf', 'stl', 'step', 'stp']
-
 const labelStyle: React.CSSProperties = {
   padding: '0.5rem 1rem',
   background: '#111',
@@ -41,18 +39,20 @@ export function ViewerApp() {
       .catch((e: unknown) => setError(String(e)))
   }, [])
 
+  function renderContent() {
+    if (error) return <div style={{ ...messageStyle, color: '#e55' }}>Error: {error}</div>
+    if (!meta) return <div style={messageStyle}>Loading…</div>
+    if (meta.format === 'dxf') return <DxfView />
+    if (meta.format === 'stl') return <StlView />
+    if (meta.format === 'step' || meta.format === 'stp') return <StepView />
+    return <div style={messageStyle}>Unsupported format: .{meta.format}</div>
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100vw', height: '100vh' }}>
       <div style={labelStyle}>{meta ? meta.name : 'pyseas-ui viewer'}</div>
       <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
-        {error && <div style={{ ...messageStyle, color: '#e55' }}>Error: {error}</div>}
-        {!error && !meta && <div style={messageStyle}>Loading…</div>}
-        {meta && meta.format === 'dxf' && <DxfView />}
-        {meta && meta.format === 'stl' && <StlView />}
-        {meta && (meta.format === 'step' || meta.format === 'stp') && <StepView />}
-        {meta && !SUPPORTED.includes(meta.format) && (
-          <div style={messageStyle}>Unsupported format: .{meta.format}</div>
-        )}
+        {renderContent()}
       </div>
     </div>
   )
