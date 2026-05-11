@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { DxfView } from './DxfView'
-import { StlView } from './StlView'
-import { StepView } from './StepView'
+import { DxfView } from './DxfView.tsx'
+import { StlView } from './StlView.tsx'
+import { StepView } from './StepView.tsx'
 
 interface FileMeta {
   format: string
