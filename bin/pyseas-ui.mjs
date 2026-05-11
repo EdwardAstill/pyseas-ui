@@ -51,7 +51,6 @@ function parseDemoArgs(args) {
       case '--help':
         process.stdout.write(helpText)
         process.exit(0)
-        break
       case '--port': {
         const value = readValue(args, i, arg)
         if (!/^\d+$/.test(value)) usageError('`--port` must be a number')

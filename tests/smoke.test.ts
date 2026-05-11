@@ -125,7 +125,7 @@ test('all component types are importable', () => {
 
   const sidebarItem: DockIconSidebarItem = { id: 'parts', label: 'Parts', icon: null }
   const sidebarProps: DockIconSidebarProps = { items: [sidebarItem] }
-  expect(sidebarProps.items[0].id).toBe('parts')
+  expect(sidebarProps.items[0]!.id).toBe('parts')
 
   const statusProps: DockStatusBarProps = { left: 'ready' }
   expect(statusProps.left).toBe('ready')
