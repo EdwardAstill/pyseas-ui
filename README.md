@@ -272,12 +272,23 @@ Neither library nor app should encode the other's concerns.
 ```sh
 bun install          # install dependencies
 bun run dev          # start Vite dev server (serves examples/showcase)
+bun run demo         # start the examples/showcase through the pyseas-ui CLI wrapper
 bun run typecheck    # TypeScript type-check (no emit)
 bun run build        # build library to dist/
 bun test             # run tests
 ```
 
 The dev server serves `examples/` as the root. Open `http://localhost:5173` to see the component showcase.
+
+The package also exposes a Bun-native developer CLI:
+
+```sh
+pyseas-ui demo [--port <port>] [--host <host>] [--open] [--strict-port]
+```
+
+Install the local CLI globally with `bun link`. If installing through Bun's
+global package store, use `bun install -g --backend=symlink .` so the command
+serves this checkout's `examples/` and local dev dependencies.
 
 Build output goes to `dist/`:
 - `dist/pyseas-ui.es.js` — ES module bundle
