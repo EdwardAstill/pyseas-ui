@@ -7,10 +7,14 @@
   "module": "./dist/pyseas-ui.es.js",
   "types": "./dist/types/index.d.ts",
   "files": [
+    "bin",
     "dist",
     "README.md",
     "docs"
   ],
+  "bin": {
+    "pyseas-ui": "./bin/pyseas-ui.mjs"
+  },
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
@@ -23,6 +27,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "demo": "bun ./bin/pyseas-ui.mjs demo",
     "build": "vite build && tsc -p tsconfig.build.json && node scripts/write-css-dts.mjs",
     "typecheck": "tsc -b --noEmit",
     "test": "bun test",
@@ -37,13 +42,17 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.184.1",
     "@vitejs/plugin-react": "^5.0.0",
+    "dxf-viewer": "^1.0.47",
     "eslint": "^9.0.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.0",
     "globals": "^15.0.0",
+    "occt-import-js": "^0.0.23",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "three": "^0.184.0",
     "typescript": "~5.8.0",
     "typescript-eslint": "^8.0.0",
     "vite": "^6.0.0"
