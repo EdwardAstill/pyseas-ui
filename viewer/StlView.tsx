@@ -29,8 +29,15 @@ export function StlView() {
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
 
+    let cancelled = false
+    let loadedMesh: THREE.Mesh | null = null
+
     const loader = new STLLoader()
     loader.load('/__pyseas/file', (geometry) => {
+      if (cancelled) {
+        geometry.dispose()
+        return
+      }
       geometry.computeBoundingSphere()
       const sphere = geometry.boundingSphere
       if (sphere) {
@@ -38,13 +45,13 @@ export function StlView() {
         controls.target.copy(sphere.center)
         controls.update()
       }
-      scene.add(new THREE.Mesh(
-        geometry,
-        new THREE.MeshPhongMaterial({ color: 0x6688aa, specular: 0x222222, shininess: 40 })
-      ))
+      const material = new THREE.MeshPhongMaterial({ color: 0x6688aa, specular: 0x222222, shininess: 40 })
+      const mesh = new THREE.Mesh(geometry, material)
+      loadedMesh = mesh
+      scene.add(mesh)
     })
 
-    let frameId: number
+    let frameId = 0
     const animate = () => {
       frameId = requestAnimationFrame(animate)
       controls.update()
@@ -53,7 +60,7 @@ export function StlView() {
     animate()
 
     const observer = new ResizeObserver(() => {
-      if (!mount) return
+      if (!mount || mount.clientWidth === 0 || mount.clientHeight === 0) return
       camera.aspect = mount.clientWidth / mount.clientHeight
       camera.updateProjectionMatrix()
       renderer.setSize(mount.clientWidth, mount.clientHeight)
@@ -61,8 +68,13 @@ export function StlView() {
     observer.observe(mount)
 
     return () => {
+      cancelled = true
       cancelAnimationFrame(frameId)
       observer.disconnect()
+      if (loadedMesh) {
+        loadedMesh.geometry.dispose()
+        ;(loadedMesh.material as THREE.Material).dispose()
+      }
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement)
       renderer.dispose()
     }

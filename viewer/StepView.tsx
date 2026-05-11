@@ -45,7 +45,7 @@ export function StepView() {
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
 
-    let frameId: number
+    let frameId = 0
     const animate = () => {
       frameId = requestAnimationFrame(animate)
       controls.update()
@@ -54,14 +54,17 @@ export function StepView() {
     animate()
 
     const observer = new ResizeObserver(() => {
-      if (!mount) return
+      if (!mount || mount.clientWidth === 0 || mount.clientHeight === 0) return
       camera.aspect = mount.clientWidth / mount.clientHeight
       camera.updateProjectionMatrix()
       renderer.setSize(mount.clientWidth, mount.clientHeight)
     })
     observer.observe(mount)
 
-    fetch('/__pyseas/mesh')
+    const abortController = new AbortController()
+    const loadedMeshes: THREE.Mesh[] = []
+
+    fetch('/__pyseas/mesh', { signal: abortController.signal })
       .then((r) => r.json() as Promise<OcctResult>)
       .then((data) => {
         if (!data.success) {
@@ -75,21 +78,22 @@ export function StepView() {
           const geometry = new THREE.BufferGeometry()
           geometry.setAttribute('position',
             new THREE.BufferAttribute(new Float32Array(mesh.attributes.position.array), 3))
+          geometry.setIndex(new THREE.BufferAttribute(new Uint32Array(mesh.index.array), 1))
           if (mesh.attributes.normal) {
             geometry.setAttribute('normal',
               new THREE.BufferAttribute(new Float32Array(mesh.attributes.normal.array), 3))
           } else {
             geometry.computeVertexNormals()
           }
-          geometry.setIndex(new THREE.BufferAttribute(new Uint32Array(mesh.index.array), 1))
 
           const [r, g, b] = mesh.color ?? [0.4, 0.53, 0.67]
-          const obj = new THREE.Mesh(geometry,
-            new THREE.MeshPhongMaterial({
-              color: new THREE.Color(r, g, b),
-              specular: new THREE.Color(0.1, 0.1, 0.1),
-              shininess: 40,
-            }))
+          const material = new THREE.MeshPhongMaterial({
+            color: new THREE.Color(r, g, b),
+            specular: new THREE.Color(0.1, 0.1, 0.1),
+            shininess: 40,
+          })
+          const obj = new THREE.Mesh(geometry, material)
+          loadedMeshes.push(obj)
           scene.add(obj)
           box.expandByObject(obj)
         }
@@ -105,12 +109,18 @@ export function StepView() {
         setStatus('')
       })
       .catch((e: unknown) => {
+        if (e instanceof Error && e.name === 'AbortError') return
         setStatus(`Error: ${String(e)}`)
       })
 
     return () => {
+      abortController.abort()
       cancelAnimationFrame(frameId)
       observer.disconnect()
+      for (const mesh of loadedMeshes) {
+        mesh.geometry.dispose()
+        ;(mesh.material as THREE.Material).dispose()
+      }
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement)
       renderer.dispose()
     }
