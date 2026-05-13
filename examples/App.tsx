@@ -2,13 +2,12 @@ import '../src/styles.css'
 import { useState, useEffect } from 'react'
 import {
   ThemeProvider,
-  DockAppShell,
-  DockIconSidebar,
-  DockPaneWorkspace,
-  DockStatusBar,
-  DockTopBar,
-  Panel,
-  Tabs,
+  AppShell,
+  IconSidebar,
+  PaneShell,
+  Workspace,
+  StatusBar,
+  TopBar,
   Toolbar,
   Button,
   TextField,
@@ -16,23 +15,26 @@ import {
   Select,
   StatusBadge,
   LogView,
-  type DockLayoutNode,
+  Tree,
+  type LayoutNode,
+  type TreeNode,
 } from '../src/index'
 import { STANDARDS, CONDITIONS, MATERIAL_OPTIONS, DEMO_LOG_LINES } from './demoData'
 import { DemoRail } from './DemoRail'
+import { DEMO_TREE } from './demoData'
 import { DemoDiagram } from './DemoDiagram'
-import { DemoResults } from './DemoResults'
+import { DemoResults, type DemoResultsView } from './DemoResults'
 
 const THEME_KEY = 'pyseas-ui-showcase-theme'
 
 type DemoPanel = 'items' | 'setup' | 'diagram' | 'analysis' | 'results' | 'log'
 
-const defaultLayout: DockLayoutNode<DemoPanel> = {
+const defaultLayout: LayoutNode<DemoPanel> = {
   type: 'split',
   dir: 'row',
   sizes: [0.24, 0.48, 0.28],
   children: [
-    { type: 'leaf', id: 'left-leaf', tabs: ['items', 'setup'], activeTab: 'setup' },
+    { type: 'leaf', id: 'left-leaf', tabs: ['items', 'setup'], activeTab: 'items' },
     {
       type: 'split',
       dir: 'col',
@@ -63,7 +65,9 @@ export function App() {
   const [theme, setTheme] = useState<'dark' | 'light'>(stored ?? 'dark')
   const [selectedPart, setSelectedPart] = useState('part-a')
   const [setupTab, setSetupTab] = useState('geometry')
+  const [geometrySection, setGeometrySection] = useState('plate')
   const [analysisTab, setAnalysisTab] = useState('standard')
+  const [resultsView, setResultsView] = useState<DemoResultsView>('summary')
   const [partName, setPartName] = useState('Part A')
   const [thickness, setThickness] = useState<number | null>(25)
   const [width, setWidth] = useState<number | null>(300)
@@ -73,6 +77,10 @@ export function App() {
   const [running, setRunning] = useState(false)
   const [logLines, setLogLines] = useState<string[]>([])
   const [layoutKey, setLayoutKey] = useState(0)
+  const [treeExpanded, setTreeExpanded] = useState<Set<string>>(
+    () => new Set(['project', 'structures', 'rigging']),
+  )
+  const [treeSelected, setTreeSelected] = useState<string | null>('padeye-b')
 
   useEffect(() => {
     localStorage.setItem(THEME_KEY, theme)
@@ -93,88 +101,138 @@ export function App() {
     }, 150)
   }
 
+  function renderSetup() {
+    return (
+      <PaneShell
+        rail={{
+          items: [
+            { value: 'geometry', label: 'Geometry' },
+            { value: 'material', label: 'Material' },
+            { value: 'loading', label: 'Loading' },
+          ],
+          value: setupTab,
+          onChange: setSetupTab,
+        }}
+        section={
+          setupTab === 'geometry'
+            ? {
+                items: [
+                  { value: 'plate', label: 'Plate' },
+                  { value: 'hole', label: 'Hole' },
+                  { value: 'edge', label: 'Edge' },
+                ],
+                value: geometrySection,
+                onChange: setGeometrySection,
+              }
+            : undefined
+        }
+      >
+        <div style={formStackStyle}>
+          {setupTab === 'geometry' && geometrySection === 'plate' && (
+            <>
+              <TextField value={partName} onChange={setPartName} label="Item name" />
+              <NumberField value={thickness} onChange={setThickness} label="Thickness (mm)" min={1} step={1} />
+              <NumberField value={width} onChange={setWidth} label="Width (mm)" min={10} step={5} />
+            </>
+          )}
+          {setupTab === 'geometry' && geometrySection === 'hole' && (
+            <>
+              <NumberField value={null} onChange={() => {}} label="Hole diameter (mm)" min={1} step={1} />
+              <NumberField value={null} onChange={() => {}} label="Edge distance (mm)" min={1} step={1} />
+            </>
+          )}
+          {setupTab === 'geometry' && geometrySection === 'edge' && (
+            <NumberField value={null} onChange={() => {}} label="Edge radius (mm)" min={1} step={1} />
+          )}
+          {setupTab === 'material' && (
+            <Select options={MATERIAL_OPTIONS} value={material} onChange={setMaterial} label="Material grade" placeholder="Select…" />
+          )}
+          {setupTab === 'loading' && (
+            <>
+              <NumberField value={null} onChange={() => {}} label="Applied value" placeholder="0.00" />
+              <NumberField value={null} onChange={() => {}} label="Scale factor" placeholder="1.00" step={0.05} />
+            </>
+          )}
+        </div>
+      </PaneShell>
+    )
+  }
+
+  function renderAnalysis() {
+    return (
+      <PaneShell
+        rail={{
+          items: [
+            { value: 'standard', label: 'Standard' },
+            { value: 'conditions', label: 'Conditions' },
+          ],
+          value: analysisTab,
+          onChange: setAnalysisTab,
+        }}
+      >
+        <div style={formStackStyle}>
+          {analysisTab === 'standard' && (
+            <Select options={STANDARDS} value={standard} onChange={setStandard} label="Standard" placeholder="Select…" />
+          )}
+          {analysisTab === 'conditions' && (
+            <Select options={CONDITIONS} value={condition} onChange={setCondition} label="Condition" placeholder="Select…" />
+          )}
+        </div>
+      </PaneShell>
+    )
+  }
+
   function renderPanel(panel: DemoPanel) {
     switch (panel) {
       case 'items':
         return (
-          <Panel style={{ height: '100%' }}>
-            <DemoRail selected={selectedPart} onSelect={setSelectedPart} />
-          </Panel>
+          <PaneShell flushBody>
+            <div style={{ height: '100%', overflow: 'auto' }}>
+              <Tree
+                nodes={DEMO_TREE as unknown as TreeNode[]}
+                expanded={treeExpanded}
+                onExpandedChange={setTreeExpanded}
+                selected={treeSelected}
+                onSelect={(id) => setTreeSelected(id)}
+                aria-label="Project tree"
+              />
+              <div style={{ borderTop: '1px solid var(--ps-border)', marginTop: 'var(--ps-space-sm)' }}>
+                <DemoRail selected={selectedPart} onSelect={setSelectedPart} />
+              </div>
+            </div>
+          </PaneShell>
         )
       case 'setup':
-        return (
-          <Panel style={{ height: '100%' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-              <Tabs
-                items={[
-                  { value: 'geometry', label: 'Geometry' },
-                  { value: 'material', label: 'Material' },
-                  { value: 'loading', label: 'Loading' },
-                ]}
-                value={setupTab}
-                onChange={setSetupTab}
-              />
-              <div style={panelStackStyle}>
-                {setupTab === 'geometry' && (
-                  <>
-                    <TextField value={partName} onChange={setPartName} label="Item name" />
-                    <NumberField value={thickness} onChange={setThickness} label="Thickness (mm)" min={1} step={1} />
-                    <NumberField value={width} onChange={setWidth} label="Width (mm)" min={10} step={5} />
-                  </>
-                )}
-                {setupTab === 'material' && (
-                  <Select options={MATERIAL_OPTIONS} value={material} onChange={setMaterial} label="Material grade" placeholder="Select…" />
-                )}
-                {setupTab === 'loading' && (
-                  <>
-                    <NumberField value={null} onChange={() => {}} label="Applied value" placeholder="0.00" />
-                    <NumberField value={null} onChange={() => {}} label="Scale factor" placeholder="1.00" step={0.05} />
-                  </>
-                )}
-              </div>
-            </div>
-          </Panel>
-        )
+        return renderSetup()
       case 'diagram':
         return (
-          <Panel style={{ height: '100%' }}>
+          <PaneShell flushBody>
             <DemoDiagram />
-          </Panel>
+          </PaneShell>
         )
       case 'analysis':
-        return (
-          <Panel style={{ height: '100%' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-              <Tabs
-                items={[
-                  { value: 'standard', label: 'Standard' },
-                  { value: 'conditions', label: 'Conditions' },
-                ]}
-                value={analysisTab}
-                onChange={setAnalysisTab}
-              />
-              <div style={panelStackStyle}>
-                {analysisTab === 'standard' && (
-                  <Select options={STANDARDS} value={standard} onChange={setStandard} label="Standard" placeholder="Select…" />
-                )}
-                {analysisTab === 'conditions' && (
-                  <Select options={CONDITIONS} value={condition} onChange={setCondition} label="Condition" placeholder="Select…" />
-                )}
-              </div>
-            </div>
-          </Panel>
-        )
+        return renderAnalysis()
       case 'results':
         return (
-          <Panel style={{ height: '100%' }}>
-            <DemoResults logLines={logLines} />
-          </Panel>
+          <PaneShell
+            flushBody
+            section={{
+              items: [
+                { value: 'summary', label: 'Summary' },
+                { value: 'log', label: 'Log' },
+              ],
+              value: resultsView,
+              onChange: (v) => setResultsView(v as DemoResultsView),
+            }}
+          >
+            <DemoResults view={resultsView} logLines={logLines} />
+          </PaneShell>
         )
       case 'log':
         return (
-          <Panel style={{ height: '100%' }}>
-            <LogView lines={logLines} wrapLines={false} />
-          </Panel>
+          <PaneShell flushBody>
+            <LogView lines={logLines} wrapLines={false} style={{ height: '100%', border: 0, background: 'transparent' }} />
+          </PaneShell>
         )
     }
   }
@@ -191,11 +249,11 @@ export function App() {
           overflow: 'hidden',
         }}
       >
-        <DockAppShell
+        <AppShell
           topbar={
-            <DockTopBar
+            <TopBar
               title="Workbench"
-              subtitle="dock showcase"
+              subtitle="workspace showcase"
               right={
                 <Toolbar>
                   <Button variant="primary" size="sm" loading={running} onClick={handleRun}>
@@ -212,7 +270,7 @@ export function App() {
             />
           }
           sidebar={
-            <DockIconSidebar
+            <IconSidebar
               activeItem={selectedPart}
               brand={<span style={{ fontSize: 13, fontWeight: 700 }}>PS</span>}
               items={[
@@ -224,10 +282,10 @@ export function App() {
             />
           }
           statusbar={
-            <DockStatusBar
+            <StatusBar
               left={
                 <Toolbar>
-                  <StatusBadge variant="info" label="DOCK" />
+                  <StatusBadge variant="info" label="DEMO" />
                   <span>{panelLabels.setup}</span>
                   <span>{panelLabels.diagram}</span>
                   <span>{panelLabels.results}</span>
@@ -237,24 +295,22 @@ export function App() {
             />
           }
         >
-          <DockPaneWorkspace
+          <Workspace
             key={layoutKey}
             defaultLayout={defaultLayout}
             minPaneSize={180}
             renderPanel={renderPanel}
             renderTabLabel={(panel) => panelLabels[panel]}
-            aria-label="Demo dock workspace"
+            aria-label="Demo workspace"
           />
-        </DockAppShell>
+        </AppShell>
       </div>
     </ThemeProvider>
   )
 }
 
-const panelStackStyle = {
-  padding: 'var(--ps-space-md)',
+const formStackStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
-  gap: 'var(--ps-space-sm)',
-  overflow: 'auto',
-} satisfies React.CSSProperties
+  gap: 8,
+}

@@ -1,55 +1,55 @@
-export type DockDropEdge = 'top' | 'right' | 'bottom' | 'left' | 'center'
-export type DockSplitDirection = 'row' | 'col'
+export type DropEdge = 'top' | 'right' | 'bottom' | 'left' | 'center'
+export type SplitDirection = 'row' | 'col'
 
-export interface DockLeafNode<TTab extends string = string> {
+export interface LeafNode<TTab extends string = string> {
   type: 'leaf'
   id: string
   tabs: TTab[]
   activeTab: TTab
 }
 
-export interface DockSplitNode<TTab extends string = string> {
+export interface SplitNode<TTab extends string = string> {
   type: 'split'
-  dir: DockSplitDirection
-  children: DockLayoutNode<TTab>[]
+  dir: SplitDirection
+  children: LayoutNode<TTab>[]
   sizes?: number[]
 }
 
-export type DockLayoutNode<TTab extends string = string> = DockLeafNode<TTab> | DockSplitNode<TTab>
+export type LayoutNode<TTab extends string = string> = LeafNode<TTab> | SplitNode<TTab>
 
-export interface DockLeafSearchResult<TTab extends string = string> {
-  leaf: DockLeafNode<TTab>
+export interface LeafSearchResult<TTab extends string = string> {
+  leaf: LeafNode<TTab>
   path: number[]
 }
 
-export interface DockRect {
+export interface LayoutRect {
   left: number
   top: number
   width: number
   height: number
 }
 
-export interface DockPoint {
+export interface LayoutPoint {
   x: number
   y: number
 }
 
-export interface MoveDockTabOptions<TTab extends string = string> {
+export interface MoveTabOptions<TTab extends string = string> {
   tab: TTab
   sourceLeafId: string
   targetLeafId: string
-  edge: DockDropEdge
+  edge: DropEdge
   newLeafId?: string
 }
 
-export interface MoveDockGroupOptions {
+export interface MoveGroupOptions {
   sourceLeafId: string
   targetLeafId: string
-  edge: DockDropEdge
+  edge: DropEdge
   newLeafId?: string
 }
 
-export function cloneDockLayout<TTab extends string>(node: DockLayoutNode<TTab>): DockLayoutNode<TTab> {
+export function cloneLayout<TTab extends string>(node: LayoutNode<TTab>): LayoutNode<TTab> {
   if (node.type === 'leaf') {
     return {
       ...node,
@@ -57,17 +57,17 @@ export function cloneDockLayout<TTab extends string>(node: DockLayoutNode<TTab>)
     }
   }
 
-  const split: DockSplitNode<TTab> = {
+  const split: SplitNode<TTab> = {
     type: 'split',
     dir: node.dir,
-    children: node.children.map((child) => cloneDockLayout(child)),
+    children: node.children.map((child) => cloneLayout(child)),
   }
 
   if (node.sizes !== undefined) split.sizes = [...node.sizes]
   return split
 }
 
-export function normalizeDockSizes(sizes: number[] | undefined, count: number): number[] {
+export function normalizeSplitSizes(sizes: number[] | undefined, count: number): number[] {
   if (count <= 0) return []
 
   const values = Array.from({ length: count }, (_, index) => {
@@ -81,11 +81,11 @@ export function normalizeDockSizes(sizes: number[] | undefined, count: number): 
   return values.map((value) => value / total)
 }
 
-export function findDockLeafById<TTab extends string>(
-  node: DockLayoutNode<TTab>,
+export function findLeafById<TTab extends string>(
+  node: LayoutNode<TTab>,
   leafId: string,
   path: number[] = [],
-): DockLeafSearchResult<TTab> | null {
+): LeafSearchResult<TTab> | null {
   if (node.type === 'leaf') {
     return node.id === leafId ? { leaf: node, path } : null
   }
@@ -93,18 +93,18 @@ export function findDockLeafById<TTab extends string>(
   for (let index = 0; index < node.children.length; index += 1) {
     const child = node.children[index]
     if (child === undefined) continue
-    const result = findDockLeafById(child, leafId, [...path, index])
+    const result = findLeafById(child, leafId, [...path, index])
     if (result !== null) return result
   }
 
   return null
 }
 
-export function findDockLeafOfTab<TTab extends string>(
-  node: DockLayoutNode<TTab>,
+export function findLeafOfTab<TTab extends string>(
+  node: LayoutNode<TTab>,
   tab: TTab,
   path: number[] = [],
-): DockLeafSearchResult<TTab> | null {
+): LeafSearchResult<TTab> | null {
   if (node.type === 'leaf') {
     return node.tabs.includes(tab) ? { leaf: node, path } : null
   }
@@ -112,18 +112,18 @@ export function findDockLeafOfTab<TTab extends string>(
   for (let index = 0; index < node.children.length; index += 1) {
     const child = node.children[index]
     if (child === undefined) continue
-    const result = findDockLeafOfTab(child, tab, [...path, index])
+    const result = findLeafOfTab(child, tab, [...path, index])
     if (result !== null) return result
   }
 
   return null
 }
 
-export function setDockActiveTab<TTab extends string>(
-  node: DockLayoutNode<TTab>,
+export function setActiveTab<TTab extends string>(
+  node: LayoutNode<TTab>,
   leafId: string,
   tab: TTab,
-): DockLayoutNode<TTab> {
+): LayoutNode<TTab> {
   if (node.type === 'leaf') {
     if (node.id !== leafId || !node.tabs.includes(tab)) return node
     return { ...node, activeTab: tab }
@@ -131,20 +131,20 @@ export function setDockActiveTab<TTab extends string>(
 
   return {
     ...node,
-    children: node.children.map((child) => setDockActiveTab(child, leafId, tab)),
+    children: node.children.map((child) => setActiveTab(child, leafId, tab)),
   }
 }
 
-export function setDockSplitSizesAtPath<TTab extends string>(
-  node: DockLayoutNode<TTab>,
+export function setSplitSizesAtPath<TTab extends string>(
+  node: LayoutNode<TTab>,
   path: number[],
   sizes: number[],
-): DockLayoutNode<TTab> {
+): LayoutNode<TTab> {
   if (path.length === 0) {
     if (node.type !== 'split') return node
     return {
       ...node,
-      sizes: normalizeDockSizes(sizes, node.children.length),
+      sizes: normalizeSplitSizes(sizes, node.children.length),
     }
   }
 
@@ -155,36 +155,36 @@ export function setDockSplitSizesAtPath<TTab extends string>(
   return {
     ...node,
     children: node.children.map((child, index) =>
-      index === head ? setDockSplitSizesAtPath(child, tail, sizes) : child,
+      index === head ? setSplitSizesAtPath(child, tail, sizes) : child,
     ),
   }
 }
 
-export function removeDockLeafById<TTab extends string>(
-  node: DockLayoutNode<TTab>,
+export function removeLeafById<TTab extends string>(
+  node: LayoutNode<TTab>,
   leafId: string,
-): DockLayoutNode<TTab> | null {
+): LayoutNode<TTab> | null {
   if (node.type === 'leaf') {
     return node.id === leafId ? null : node
   }
 
   const children = node.children
-    .map((child) => removeDockLeafById(child, leafId))
-    .filter((child): child is DockLayoutNode<TTab> => child !== null)
+    .map((child) => removeLeafById(child, leafId))
+    .filter((child): child is LayoutNode<TTab> => child !== null)
 
-  return collapseDockSplit({
+  return collapseSplit({
     ...node,
     children,
-    sizes: normalizeDockSizes(node.sizes, children.length),
+    sizes: normalizeSplitSizes(node.sizes, children.length),
   })
 }
 
-export function insertDockLeafAt<TTab extends string>(
-  node: DockLayoutNode<TTab>,
+export function insertLeafAt<TTab extends string>(
+  node: LayoutNode<TTab>,
   targetLeafId: string,
-  leaf: DockLeafNode<TTab>,
-  edge: DockDropEdge,
-): DockLayoutNode<TTab> {
+  leaf: LeafNode<TTab>,
+  edge: DropEdge,
+): LayoutNode<TTab> {
   if (node.type === 'leaf') {
     if (node.id !== targetLeafId) return node
 
@@ -200,7 +200,7 @@ export function insertDockLeafAt<TTab extends string>(
       }
     }
 
-    const dir: DockSplitDirection = edge === 'left' || edge === 'right' ? 'row' : 'col'
+    const dir: SplitDirection = edge === 'left' || edge === 'right' ? 'row' : 'col'
     const children = edge === 'left' || edge === 'top' ? [leaf, node] : [node, leaf]
 
     return {
@@ -213,85 +213,85 @@ export function insertDockLeafAt<TTab extends string>(
 
   return {
     ...node,
-    children: node.children.map((child) => insertDockLeafAt(child, targetLeafId, leaf, edge)),
+    children: node.children.map((child) => insertLeafAt(child, targetLeafId, leaf, edge)),
   }
 }
 
-export function insertDockTabAt<TTab extends string>(
-  node: DockLayoutNode<TTab>,
+export function insertTabAt<TTab extends string>(
+  node: LayoutNode<TTab>,
   targetLeafId: string,
   tab: TTab,
-  edge: DockDropEdge,
+  edge: DropEdge,
   newLeafId?: string,
-): DockLayoutNode<TTab> {
-  const leaf: DockLeafNode<TTab> = {
+): LayoutNode<TTab> {
+  const leaf: LeafNode<TTab> = {
     type: 'leaf',
-    id: newLeafId ?? nextDockLeafId(node, String(tab)),
+    id: newLeafId ?? nextLeafId(node, String(tab)),
     tabs: [tab],
     activeTab: tab,
   }
 
-  return insertDockLeafAt(node, targetLeafId, leaf, edge)
+  return insertLeafAt(node, targetLeafId, leaf, edge)
 }
 
-export function moveDockTab<TTab extends string>(
-  node: DockLayoutNode<TTab>,
-  options: MoveDockTabOptions<TTab>,
-): DockLayoutNode<TTab> {
-  const source = findDockLeafById(node, options.sourceLeafId)
+export function moveTab<TTab extends string>(
+  node: LayoutNode<TTab>,
+  options: MoveTabOptions<TTab>,
+): LayoutNode<TTab> {
+  const source = findLeafById(node, options.sourceLeafId)
   if (source === null || !source.leaf.tabs.includes(options.tab)) return node
 
   if (options.sourceLeafId === options.targetLeafId && options.edge === 'center') {
-    return setDockActiveTab(node, options.sourceLeafId, options.tab)
+    return setActiveTab(node, options.sourceLeafId, options.tab)
   }
 
   if (options.sourceLeafId === options.targetLeafId && source.leaf.tabs.length <= 1) {
     return node
   }
 
-  const afterRemoval = removeDockTabFromLeaf(node, options.sourceLeafId, options.tab)
-  if (afterRemoval === null || findDockLeafById(afterRemoval, options.targetLeafId) === null) return node
+  const afterRemoval = removeTabFromLeaf(node, options.sourceLeafId, options.tab)
+  if (afterRemoval === null || findLeafById(afterRemoval, options.targetLeafId) === null) return node
 
-  return insertDockTabAt(
+  return insertTabAt(
     afterRemoval,
     options.targetLeafId,
     options.tab,
     options.edge,
-    options.newLeafId ?? nextDockLeafId(afterRemoval, String(options.tab)),
+    options.newLeafId ?? nextLeafId(afterRemoval, String(options.tab)),
   )
 }
 
-export function moveDockGroup<TTab extends string>(
-  node: DockLayoutNode<TTab>,
-  options: MoveDockGroupOptions,
-): DockLayoutNode<TTab> {
+export function moveGroup<TTab extends string>(
+  node: LayoutNode<TTab>,
+  options: MoveGroupOptions,
+): LayoutNode<TTab> {
   if (options.sourceLeafId === options.targetLeafId) return node
 
-  const source = findDockLeafById(node, options.sourceLeafId)
+  const source = findLeafById(node, options.sourceLeafId)
   if (source === null) return node
 
-  const sourceLeaf: DockLeafNode<TTab> = {
+  const sourceLeaf: LeafNode<TTab> = {
     ...source.leaf,
     id: options.newLeafId ?? source.leaf.id,
     tabs: [...source.leaf.tabs],
   }
 
-  const afterRemoval = removeDockLeafById(node, options.sourceLeafId)
-  if (afterRemoval === null || findDockLeafById(afterRemoval, options.targetLeafId) === null) return node
+  const afterRemoval = removeLeafById(node, options.sourceLeafId)
+  if (afterRemoval === null || findLeafById(afterRemoval, options.targetLeafId) === null) return node
 
-  return insertDockLeafAt(afterRemoval, options.targetLeafId, sourceLeaf, options.edge)
+  return insertLeafAt(afterRemoval, options.targetLeafId, sourceLeaf, options.edge)
 }
 
-export function computeDockDropEdge(
-  point: DockPoint,
-  rect: DockRect,
+export function computeDropEdge(
+  point: LayoutPoint,
+  rect: LayoutRect,
   threshold = 0.24,
-): DockDropEdge {
+): DropEdge {
   if (rect.width <= 0 || rect.height <= 0) return 'center'
 
   const x = clamp((point.x - rect.left) / rect.width, 0, 1)
   const y = clamp((point.y - rect.top) / rect.height, 0, 1)
-  const distances: Array<[DockDropEdge, number]> = [
+  const distances: Array<[DropEdge, number]> = [
     ['left', x],
     ['right', 1 - x],
     ['top', y],
@@ -302,11 +302,11 @@ export function computeDockDropEdge(
   return distance <= threshold ? edge : 'center'
 }
 
-function removeDockTabFromLeaf<TTab extends string>(
-  node: DockLayoutNode<TTab>,
+function removeTabFromLeaf<TTab extends string>(
+  node: LayoutNode<TTab>,
   leafId: string,
   tab: TTab,
-): DockLayoutNode<TTab> | null {
+): LayoutNode<TTab> | null {
   if (node.type === 'leaf') {
     if (node.id !== leafId) return node
 
@@ -321,31 +321,31 @@ function removeDockTabFromLeaf<TTab extends string>(
   }
 
   const children = node.children
-    .map((child) => removeDockTabFromLeaf(child, leafId, tab))
-    .filter((child): child is DockLayoutNode<TTab> => child !== null)
+    .map((child) => removeTabFromLeaf(child, leafId, tab))
+    .filter((child): child is LayoutNode<TTab> => child !== null)
 
-  return collapseDockSplit({
+  return collapseSplit({
     ...node,
     children,
-    sizes: normalizeDockSizes(node.sizes, children.length),
+    sizes: normalizeSplitSizes(node.sizes, children.length),
   })
 }
 
-function collapseDockSplit<TTab extends string>(node: DockSplitNode<TTab>): DockLayoutNode<TTab> | null {
+function collapseSplit<TTab extends string>(node: SplitNode<TTab>): LayoutNode<TTab> | null {
   if (node.children.length === 0) return null
   if (node.children.length === 1) return node.children[0]!
   return {
     ...node,
-    sizes: normalizeDockSizes(node.sizes, node.children.length),
+    sizes: normalizeSplitSizes(node.sizes, node.children.length),
   }
 }
 
-function nextDockLeafId<TTab extends string>(node: DockLayoutNode<TTab>, label: string): string {
+function nextLeafId<TTab extends string>(node: LayoutNode<TTab>, label: string): string {
   const base = `${sanitizeId(label)}-leaf`
   let suffix = 1
   let candidate = base
 
-  while (findDockLeafById(node, candidate) !== null) {
+  while (findLeafById(node, candidate) !== null) {
     suffix += 1
     candidate = `${base}-${suffix}`
   }

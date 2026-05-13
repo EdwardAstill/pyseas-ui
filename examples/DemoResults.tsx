@@ -1,19 +1,18 @@
 import { Result, StatusBadge, LogView, Toolbar } from '../src/index'
 
+export type DemoResultsView = 'summary' | 'log'
+
 interface DemoResultsProps {
+  view: DemoResultsView
   logLines: string[]
 }
 
-export function DemoResults({ logLines }: DemoResultsProps) {
+export function DemoResults({ view, logLines }: DemoResultsProps) {
+  if (view === 'log') {
+    return <LogView lines={logLines} wrapLines={false} style={{ height: '100%', border: 0, background: 'transparent' }} />
+  }
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        overflow: 'auto',
-      }}
-    >
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'auto' }}>
       <div style={{ padding: 'var(--ps-space-sm) var(--ps-space-md)' }}>
         <Toolbar>
           <StatusBadge variant="ok" label="PASS" />
@@ -29,9 +28,6 @@ export function DemoResults({ logLines }: DemoResultsProps) {
           ratio="0.94 / 1.00" note="Approaching limit"
         />
         <Result label="Shear check" value="FAIL" status="err" ratio="1.04 / 1.00" />
-      </div>
-      <div style={{ marginTop: 'auto', borderTop: '1px solid var(--ps-border)' }}>
-        <LogView lines={logLines} maxHeight={120} wrapLines={false} />
       </div>
     </div>
   )

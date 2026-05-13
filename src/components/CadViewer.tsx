@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties, ReactNode, Ref } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { DxfViewer } from 'dxf-viewer'
 import * as THREE from 'three'
@@ -22,6 +22,8 @@ interface CadViewerFrameProps {
   children: ReactNode
   className?: string | undefined
   style?: CSSProperties | undefined
+  frameRef?: Ref<HTMLDivElement>
+  theme?: CadViewerTheme
 }
 
 interface BaseCadViewerProps {
@@ -36,13 +38,27 @@ interface BaseCadViewerProps {
   style?: CSSProperties | undefined
 }
 
+export type CadViewerTheme = 'dark' | 'light'
+
 export interface CadDxfViewerProps extends BaseCadViewerProps {
   fileUrl?: string | null
-  clearColor?: number
+  clearColor?: number | undefined
+  theme?: CadViewerTheme | undefined
 }
 
 export interface CadStepViewerProps extends BaseCadViewerProps {
   meshUrl?: string | null
+  theme?: CadViewerTheme | undefined
+}
+
+const DARK_BG = 0x1a1a1a
+const LIGHT_BG = 0xf5f5f5
+
+function detectTheme(element: HTMLElement | null): CadViewerTheme {
+  if (typeof window === 'undefined' || element === null) return 'dark'
+  const themed = element.closest('[data-theme]') as HTMLElement | null
+  const value = themed?.dataset.theme
+  return value === 'light' ? 'light' : 'dark'
 }
 
 interface OcctMesh {
@@ -85,11 +101,19 @@ function CadViewerFrame({
   children,
   className,
   style,
+  frameRef,
+  theme,
 }: CadViewerFrameProps) {
   const hasToolbar = title !== undefined || metadata !== undefined || download !== null
 
   return (
-    <div className={cx(styles.viewer, className)} style={style} data-pyseas-ui="cad-viewer">
+    <div
+      ref={frameRef}
+      className={cx(styles.viewer, className)}
+      style={style}
+      data-pyseas-ui="cad-viewer"
+      data-cad-theme={theme}
+    >
       {hasToolbar && (
         <div className={styles.toolbar}>
           {title !== undefined && <span className={styles.title}>{title}</span>}
@@ -120,14 +144,31 @@ export function CadDxfViewer({
   title,
   metadata,
   download = null,
-  clearColor = 0x1a1a1a,
+  clearColor,
+  theme,
   className,
   style,
 }: CadDxfViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const frameRef = useRef<HTMLDivElement>(null)
   const [viewerError, setViewerError] = useState<string | null>(null)
+  const [autoTheme, setAutoTheme] = useState<CadViewerTheme>('dark')
+  const activeTheme: CadViewerTheme = theme ?? autoTheme
+  const resolvedClearColor = clearColor ?? (activeTheme === 'light' ? LIGHT_BG : DARK_BG)
   const currentStatus = resolvedStatus(fileUrl, status)
   const message = viewerError ?? displayMessage(currentStatus, error, emptyMessage, loadingMessage)
+
+  useEffect(() => {
+    if (theme !== undefined) return
+    const frame = frameRef.current
+    if (frame === null) return
+    setAutoTheme(detectTheme(frame))
+    const themed = frame.closest('[data-theme]')
+    if (themed === null) return
+    const observer = new MutationObserver(() => setAutoTheme(detectTheme(frame)))
+    observer.observe(themed, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => observer.disconnect()
+  }, [theme])
 
   useEffect(() => {
     const container = containerRef.current
@@ -135,8 +176,9 @@ export function CadDxfViewer({
 
     setViewerError(null)
     const viewer = new DxfViewer(container, {
-      clearColor: new THREE.Color(clearColor),
+      clearColor: new THREE.Color(resolvedClearColor),
       autoResize: true,
+      blackWhiteInversion: activeTheme === 'dark',
     })
 
     viewer
@@ -151,7 +193,7 @@ export function CadDxfViewer({
     return () => {
       viewer.Destroy()
     }
-  }, [clearColor, currentStatus, fileUrl])
+  }, [activeTheme, resolvedClearColor, currentStatus, fileUrl])
 
   return (
     <CadViewerFrame
@@ -160,6 +202,8 @@ export function CadDxfViewer({
       download={download}
       className={className}
       style={style}
+      frameRef={frameRef}
+      theme={activeTheme}
     >
       <div ref={containerRef} className={styles.mount} />
       <StateText message={message} isError={currentStatus === 'error' || viewerError !== null} />
@@ -190,12 +234,30 @@ export function CadStepViewer({
   title,
   metadata,
   download = null,
+  theme,
   className,
   style,
 }: CadStepViewerProps) {
   const mountRef = useRef<HTMLDivElement>(null)
+  const frameRef = useRef<HTMLDivElement>(null)
   const [runtimeStatus, setRuntimeStatus] = useState<string | null>(null)
+  const [autoTheme, setAutoTheme] = useState<CadViewerTheme>('dark')
+  const activeTheme: CadViewerTheme = theme ?? autoTheme
+  const sceneBg = activeTheme === 'light' ? LIGHT_BG : DARK_BG
+  const edgeColor = activeTheme === 'light' ? 0x1a1a1a : 0x000000
   const currentStatus = resolvedStatus(meshUrl, status)
+
+  useEffect(() => {
+    if (theme !== undefined) return
+    const frame = frameRef.current
+    if (frame === null) return
+    setAutoTheme(detectTheme(frame))
+    const themed = frame.closest('[data-theme]')
+    if (themed === null) return
+    const observer = new MutationObserver(() => setAutoTheme(detectTheme(frame)))
+    observer.observe(themed, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => observer.disconnect()
+  }, [theme])
   const message =
     runtimeStatus ??
     displayMessage(currentStatus, error, emptyMessage, loadingMessage)
@@ -208,7 +270,7 @@ export function CadStepViewer({
     setRuntimeStatus(loadingMessage)
 
     const scene = new THREE.Scene()
-    scene.background = new THREE.Color(0x1a1a1a)
+    scene.background = new THREE.Color(sceneBg)
 
     const width = Math.max(mount.clientWidth, 1)
     const height = Math.max(mount.clientHeight, 1)
@@ -295,7 +357,7 @@ export function CadStepViewer({
           box.expandByObject(obj)
 
           const edgesGeometry = new THREE.EdgesGeometry(geometry, 20)
-          const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 })
+          const edgesMaterial = new THREE.LineBasicMaterial({ color: edgeColor })
           const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial)
           loadedEdges.push(edges)
           scene.add(edges)
@@ -335,7 +397,7 @@ export function CadStepViewer({
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement)
       renderer.dispose()
     }
-  }, [currentStatus, loadingMessage, meshUrl])
+  }, [currentStatus, loadingMessage, meshUrl, sceneBg, edgeColor])
 
   return (
     <CadViewerFrame
@@ -344,6 +406,8 @@ export function CadStepViewer({
       download={download}
       className={className}
       style={style}
+      frameRef={frameRef}
+      theme={activeTheme}
     >
       <div ref={mountRef} className={styles.mount} />
       <StateText message={message} isError={currentStatus === 'error' || message?.startsWith('Error:') === true} />

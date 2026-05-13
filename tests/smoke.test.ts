@@ -27,13 +27,13 @@ import type {
   DrawingViewerProps,
   DrawingViewerStatus,
   WorkbenchLayoutProps,
-  DockPaneWorkspaceProps,
-  DockAppShellProps,
-  DockTopBarProps,
-  DockIconSidebarProps,
-  DockIconSidebarItem,
-  DockStatusBarProps,
-  DockLayoutNode,
+  WorkspaceProps,
+  AppShellProps,
+  TopBarProps,
+  IconSidebarProps,
+  IconSidebarItem,
+  StatusBarProps,
+  LayoutNode,
 } from '../src/index'
 
 // Type-level smoke: all exports resolve. Runtime check: basic instantiation.
@@ -110,24 +110,24 @@ test('all component types are importable', () => {
   }
   expect(wbProps.railWidth).toBeUndefined()
 
-  const dockLayout: DockLayoutNode<'one'> = { type: 'leaf', id: 'leaf', tabs: ['one'], activeTab: 'one' }
-  const dockProps: DockPaneWorkspaceProps<'one'> = {
-    defaultLayout: dockLayout,
+  const workspaceLayout: LayoutNode<'one'> = { type: 'leaf', id: 'leaf', tabs: ['one'], activeTab: 'one' }
+  const workspaceProps: WorkspaceProps<'one'> = {
+    defaultLayout: workspaceLayout,
     renderPanel: () => null,
   }
-  expect(dockProps.defaultLayout.type).toBe('leaf')
+  expect(workspaceProps.defaultLayout.type).toBe('leaf')
 
-  const shellProps: DockAppShellProps = { children: null }
+  const shellProps: AppShellProps = { children: null }
   expect(shellProps.children).toBeNull()
 
-  const topbarProps: DockTopBarProps = { title: 'Title' }
+  const topbarProps: TopBarProps = { title: 'Title' }
   expect(topbarProps.title).toBe('Title')
 
-  const sidebarItem: DockIconSidebarItem = { id: 'parts', label: 'Parts', icon: null }
-  const sidebarProps: DockIconSidebarProps = { items: [sidebarItem] }
+  const sidebarItem: IconSidebarItem = { id: 'parts', label: 'Parts', icon: null }
+  const sidebarProps: IconSidebarProps = { items: [sidebarItem] }
   expect(sidebarProps.items[0]!.id).toBe('parts')
 
-  const statusProps: DockStatusBarProps = { left: 'ready' }
+  const statusProps: StatusBarProps = { left: 'ready' }
   expect(statusProps.left).toBe('ready')
 })
 
@@ -152,11 +152,12 @@ test('named exports are present', async () => {
     'LogView',
     'DrawingViewer',
     'WorkbenchLayout',
-    'DockPaneWorkspace',
-    'DockAppShell',
-    'DockTopBar',
-    'DockIconSidebar',
-    'DockStatusBar',
+    'Workspace',
+    'PaneShell',
+    'AppShell',
+    'TopBar',
+    'IconSidebar',
+    'StatusBar',
   ]
   for (const name of expected) {
     expect(typeof (mod as Record<string, unknown>)[name]).toBe('function')

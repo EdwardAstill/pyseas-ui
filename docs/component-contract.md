@@ -8,6 +8,54 @@ All components are:
 
 ---
 
+## Architecture
+
+A page has a **fixed** four-slot frame:
+
+```
+┌──────────────────────────────────────────────────────────┐
+│ Top bar (TopBar) — title + options                   │
+├────┬─────────────────────────────────────────────────────┤
+│ S  │                                                     │
+│ i  │  Workspace (Workspace) — draggable panels   │
+│ d  │  ┌────────────────────────────────┐                 │
+│ e  │  │ Panel top bar: pane tabs + opts│                 │
+│ b  │  │ (Workspace tab strip)  │                 │
+│ a  │  ├────────────────────────────────┤                 │
+│ r  │  │ Panel main: PaneShell      │                 │
+│    │  │  ┌──┬───────────────────────┐  │                 │
+│    │  │  │  │ section bar           │  │                 │
+│    │  │  │ R│  (slash tabs · opts) ↘│  │                 │
+│    │  │  │ a├───────────────────────┤  │                 │
+│    │  │  │ i│                       │  │                 │
+│    │  │  │ l│   body                │  │                 │
+│    │  │  │  │                       │  │                 │
+│    │  │  └─↕─┴───────────────────────┘  │                 │
+│    │  └────────────────────────────────┘                 │
+├────┴─────────────────────────────────────────────────────┤
+│ Bottom bar (StatusBar)                               │
+└──────────────────────────────────────────────────────────┘
+```
+
+Levels of tabbing inside a panel:
+
+| Level | Where | Style | Provider |
+|---|---|---|---|
+| 1 (pane) | Panel top bar, left | Square block | `<Workspace>` |
+| 1-opts | Panel top bar, right | (free) | `<Workspace renderToolbar>` |
+| 2 (subtabs) | Rail, left of body | Bracket vertical | `<PaneShell rail>` |
+| 3 (sub-sub-tabs) | Section bar, top of body | Slash horizontal | `<PaneShell section>` |
+| 3-opts | Section bar, right | (free) | `<PaneShell sectionOptions>` |
+
+The rail is **resizable** by default — a slider on its right edge.
+
+**Forbidden patterns:**
+- Raw `<Tabs marker="underline" />` inside a panel. Use the rail/section slots.
+- Content that lives outside a panel inside the workspace. Everything in the workspace must be a panel.
+- Marker overrides on rail/section. The shell owns those.
+
+---
+
 ## `<ThemeProvider>`
 
 Mounts `--ps-*` CSS custom properties on a wrapping element. Switches between `dark` and `light` token sets.
@@ -20,6 +68,60 @@ interface ThemeProviderProps {
 ```
 
 **Not responsible for:** persisting theme preference, OS media-query detection (caller must pass the resolved value).
+
+---
+
+## `<PaneShell>`
+
+Standard interior layout for a panel body. Constrains every panel to the same three-slot composition with **fixed tab markers**:
+
+| Slot | Tab style | Forced by |
+|---|---|---|
+| Pane tabs (outer) | Square block | `<Workspace>` |
+| Rail (subtabs) | Bracket vertical | `<PaneShell rail={...}>` |
+| Section (sub-sub-tabs) | Slash horizontal | `<PaneShell section={...}>` |
+| Body | (free content) | caller |
+
+The rail / section slots take **tab specs**, not raw `ReactNode`. The shell renders `<Tabs>` internally with the correct orientation + marker. Apps cannot accidentally use underline tabs inside a pane.
+
+```tsx
+interface PaneRailSpec<T extends string = string> {
+  items: TabItem[];
+  value: T;
+  onChange: (value: T) => void;
+}
+
+interface PaneSectionSpec<T extends string = string> {
+  items: TabItem[];
+  value: T;
+  onChange: (value: T) => void;
+}
+
+interface PaneShellProps {
+  rail?: PaneRailSpec | undefined;
+  section?: PaneSectionSpec | undefined;
+  sectionOptions?: ReactNode;       // right-aligned content in the section bar (e.g. <Toolbar>)
+  children: ReactNode;
+  flushBody?: boolean;
+  railWidth?: number;               // controlled rail width (px). Omit for uncontrolled (default 132).
+  railMinWidth?: number;            // default 80
+  railMaxWidth?: number;            // default 320
+  railResizable?: boolean;          // default true — drag handle on the right edge of the rail
+  onRailWidthChange?: (width: number) => void;
+  className?: string;
+  style?: CSSProperties;
+}
+```
+
+**Layout:**
+- CSS Grid: `[rail | section-on-top + body]`. Rail spans full height; section is a flush bar above the body.
+- Rail uses `--ps-panel-elevated` background; section bar matches.
+- Body is padded (`14px 16px`) and scrolls. `flushBody` removes both for canvases / log views that own their own chrome.
+- Both rail and section are independently optional.
+
+**Forbidden inside a pane:** raw `<Tabs marker="underline" />`. Use the rail/section slots. Underline tabs are reserved for free-standing surfaces (e.g. inside a `<Modal>`).
+
+**Not responsible for:** the pane's outer tab strip / drag handling (use `<Workspace>`), or the pane's contents themselves.
 
 ---
 
@@ -45,7 +147,7 @@ interface PanelProps {
 
 ## `<Tabs>`
 
-Controlled horizontal tab strip. Renders tab buttons; host renders the active panel body.
+Controlled tab strip. Renders tab buttons; host renders the active panel body. Two orientations and two active-marker styles.
 
 ```tsx
 interface TabItem {
@@ -54,13 +156,22 @@ interface TabItem {
   disabled?: boolean;
 }
 
+type TabsOrientation = 'horizontal' | 'vertical';
+type TabsMarker = 'underline' | 'bracket' | 'slash';
+
 interface TabsProps {
   items: TabItem[];
   value: string;
   onChange: (value: string) => void;
+  orientation?: TabsOrientation; // default 'horizontal'
+  marker?: TabsMarker;           // default 'underline'
   className?: string;
 }
 ```
+
+**Orientation:** `horizontal` renders a top tab strip. `vertical` renders a left rail with a right border and panel background — caller should wrap the tabs + body in a row flex container.
+
+**Marker:** `underline` is the default outer tab style (accent underline + accent text on active). `bracket` is the inner-subtab style: mono caps, no underline, active label flanked by accent `[ ]` brackets with reserved space on inactive rows so labels do not shift. `slash` is a crumb-style strip — mono caps with `/` separators between labels, active label brightens to `--ps-text` with no underline; intended for a third level nested below a bracket rail, where it deliberately reads lighter than the rail above it.
 
 **States per tab:** default, hover, active (selected), disabled.
 
@@ -263,7 +374,7 @@ interface ToggleProps {
 
 ## `<Modal>` / `<Dialog>`
 
-Shell only. Manages overlay, focus trap, Escape-to-close, and portal mounting. No built-in form wiring.
+Three-slot dialog shell: **title bar** (mono caps title + optional actions + close X), **body** (scrollable), **footer** (right-aligned action buttons). Manages overlay, focus trap, Escape-to-close, and portal mounting. No built-in form wiring.
 
 ```tsx
 type ModalSize = "sm" | "md" | "lg";
@@ -272,8 +383,11 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
   title?: string;
-  size?: ModalSize;         // default: "md"
+  titleActions?: ReactNode;   // header trailing slot (before the close X)
+  footer?: ReactNode;         // typically right-aligned action <Button>s
+  size?: ModalSize;           // default: "md"
   children: ReactNode;
+  className?: string;
 }
 ```
 
@@ -284,7 +398,9 @@ Size guide (width):
 
 **States:** closed (renders null), open.
 
-**Not responsible for:** form submission, button wiring, confirm/cancel patterns (caller composes those in `children`).
+**Visual:** title bar uses `--ps-panel`, body uses `--ps-panel-elevated`, footer uses `--ps-panel`. Title is mono uppercase to match panel headers.
+
+**Not responsible for:** form submission, button wiring, confirm/cancel patterns (caller composes those in `footer`).
 
 ---
 
@@ -386,6 +502,56 @@ interface DrawingViewerProps {
 
 **Not responsible for:** DXF parsing, CAD geometry generation, API calls,
 engineering units, layer semantics, entity selection, or domain-specific labels.
+
+---
+
+## `<Tree>`
+
+Controlled hierarchical tree view. Caller owns node shape, expanded set, and
+selected id. No internal state.
+
+```tsx
+interface TreeNode<T = unknown> {
+  id: string;
+  label: string;
+  children?: TreeNode<T>[];
+  disabled?: boolean;
+  icon?: ReactNode;
+  trailing?: ReactNode;
+  data?: T;
+}
+
+interface TreeRenderArgs<T> {
+  node: TreeNode<T>;
+  depth: number;
+  expanded: boolean;
+  selected: boolean;
+}
+
+interface TreeProps<T = unknown> {
+  nodes: TreeNode<T>[];
+  expanded: ReadonlySet<string>;
+  onExpandedChange: (next: Set<string>) => void;
+  selected?: string | null;
+  onSelect?: (id: string, node: TreeNode<T>) => void;
+  indent?: number;                              // px per depth level, default 14
+  renderNode?: (args: TreeRenderArgs<T>) => ReactNode;
+  className?: string;
+  style?: CSSProperties;
+  'aria-label'?: string;
+}
+```
+
+**Interaction:** click a row to select it; click a row with children to toggle
+expansion (selection also fires). Arrow Right expands a collapsed row; Arrow
+Left collapses an expanded row.
+
+**States per row:** default, hover, selected (uses `--ps-accent`), disabled,
+focused (focus ring inside the row).
+
+**Not responsible for:** loading children async, virtualisation, drag-and-drop,
+multi-select, checkbox selection, filtering or search, persisting expansion
+state.
 
 ---
 

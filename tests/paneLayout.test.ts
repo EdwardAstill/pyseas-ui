@@ -1,18 +1,18 @@
 import { describe, expect, test } from 'bun:test'
 import {
-  computeDockDropEdge,
-  findDockLeafById,
-  findDockLeafOfTab,
-  moveDockGroup,
-  moveDockTab,
-  normalizeDockSizes,
-  setDockSplitSizesAtPath,
-  type DockLayoutNode,
+  computeDropEdge,
+  findLeafById,
+  findLeafOfTab,
+  moveGroup,
+  moveTab,
+  normalizeSplitSizes,
+  setSplitSizesAtPath,
+  type LayoutNode,
 } from '../src/index'
 
 type PanelId = 'part' | 'condition' | 'analysis' | 'result'
 
-function baseLayout(): DockLayoutNode<PanelId> {
+function baseLayout(): LayoutNode<PanelId> {
   return {
     type: 'split',
     dir: 'row',
@@ -34,32 +34,32 @@ function baseLayout(): DockLayoutNode<PanelId> {
   }
 }
 
-describe('dock pane layout helpers', () => {
+describe('pane layout helpers', () => {
   test('normalizes split sizes', () => {
-    expect(normalizeDockSizes([2, 1], 2)).toEqual([2 / 3, 1 / 3])
-    expect(normalizeDockSizes(undefined, 3)).toEqual([1 / 3, 1 / 3, 1 / 3])
+    expect(normalizeSplitSizes([2, 1], 2)).toEqual([2 / 3, 1 / 3])
+    expect(normalizeSplitSizes(undefined, 3)).toEqual([1 / 3, 1 / 3, 1 / 3])
   })
 
   test('computes center and edge drop zones from rectangular coordinates', () => {
     const rect = { left: 0, top: 0, width: 100, height: 80 }
 
-    expect(computeDockDropEdge({ x: 50, y: 40 }, rect)).toBe('center')
-    expect(computeDockDropEdge({ x: 6, y: 40 }, rect)).toBe('left')
-    expect(computeDockDropEdge({ x: 94, y: 40 }, rect)).toBe('right')
-    expect(computeDockDropEdge({ x: 50, y: 5 }, rect)).toBe('top')
-    expect(computeDockDropEdge({ x: 50, y: 76 }, rect)).toBe('bottom')
+    expect(computeDropEdge({ x: 50, y: 40 }, rect)).toBe('center')
+    expect(computeDropEdge({ x: 6, y: 40 }, rect)).toBe('left')
+    expect(computeDropEdge({ x: 94, y: 40 }, rect)).toBe('right')
+    expect(computeDropEdge({ x: 50, y: 5 }, rect)).toBe('top')
+    expect(computeDropEdge({ x: 50, y: 76 }, rect)).toBe('bottom')
   })
 
   test('moves a tab into another pane as a merged tab', () => {
-    const layout = moveDockTab(baseLayout(), {
+    const layout = moveTab(baseLayout(), {
       tab: 'condition',
       sourceLeafId: 'setup',
       targetLeafId: 'output',
       edge: 'center',
     })
 
-    const setup = findDockLeafById(layout, 'setup')
-    const output = findDockLeafById(layout, 'output')
+    const setup = findLeafById(layout, 'setup')
+    const output = findLeafById(layout, 'output')
 
     expect(setup?.leaf.tabs).toEqual(['part'])
     expect(output?.leaf.tabs).toEqual(['analysis', 'result', 'condition'])
@@ -67,7 +67,7 @@ describe('dock pane layout helpers', () => {
   })
 
   test('moves a tab to an edge by creating a new leaf', () => {
-    const layout = moveDockTab(baseLayout(), {
+    const layout = moveTab(baseLayout(), {
       tab: 'condition',
       sourceLeafId: 'setup',
       targetLeafId: 'output',
@@ -75,8 +75,8 @@ describe('dock pane layout helpers', () => {
       newLeafId: 'condition-leaf',
     })
 
-    const condition = findDockLeafOfTab(layout, 'condition')
-    const output = findDockLeafById(layout, 'output')
+    const condition = findLeafOfTab(layout, 'condition')
+    const output = findLeafById(layout, 'output')
 
     expect(condition?.leaf.id).toBe('condition-leaf')
     expect(condition?.path).toEqual([1, 0])
@@ -84,20 +84,20 @@ describe('dock pane layout helpers', () => {
   })
 
   test('moves a pane group into another leaf', () => {
-    const layout = moveDockGroup(baseLayout(), {
+    const layout = moveGroup(baseLayout(), {
       sourceLeafId: 'setup',
       targetLeafId: 'output',
       edge: 'center',
     })
 
-    const output = findDockLeafById(layout, 'output')
+    const output = findLeafById(layout, 'output')
 
     expect(output?.leaf.tabs).toEqual(['analysis', 'result', 'part', 'condition'])
     expect(output?.leaf.activeTab).toBe('part')
   })
 
   test('updates split sizes by path', () => {
-    const layout = setDockSplitSizesAtPath(baseLayout(), [], [0.7, 0.3])
+    const layout = setSplitSizesAtPath(baseLayout(), [], [0.7, 0.3])
 
     expect(layout.type).toBe('split')
     if (layout.type === 'split') {

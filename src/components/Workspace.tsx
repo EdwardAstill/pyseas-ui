@@ -8,54 +8,54 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react'
-import styles from './DockPaneWorkspace.module.css'
+import styles from './Workspace.module.css'
 import { cx } from './cx'
 import {
-  computeDockDropEdge,
-  moveDockGroup,
-  moveDockTab,
-  normalizeDockSizes,
-  setDockActiveTab,
-  setDockSplitSizesAtPath,
-  type DockDropEdge,
-  type DockLayoutNode,
-  type DockLeafNode,
-  type DockSplitDirection,
-  type DockSplitNode,
-} from './dockPaneLayout'
+  computeDropEdge,
+  moveGroup,
+  moveTab,
+  normalizeSplitSizes,
+  setActiveTab,
+  setSplitSizesAtPath,
+  type DropEdge,
+  type LayoutNode,
+  type LeafNode,
+  type SplitDirection,
+  type SplitNode,
+} from './paneLayout'
 
-type DockDragState<TTab extends string> =
+type DragState<TTab extends string> =
   | { kind: 'tab'; sourceLeafId: string; tab: TTab }
   | { kind: 'group'; sourceLeafId: string }
 
-interface DockDropTarget {
+interface DropTarget {
   leafId: string
-  edge: DockDropEdge
+  edge: DropEdge
 }
 
 interface ResizeState {
   path: number[]
   index: number
-  dir: DockSplitDirection
+  dir: SplitDirection
   startClient: number
   startSizes: number[]
   extentPx: number
 }
 
-export interface DockPaneWorkspaceProps<TTab extends string = string> {
-  defaultLayout: DockLayoutNode<TTab>
-  layout?: DockLayoutNode<TTab>
-  onLayoutChange?: (layout: DockLayoutNode<TTab>) => void
+export interface WorkspaceProps<TTab extends string = string> {
+  defaultLayout: LayoutNode<TTab>
+  layout?: LayoutNode<TTab>
+  onLayoutChange?: (layout: LayoutNode<TTab>) => void
   renderPanel: (tab: TTab) => ReactNode
   renderTabLabel?: (tab: TTab) => ReactNode
-  renderToolbar?: (activeTab: TTab, leaf: DockLeafNode<TTab>) => ReactNode
+  renderToolbar?: (activeTab: TTab, leaf: LeafNode<TTab>) => ReactNode
   minPaneSize?: number
   className?: string
   style?: CSSProperties
   'aria-label'?: string
 }
 
-export function DockPaneWorkspace<TTab extends string = string>({
+export function Workspace<TTab extends string = string>({
   defaultLayout,
   layout,
   onLayoutChange,
@@ -65,17 +65,17 @@ export function DockPaneWorkspace<TTab extends string = string>({
   minPaneSize = 160,
   className,
   style,
-  'aria-label': ariaLabel = 'Dock workspace',
-}: DockPaneWorkspaceProps<TTab>) {
-  const [internalLayout, setInternalLayout] = useState<DockLayoutNode<TTab>>(defaultLayout)
-  const [dragState, setDragState] = useState<DockDragState<TTab> | null>(null)
-  const [dropTarget, setDropTarget] = useState<DockDropTarget | null>(null)
+  'aria-label': ariaLabel = 'Workspace',
+}: WorkspaceProps<TTab>) {
+  const [internalLayout, setInternalLayout] = useState<LayoutNode<TTab>>(defaultLayout)
+  const [dragState, setDragState] = useState<DragState<TTab> | null>(null)
+  const [dropTarget, setDropTarget] = useState<DropTarget | null>(null)
   const [resizeState, setResizeState] = useState<ResizeState | null>(null)
 
   const currentLayout = layout ?? internalLayout
 
   const updateLayout = useCallback(
-    (updater: (current: DockLayoutNode<TTab>) => DockLayoutNode<TTab>) => {
+    (updater: (current: LayoutNode<TTab>) => LayoutNode<TTab>) => {
       const nextLayout = updater(layout ?? internalLayout)
       if (layout === undefined) setInternalLayout(nextLayout)
       onLayoutChange?.(nextLayout)
@@ -99,7 +99,7 @@ export function DockPaneWorkspace<TTab extends string = string>({
       sizes[resizeState.index] = first
       sizes[resizeState.index + 1] = pairTotal - first
 
-      updateLayout((current) => setDockSplitSizesAtPath(current, resizeState.path, sizes))
+      updateLayout((current) => setSplitSizesAtPath(current, resizeState.path, sizes))
     }
 
     const onPointerUp = () => {
@@ -125,17 +125,17 @@ export function DockPaneWorkspace<TTab extends string = string>({
     </div>
   )
 
-  function renderNode(node: DockLayoutNode<TTab>, path: number[]): ReactNode {
+  function renderNode(node: LayoutNode<TTab>, path: number[]): ReactNode {
     if (node.type === 'leaf') return renderLeaf(node)
     return renderSplit(node, path)
   }
 
-  function renderSplit(node: DockSplitNode<TTab>, path: number[]): ReactNode {
-    const sizes = normalizeDockSizes(node.sizes, node.children.length)
+  function renderSplit(node: SplitNode<TTab>, path: number[]): ReactNode {
+    const sizes = normalizeSplitSizes(node.sizes, node.children.length)
     const splitClass = cx(styles.split, node.dir === 'row' ? styles.splitRow : styles.splitCol)
 
     return (
-      <div className={splitClass} data-pyseas-ui="dock-split" data-direction={node.dir}>
+      <div className={splitClass} data-pyseas-ui="workspace-split" data-direction={node.dir}>
         {node.children.map((child, index) => (
           <Fragment key={`${path.join('.')}.${index}.${child.type === 'leaf' ? child.id : child.dir}`}>
             <div className={styles.splitChild} style={{ flex: `${sizes[index]} 1 0px` }}>
@@ -145,7 +145,7 @@ export function DockPaneWorkspace<TTab extends string = string>({
               <div
                 aria-label="Resize pane"
                 className={cx(styles.resizeHandle, node.dir === 'row' ? styles.resizeVertical : styles.resizeHorizontal)}
-                data-pyseas-ui="dock-resize-handle"
+                data-pyseas-ui="workspace-resize-handle"
                 onPointerDown={(event) => startResize(event, node, path, index)}
                 role="separator"
               />
@@ -156,7 +156,7 @@ export function DockPaneWorkspace<TTab extends string = string>({
     )
   }
 
-  function renderLeaf(leaf: DockLeafNode<TTab>): ReactNode {
+  function renderLeaf(leaf: LeafNode<TTab>): ReactNode {
     const activeDrop = dropTarget?.leafId === leaf.id ? dropTarget.edge : null
     const toolbar = renderToolbar?.(leaf.activeTab, leaf)
 
@@ -165,14 +165,14 @@ export function DockPaneWorkspace<TTab extends string = string>({
         className={cx(styles.leaf, activeDrop !== null && styles.dropActive)}
         data-drop-edge={activeDrop ?? undefined}
         data-leaf-id={leaf.id}
-        data-pyseas-ui="dock-leaf"
+        data-pyseas-ui="pane-leaf"
         onDragOver={(event) => updateDropTarget(event, leaf.id)}
         onDrop={(event) => applyDrop(event, leaf.id)}
         onDragLeave={(event) => clearDropTarget(event)}
       >
         <div
           className={styles.tabStrip}
-          data-pyseas-ui="dock-tabstrip"
+          data-pyseas-ui="pane-tabstrip"
           draggable
           onDragEnd={() => setDragState(null)}
           onDragStart={(event) => startTabStripDrag(event, leaf.id)}
@@ -183,10 +183,10 @@ export function DockPaneWorkspace<TTab extends string = string>({
             <button
               aria-selected={leaf.activeTab === tab}
               className={cx(styles.tab, leaf.activeTab === tab && styles.tabActive)}
-              data-pyseas-ui="dock-tab"
+              data-pyseas-ui="pane-tab"
               draggable
               key={tab}
-              onClick={() => updateLayout((current) => setDockActiveTab(current, leaf.id, tab))}
+              onClick={() => updateLayout((current) => setActiveTab(current, leaf.id, tab))}
               onDragEnd={() => setDragState(null)}
               onDragStart={(event) => startTabDrag(event, leaf.id, tab)}
               role="tab"
@@ -196,7 +196,7 @@ export function DockPaneWorkspace<TTab extends string = string>({
               <span>{renderTabLabel?.(tab) ?? tab}</span>
             </button>
           ))}
-          {toolbar !== undefined && <div className={styles.leafToolbar} data-pyseas-ui="dock-toolbar">{toolbar}</div>}
+          {toolbar !== undefined && <div className={styles.leafToolbar} data-pyseas-ui="pane-toolbar">{toolbar}</div>}
         </div>
         <div className={styles.panelBody} role="tabpanel">
           {renderPanel(leaf.activeTab)}
@@ -208,7 +208,7 @@ export function DockPaneWorkspace<TTab extends string = string>({
 
   function startResize(
     event: ReactPointerEvent<HTMLDivElement>,
-    node: DockSplitNode<TTab>,
+    node: SplitNode<TTab>,
     path: number[],
     index: number,
   ) {
@@ -223,7 +223,7 @@ export function DockPaneWorkspace<TTab extends string = string>({
       index,
       dir: node.dir,
       startClient: node.dir === 'row' ? event.clientX : event.clientY,
-      startSizes: normalizeDockSizes(node.sizes, node.children.length),
+      startSizes: normalizeSplitSizes(node.sizes, node.children.length),
       extentPx: Math.max(1, node.dir === 'row' ? rect.width : rect.height),
     })
   }
@@ -236,8 +236,8 @@ export function DockPaneWorkspace<TTab extends string = string>({
 
   function startTabStripDrag(event: DragEvent<HTMLDivElement>, sourceLeafId: string) {
     const target = event.target
-    if (target instanceof HTMLElement && target.closest('[data-pyseas-ui="dock-tab"]') !== null) return
-    if (target instanceof HTMLElement && target.closest('[data-pyseas-ui="dock-toolbar"]') !== null) {
+    if (target instanceof HTMLElement && target.closest('[data-pyseas-ui="pane-tab"]') !== null) return
+    if (target instanceof HTMLElement && target.closest('[data-pyseas-ui="pane-toolbar"]') !== null) {
       event.preventDefault()
       return
     }
@@ -258,7 +258,7 @@ export function DockPaneWorkspace<TTab extends string = string>({
     event.dataTransfer.dropEffect = 'move'
 
     const rect = event.currentTarget.getBoundingClientRect()
-    const edge = computeDockDropEdge({ x: event.clientX, y: event.clientY }, rect)
+    const edge = computeDropEdge({ x: event.clientX, y: event.clientY }, rect)
     setDropTarget({ leafId, edge })
   }
 
@@ -277,7 +277,7 @@ export function DockPaneWorkspace<TTab extends string = string>({
 
     updateLayout((current) => {
       if (dragState.kind === 'tab') {
-        return moveDockTab(current, {
+        return moveTab(current, {
           tab: dragState.tab,
           sourceLeafId: dragState.sourceLeafId,
           targetLeafId: leafId,
@@ -286,7 +286,7 @@ export function DockPaneWorkspace<TTab extends string = string>({
         })
       }
 
-      return moveDockGroup(current, {
+      return moveGroup(current, {
         sourceLeafId: dragState.sourceLeafId,
         targetLeafId: leafId,
         edge,
@@ -299,7 +299,7 @@ export function DockPaneWorkspace<TTab extends string = string>({
   }
 }
 
-function dropEdgeClass(edge: DockDropEdge): string {
+function dropEdgeClass(edge: DropEdge): string {
   if (edge === 'left') return styles.dropLeft ?? ''
   if (edge === 'right') return styles.dropRight ?? ''
   if (edge === 'top') return styles.dropTop ?? ''

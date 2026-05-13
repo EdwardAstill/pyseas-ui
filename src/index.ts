@@ -61,46 +61,53 @@ export type {
   CadStepViewerProps,
   CadViewerDownload,
   CadViewerStatus,
+  CadViewerTheme,
 } from './components/CadViewer'
+
+export { Tree } from './components/Tree'
+export type { TreeProps, TreeNode, TreeRenderArgs } from './components/Tree'
 
 export { WorkbenchLayout } from './components/WorkbenchLayout'
 export type { WorkbenchLayoutProps } from './components/WorkbenchLayout'
 
-export { DockPaneWorkspace } from './components/DockPaneWorkspace'
-export type { DockPaneWorkspaceProps } from './components/DockPaneWorkspace'
+export { Workspace } from './components/Workspace'
+export type { WorkspaceProps } from './components/Workspace'
 
-export { DockAppShell, DockTopBar, DockIconSidebar, DockStatusBar } from './components/DockShell'
+export { PaneShell } from './components/PaneShell'
+export type { PaneShellProps, PaneRailSpec, PaneSectionSpec } from './components/PaneShell'
+
+export { AppShell, TopBar, IconSidebar, StatusBar } from './components/AppShell'
 export type {
-  DockAppShellProps,
-  DockTopBarProps,
-  DockIconSidebarProps,
-  DockIconSidebarItem,
-  DockStatusBarProps,
-} from './components/DockShell'
+  AppShellProps,
+  TopBarProps,
+  IconSidebarProps,
+  IconSidebarItem,
+  StatusBarProps,
+} from './components/AppShell'
 
 export {
-  cloneDockLayout,
-  computeDockDropEdge,
-  findDockLeafById,
-  findDockLeafOfTab,
-  insertDockLeafAt,
-  insertDockTabAt,
-  moveDockGroup,
-  moveDockTab,
-  normalizeDockSizes,
-  removeDockLeafById,
-  setDockActiveTab,
-  setDockSplitSizesAtPath,
-} from './components/dockPaneLayout'
+  cloneLayout,
+  computeDropEdge,
+  findLeafById,
+  findLeafOfTab,
+  insertLeafAt,
+  insertTabAt,
+  moveGroup,
+  moveTab,
+  normalizeSplitSizes,
+  removeLeafById,
+  setActiveTab,
+  setSplitSizesAtPath,
+} from './components/paneLayout'
 export type {
-  DockDropEdge,
-  DockLayoutNode,
-  DockLeafNode,
-  DockLeafSearchResult,
-  DockPoint,
-  DockRect,
-  DockSplitDirection,
-  DockSplitNode,
-  MoveDockGroupOptions,
-  MoveDockTabOptions,
-} from './components/dockPaneLayout'
+  DropEdge,
+  LayoutNode,
+  LeafNode,
+  LeafSearchResult,
+  LayoutPoint,
+  LayoutRect,
+  SplitDirection,
+  SplitNode,
+  MoveGroupOptions,
+  MoveTabOptions,
+} from './components/paneLayout'

@@ -1,0 +1,92 @@
+.shell {
+  display: grid;
+  grid-template-columns: var(--ps-pane-rail-width, 132px) 1fr;
+  grid-template-rows: 1fr;
+  min-height: 0;
+  height: 100%;
+  background: var(--ps-panel);
+  position: relative;
+}
+
+.shellWithSection {
+  grid-template-rows: auto 1fr;
+}
+
+.shellNoRail {
+  grid-template-columns: 1fr;
+}
+
+.rail {
+  grid-row: 1 / -1;
+  grid-column: 1;
+  position: relative;
+  border-right: 1px solid var(--ps-border);
+  background: var(--ps-panel-elevated);
+  min-height: 0;
+  overflow: auto;
+}
+
+.railResizeHandle {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 2;
+  background: transparent;
+  transition: background 0.1s;
+}
+
+.railResizeHandle:hover,
+.railResizeHandle[data-dragging='true'] {
+  background: color-mix(in srgb, var(--ps-accent) 30%, transparent);
+}
+
+.section {
+  grid-row: 1;
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--ps-border);
+  background: var(--ps-panel-elevated);
+  padding: 0 8px;
+  min-height: 32px;
+  gap: 8px;
+}
+
+.sectionTabs {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.sectionOptions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.shellNoRail .section {
+  grid-column: 1;
+}
+
+.body {
+  grid-row: -2 / -1;
+  grid-column: 2;
+  overflow: auto;
+  padding: 14px 16px;
+  min-height: 0;
+}
+
+.shellNoRail .body {
+  grid-column: 1;
+}
+
+.bodyFlush {
+  padding: 0;
+  overflow: hidden;
+}

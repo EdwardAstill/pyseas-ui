@@ -25,17 +25,33 @@
 .titleBar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--ps-space-sm);
   padding: var(--ps-space-sm) var(--ps-space-md);
   border-bottom: 1px solid var(--ps-border);
+  background: var(--ps-panel);
+  min-height: 36px;
   flex-shrink: 0;
 }
 
 .title {
   font-family: var(--ps-font-mono);
-  font-size: var(--ps-text-lg);
+  font-size: var(--ps-text-md);
   font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--ps-text);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.titleActions {
+  display: flex;
+  align-items: center;
+  gap: var(--ps-space-xs);
+  margin-left: auto;
 }
 
 .closeButton {
@@ -64,4 +80,16 @@
   flex: 1;
   overflow-y: auto;
   padding: var(--ps-space-md);
+  background: var(--ps-panel-elevated);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ps-space-sm);
+  padding: var(--ps-space-sm) var(--ps-space-md);
+  border-top: 1px solid var(--ps-border);
+  background: var(--ps-panel);
+  flex-shrink: 0;
 }

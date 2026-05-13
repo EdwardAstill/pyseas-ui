@@ -9,8 +9,11 @@ export interface ModalProps {
   open: boolean
   onClose: () => void
   title?: string
+  titleActions?: ReactNode
+  footer?: ReactNode
   size?: ModalSize
   children: ReactNode
+  className?: string
 }
 
 const sizeClass: Record<ModalSize, string> = {
@@ -19,7 +22,16 @@ const sizeClass: Record<ModalSize, string> = {
   lg: styles.lg ?? '',
 }
 
-export function Modal({ open, onClose, title, size = 'md', children }: ModalProps) {
+export function Modal({
+  open,
+  onClose,
+  title,
+  titleActions,
+  footer,
+  size = 'md',
+  children,
+  className,
+}: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -41,7 +53,9 @@ export function Modal({ open, onClose, title, size = 'md', children }: ModalProp
 
   if (!open) return null
 
-  const dialogCls = cx(styles.dialog, sizeClass[size])
+  const dialogCls = cx(styles.dialog, sizeClass[size], className)
+  const hasTitle = title !== undefined || titleActions !== undefined
+  const hasFooter = footer !== undefined && footer !== null
 
   return createPortal(
     <div
@@ -57,10 +71,14 @@ export function Modal({ open, onClose, title, size = 'md', children }: ModalProp
         className={dialogCls}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
+        data-pyseas-ui="modal"
       >
-        {(title !== undefined) && (
-          <div className={styles.titleBar}>
+        {hasTitle && (
+          <div className={styles.titleBar} data-pyseas-ui="modal-title-bar">
             <span className={styles.title}>{title}</span>
+            {titleActions !== undefined && (
+              <div className={styles.titleActions}>{titleActions}</div>
+            )}
             <button
               className={styles.closeButton}
               onClick={onClose}
@@ -71,7 +89,10 @@ export function Modal({ open, onClose, title, size = 'md', children }: ModalProp
             </button>
           </div>
         )}
-        <div className={styles.body}>{children}</div>
+        <div className={styles.body} data-pyseas-ui="modal-body">{children}</div>
+        {hasFooter && (
+          <div className={styles.footer} data-pyseas-ui="modal-footer">{footer}</div>
+        )}
       </div>
     </div>,
     document.body,

@@ -24,6 +24,58 @@ export const MATERIAL_OPTIONS = [
   { value: 'mat-c', label: 'Grade 690' },
 ]
 
+export interface DemoTreeMeta {
+  kind: 'project' | 'group' | 'item'
+  ratio?: string
+}
+
+export const DEMO_TREE = [
+  {
+    id: 'project',
+    label: 'Project Apollo',
+    icon: '◆',
+    data: { kind: 'project' as const },
+    children: [
+      {
+        id: 'structures',
+        label: 'Structures',
+        icon: '▣',
+        trailing: '12',
+        data: { kind: 'group' as const },
+        children: [
+          { id: 'padeye-a', label: 'Padeye A', icon: '·', trailing: '0.71', data: { kind: 'item' as const, ratio: '0.71' } },
+          { id: 'padeye-b', label: 'Padeye B', icon: '·', trailing: '0.94', data: { kind: 'item' as const, ratio: '0.94' } },
+          { id: 'lug-c', label: 'Lug C', icon: '·', trailing: '0.42', data: { kind: 'item' as const, ratio: '0.42' } },
+        ],
+      },
+      {
+        id: 'rigging',
+        label: 'Rigging',
+        icon: '▣',
+        trailing: '4',
+        data: { kind: 'group' as const },
+        children: [
+          { id: 'sling-1', label: 'Sling 1', icon: '·', trailing: '0.55', data: { kind: 'item' as const, ratio: '0.55' } },
+          { id: 'sling-2', label: 'Sling 2', icon: '·', trailing: '1.04', data: { kind: 'item' as const, ratio: '1.04' } },
+          { id: 'shackle-a', label: 'Shackle A', icon: '·', disabled: true, data: { kind: 'item' as const } },
+        ],
+      },
+      {
+        id: 'loadcases',
+        label: 'Load cases',
+        icon: '▣',
+        trailing: '3',
+        data: { kind: 'group' as const },
+        children: [
+          { id: 'lc-static', label: 'Static', icon: '·', data: { kind: 'item' as const } },
+          { id: 'lc-dynamic', label: 'Dynamic', icon: '·', data: { kind: 'item' as const } },
+          { id: 'lc-accidental', label: 'Accidental', icon: '·', data: { kind: 'item' as const } },
+        ],
+      },
+    ],
+  },
+] as const
+
 export const DEMO_LOG_LINES = [
   '[INFO]  Initialising analysis engine',
   '[INFO]  Loading part geometry',

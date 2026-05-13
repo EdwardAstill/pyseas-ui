@@ -114,12 +114,13 @@ const [theme, setTheme] = useState<'dark' | 'light'>(stored ?? 'dark')
 | `StatusBadge` | Inline status badge — `ok`, `warn`, `err`, `info` |
 | `Result` | Display row for a pre-computed result: label, value, unit, status, utilisation |
 | `LogView` | Scrollable monospace area for streamed text; auto-scrolls to bottom |
+| `Tree` | Controlled hierarchical tree view with expand/collapse, selection, and per-node icon/trailing slots |
 | `DrawingViewer` | Source-agnostic SVG/image drawing preview with pan, zoom, fit reset, metadata, and download action |
-| `DockAppShell` | Dock-style app frame with top bar, icon sidebar, content slot, and status bar |
-| `DockTopBar` | Compact application top bar with title, subtitle, and action slots |
-| `DockIconSidebar` | 48px icon rail matching the Dock navigation pattern |
-| `DockStatusBar` | Compact bottom status row |
-| `DockPaneWorkspace` | Dock-style pane tree with square tabs, split resizing, tab moves, and pane moves |
+| `AppShell` | workbench app frame with top bar, icon sidebar, content slot, and status bar |
+| `TopBar` | Compact application top bar with title, subtitle, and action slots |
+| `IconSidebar` | 48px icon rail matching the workbench icon-rail pattern |
+| `StatusBar` | Compact bottom status row |
+| `Workspace` | pane tree with square tabs, split resizing, tab moves, and pane moves |
 | `WorkbenchLayout` | Legacy fixed four-pane workbench skeleton |
 
 Full prop interfaces are in [`docs/component-contract.md`](docs/component-contract.md).
@@ -131,27 +132,27 @@ preview format such as SVG before passing it to this component.
 
 ---
 
-## DockPaneWorkspace example
+## Workspace example
 
-Use `DockPaneWorkspace` for Dock-style applications where panels must be
+Use `Workspace` for workspace-driven applications where panels must be
 resizable and movable. The app owns the panel IDs and panel content; `pyseas-ui`
 owns only the generic layout tree and interaction behavior.
 
 ```tsx
 import 'pyseas-ui/dist/pyseas-ui.css'
 import {
-  DockAppShell,
-  DockIconSidebar,
-  DockPaneWorkspace,
-  DockStatusBar,
-  DockTopBar,
+  AppShell,
+  IconSidebar,
+  Workspace,
+  StatusBar,
+  TopBar,
   ThemeProvider,
-  type DockLayoutNode,
+  type LayoutNode,
 } from 'pyseas-ui'
 
 type PanelId = 'parts' | 'part' | 'condition' | 'analysis' | 'standards' | 'diagram' | 'result'
 
-const layout: DockLayoutNode<PanelId> = {
+const layout: LayoutNode<PanelId> = {
   type: 'split',
   dir: 'col',
   sizes: [0.48, 0.52],
@@ -180,24 +181,24 @@ const layout: DockLayoutNode<PanelId> = {
 function MyApp() {
   return (
     <ThemeProvider theme="light">
-      <DockAppShell
-        topbar={<DockTopBar title="Engineering App" subtitle="workflow" />}
-        sidebar={<DockIconSidebar activeItem="parts" items={[]} />}
-        statusbar={<DockStatusBar left="ready" />}
+      <AppShell
+        topbar={<TopBar title="Engineering App" subtitle="workflow" />}
+        sidebar={<IconSidebar activeItem="parts" items={[]} />}
+        statusbar={<StatusBar left="ready" />}
       >
-        <DockPaneWorkspace
+        <Workspace
           defaultLayout={layout}
           renderPanel={(panel) => <PanelBody panel={panel} />}
           renderTabLabel={(panel) => panel}
         />
-      </DockAppShell>
+      </AppShell>
     </ThemeProvider>
   )
 }
 ```
 
-The exported pure helpers (`moveDockTab`, `moveDockGroup`,
-`setDockSplitSizesAtPath`, `computeDockDropEdge`, and related functions) are
+The exported pure helpers (`moveTab`, `moveGroup`,
+`setSplitSizesAtPath`, `computeDropEdge`, and related functions) are
 available for tests, persistence, or app-specific layout commands.
 
 ## WorkbenchLayout example
@@ -250,7 +251,7 @@ Default column proportions: `48px 240px 1fr 280px 300px` (rail, setup, diagram, 
 - Presentation primitives (buttons, fields, panels, badges, log view)
 - Source-agnostic drawing preview presentation (`DrawingViewer`)
 - Workbench layout skeleton
-- Dock-style pane shell, tabstrips, splitters, and drag/drop layout state
+- workbench pane shell, tabstrips, splitters, and drag/drop layout state
 - Design tokens (`--ps-*` CSS custom properties)
 - Theme switching mechanics
 

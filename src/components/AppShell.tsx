@@ -1,8 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react'
-import styles from './DockShell.module.css'
+import styles from './AppShell.module.css'
 import { cx } from './cx'
 
-export interface DockAppShellProps {
+export interface AppShellProps {
   topbar?: ReactNode
   sidebar?: ReactNode
   statusbar?: ReactNode
@@ -11,7 +11,7 @@ export interface DockAppShellProps {
   style?: CSSProperties
 }
 
-export interface DockTopBarProps {
+export interface TopBarProps {
   title?: ReactNode
   subtitle?: ReactNode
   left?: ReactNode
@@ -21,7 +21,7 @@ export interface DockTopBarProps {
   style?: CSSProperties
 }
 
-export interface DockIconSidebarItem {
+export interface IconSidebarItem {
   id: string
   label: string
   icon: ReactNode
@@ -29,18 +29,18 @@ export interface DockIconSidebarItem {
   title?: string
 }
 
-export interface DockIconSidebarProps {
-  items: DockIconSidebarItem[]
+export interface IconSidebarProps {
+  items: IconSidebarItem[]
   activeItem?: string
   onItemSelect?: (id: string) => void
   brand?: ReactNode
-  footerItems?: DockIconSidebarItem[]
+  footerItems?: IconSidebarItem[]
   className?: string
   style?: CSSProperties
   'aria-label'?: string
 }
 
-export interface DockStatusBarProps {
+export interface StatusBarProps {
   left?: ReactNode
   right?: ReactNode
   children?: ReactNode
@@ -48,7 +48,7 @@ export interface DockStatusBarProps {
   style?: CSSProperties
 }
 
-export function DockAppShell({ topbar, sidebar, statusbar, children, className, style }: DockAppShellProps) {
+export function AppShell({ topbar, sidebar, statusbar, children, className, style }: AppShellProps) {
   return (
     <div className={cx(styles.appShell, className)} style={style}>
       {topbar !== undefined && <div className={styles.topbarSlot}>{topbar}</div>}
@@ -61,7 +61,7 @@ export function DockAppShell({ topbar, sidebar, statusbar, children, className, 
   )
 }
 
-export function DockTopBar({
+export function TopBar({
   title,
   subtitle,
   left,
@@ -69,7 +69,7 @@ export function DockTopBar({
   children,
   className,
   style,
-}: DockTopBarProps) {
+}: TopBarProps) {
   return (
     <header className={cx(styles.topbar, className)} style={style}>
       {children ?? (
@@ -85,7 +85,7 @@ export function DockTopBar({
   )
 }
 
-export function DockIconSidebar({
+export function IconSidebar({
   items,
   activeItem,
   onItemSelect,
@@ -94,7 +94,7 @@ export function DockIconSidebar({
   className,
   style,
   'aria-label': ariaLabel = 'Workspace navigation',
-}: DockIconSidebarProps) {
+}: IconSidebarProps) {
   return (
     <nav className={cx(styles.iconSidebar, className)} style={style} aria-label={ariaLabel}>
       {brand !== undefined && <div className={styles.sidebarBrand}>{brand}</div>}
@@ -109,7 +109,7 @@ export function DockIconSidebar({
   )
 }
 
-export function DockStatusBar({ left, right, children, className, style }: DockStatusBarProps) {
+export function StatusBar({ left, right, children, className, style }: StatusBarProps) {
   return (
     <footer className={cx(styles.statusbar, className)} style={style}>
       {children ?? (
@@ -124,7 +124,7 @@ export function DockStatusBar({ left, right, children, className, style }: DockS
 }
 
 function renderSidebarButton(
-  item: DockIconSidebarItem,
+  item: IconSidebarItem,
   activeItem: string | undefined,
   onItemSelect: ((id: string) => void) | undefined,
 ) {

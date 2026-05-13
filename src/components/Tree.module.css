@@ -1,0 +1,98 @@
+.tree {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--ps-font-mono);
+  font-size: var(--ps-text-sm);
+  color: var(--ps-text);
+  user-select: none;
+  padding: var(--ps-space-xs) 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--ps-space-xs);
+  height: 22px;
+  padding: 0 var(--ps-space-sm);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  width: 100%;
+  white-space: nowrap;
+  outline: none;
+  transition: background 0.08s, color 0.08s;
+}
+
+.row:hover:not(.rowDisabled) {
+  background: var(--ps-border);
+}
+
+.rowSelected,
+.rowSelected:hover {
+  background: var(--ps-accent);
+  color: #fff;
+}
+
+.rowDisabled {
+  color: var(--ps-text-muted);
+  cursor: default;
+}
+
+.row:focus-visible {
+  outline: 1px solid var(--ps-border-strong);
+  outline-offset: -1px;
+}
+
+.caret {
+  width: 12px;
+  height: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--ps-text-muted);
+  font-size: 9px;
+  line-height: 1;
+}
+
+.rowSelected .caret {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.caretSpacer {
+  width: 12px;
+  flex-shrink: 0;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  flex-shrink: 0;
+  color: var(--ps-text-muted);
+}
+
+.rowSelected .icon {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trailing {
+  margin-left: auto;
+  color: var(--ps-text-muted);
+  font-size: var(--ps-text-xs);
+  padding-left: var(--ps-space-sm);
+}
+
+.rowSelected .trailing {
+  color: rgba(255, 255, 255, 0.85);
+}
