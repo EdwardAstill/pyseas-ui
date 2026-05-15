@@ -175,25 +175,42 @@ export function CadDxfViewer({
     if (!container || currentStatus !== 'ready' || fileUrl === null || fileUrl.length === 0) return
 
     setViewerError(null)
-    const viewer = new DxfViewer(container, {
-      clearColor: new THREE.Color(resolvedClearColor),
-      autoResize: true,
-      blackWhiteInversion: activeTheme === 'dark',
-    })
-
-    viewer
-      .Load({
-        url: fileUrl,
-        progressCbk: () => {},
+    let cancelled = false
+    // Defer creation by a tick so React StrictMode's synchronous mount→cleanup
+    // pair doesn't tear down a half-loaded DxfWorker (which leaves the canvas
+    // blank because the cancelled Load promise rejects on a null worker).
+    let viewer: InstanceType<typeof DxfViewer> | null = null
+    const timer = window.setTimeout(() => {
+      if (cancelled) return
+      viewer = new DxfViewer(container, {
+        clearColor: new THREE.Color(resolvedClearColor),
+        autoResize: true,
+        // dxf-viewer's blackWhiteInversion flips white↔black after the DXF color
+        // map. For a light theme background we want DXF "white" entities drawn
+        // dark; for a dark background we want them drawn light. Toggle accordingly.
+        blackWhiteInversion: activeTheme === 'light',
       })
-      .catch((loadError: unknown) => {
-        setViewerError(loadError instanceof Error ? loadError.message : String(loadError))
-      })
+      viewer
+        .Load({ url: fileUrl, progressCbk: () => {} })
+        .catch((loadError: unknown) => {
+          if (cancelled) return
+          setViewerError(loadError instanceof Error ? loadError.message : String(loadError))
+        })
+    }, 0)
 
     return () => {
-      viewer.Destroy()
+      cancelled = true
+      window.clearTimeout(timer)
+      if (viewer !== null) {
+        try {
+          viewer.Destroy()
+        } catch {
+          // dxf-viewer 1.0.47 races with in-flight Load(); cleanup is best-effort.
+        }
+      }
     }
-  }, [activeTheme, resolvedClearColor, currentStatus, fileUrl])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStatus, fileUrl])
 
   return (
     <CadViewerFrame

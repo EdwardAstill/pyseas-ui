@@ -63,6 +63,10 @@
   gap: 6px;
 }
 
+.tabsBracket {
+  border-bottom: none;
+}
+
 .tabsBracket .tab {
   font-family: var(--ps-font-mono);
   font-size: var(--ps-text-xs);
@@ -92,6 +96,7 @@
   padding: 0 14px;
   gap: 0;
   align-items: center;
+  border-bottom: none;
 }
 
 .tabsSlash .tab {
