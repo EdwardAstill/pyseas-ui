@@ -23,5 +23,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "examples", "viewer"]
+  "include": ["src", "examples", "design-lab", "viewer"]
 }

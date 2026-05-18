@@ -34,7 +34,7 @@
 .rowSelected,
 .rowSelected:hover {
   background: var(--ps-accent);
-  color: #fff;
+  color: var(--ps-surface);
 }
 
 .rowDisabled {
@@ -60,7 +60,7 @@
 }
 
 .rowSelected .caret {
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in srgb, var(--ps-surface) 85%, transparent);
 }
 
 .caretSpacer {
@@ -78,7 +78,7 @@
 }
 
 .rowSelected .icon {
-  color: rgba(255, 255, 255, 0.9);
+  color: color-mix(in srgb, var(--ps-surface) 90%, transparent);
 }
 
 .label {
@@ -94,5 +94,5 @@
 }
 
 .rowSelected .trailing {
-  color: rgba(255, 255, 255, 0.85);
+  color: color-mix(in srgb, var(--ps-surface) 85%, transparent);
 }

@@ -29,7 +29,7 @@
   border: 1px solid var(--ps-border);
   border-radius: var(--ps-radius-none);
   color: var(--ps-text);
-  font-family: var(--ps-font-mono);
+  font-family: var(--ps-font-sans);
   font-size: var(--ps-text-md);
   height: 28px;
   padding: 0 var(--ps-space-sm);
@@ -58,6 +58,12 @@
 
 .inputError {
   border-color: var(--ps-danger) !important;
+}
+
+.numberInput {
+  font-family: var(--ps-font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 /* Select */

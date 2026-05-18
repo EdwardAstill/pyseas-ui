@@ -1,316 +1,723 @@
 import '../src/styles.css'
-import { useState, useEffect } from 'react'
+
+import { useMemo, useState, type ReactNode } from 'react'
+
+import styles from './App.module.css'
 import {
-  ThemeProvider,
   AppShell,
-  IconSidebar,
-  PaneShell,
-  Workspace,
-  StatusBar,
-  TopBar,
-  Toolbar,
   Button,
-  TextField,
+  CadDxfViewer,
+  CadStepViewer,
+  Checkbox,
+  Dialog,
+  DrawingViewer,
+  IconButton,
+  IconSidebar,
+  LogView,
+  Modal,
   NumberField,
+  PaneShell,
+  Panel,
+  Result,
   Select,
   StatusBadge,
-  LogView,
+  StatusBar,
+  Tabs,
+  TextField,
+  ThemeProvider,
+  Toggle,
+  Toolbar,
+  TopBar,
   Tree,
+  WorkbenchLayout,
+  Workspace,
   type LayoutNode,
   type TreeNode,
 } from '../src/index'
-import { STANDARDS, CONDITIONS, MATERIAL_OPTIONS, DEMO_LOG_LINES } from './demoData'
-import { DemoRail } from './DemoRail'
-import { DEMO_TREE } from './demoData'
-import { DemoDiagram } from './DemoDiagram'
-import { DemoResults, type DemoResultsView } from './DemoResults'
 
-const THEME_KEY = 'pyseas-ui-showcase-theme'
+type Theme = 'dark' | 'light'
+type InputTab = 'underline' | 'bracket' | 'slash'
+type PaneRail = 'rail-a' | 'rail-b' | 'rail-c'
+type PaneSection = 'section-a' | 'section-b'
+type WorkspaceTab = 'panel-a' | 'panel-b' | 'panel-c' | 'panel-d'
 
-type DemoPanel = 'items' | 'setup' | 'diagram' | 'analysis' | 'results' | 'log'
+const selectOptions = [
+  { value: 'alpha', label: 'Option alpha' },
+  { value: 'beta', label: 'Option beta' },
+  { value: 'gamma', label: 'Option gamma', disabled: true },
+]
 
-const defaultLayout: LayoutNode<DemoPanel> = {
+const treeNodes: TreeNode[] = [
+  {
+    id: 'root',
+    label: 'Root node',
+    trailing: '3',
+    children: [
+      {
+        id: 'group-a',
+        label: 'Group node',
+        trailing: '2',
+        children: [
+          { id: 'item-a', label: 'Leaf node A', trailing: 'ready' },
+          { id: 'item-b', label: 'Leaf node B', trailing: 'locked', disabled: true },
+        ],
+      },
+      { id: 'item-c', label: 'Leaf node C', trailing: 'idle' },
+    ],
+  },
+]
+
+const workspaceLayout: LayoutNode<WorkspaceTab> = {
   type: 'split',
   dir: 'row',
-  sizes: [0.24, 0.48, 0.28],
+  sizes: [0.34, 0.66],
   children: [
-    { type: 'leaf', id: 'left-leaf', tabs: ['items', 'setup'], activeTab: 'items' },
+    { type: 'leaf', id: 'workspace-left', tabs: ['panel-a', 'panel-b'], activeTab: 'panel-a' },
     {
       type: 'split',
       dir: 'col',
-      sizes: [0.68, 0.32],
+      sizes: [0.58, 0.42],
       children: [
-        { type: 'leaf', id: 'drawing-leaf', tabs: ['diagram'], activeTab: 'diagram' },
-        { type: 'leaf', id: 'log-leaf', tabs: ['log'], activeTab: 'log' },
+        { type: 'leaf', id: 'workspace-top', tabs: ['panel-c'], activeTab: 'panel-c' },
+        { type: 'leaf', id: 'workspace-bottom', tabs: ['panel-d'], activeTab: 'panel-d' },
       ],
     },
-    { type: 'leaf', id: 'right-leaf', tabs: ['analysis', 'results'], activeTab: 'results' },
   ],
 }
 
-const panelLabels: Record<DemoPanel, string> = {
-  items: 'Items',
-  setup: 'Setup',
-  diagram: 'Diagram',
-  analysis: 'Analysis',
-  results: 'Results',
-  log: 'Log',
+const drawingSvg = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 160" role="img" aria-label="DrawingViewer sample">
+  <rect x="28" y="42" width="204" height="76" fill="none" stroke="currentColor" stroke-width="2"/>
+  <circle cx="96" cy="80" r="22" fill="none" stroke="currentColor" stroke-width="2"/>
+  <circle cx="164" cy="80" r="22" fill="none" stroke="currentColor" stroke-width="2"/>
+  <path d="M52 132 H208" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="5 5"/>
+  <path d="M96 34 V126 M164 34 V126" fill="none" stroke="currentColor" stroke-width="1"/>
+  <text x="130" y="150" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor">DrawingSource.kind = svg</text>
+</svg>`
+
+const logLines = [
+  '[info] component mounted',
+  '[info] controlled value changed',
+  '[warn] disabled option skipped',
+  '[ok] render complete',
+]
+
+const workspaceLabels: Record<WorkspaceTab, string> = {
+  'panel-a': '<PaneShell>',
+  'panel-b': '<Tabs>',
+  'panel-c': '<DrawingViewer>',
+  'panel-d': '<LogView>',
 }
 
 export function App() {
-  const stored =
-    typeof localStorage !== 'undefined'
-      ? (localStorage.getItem(THEME_KEY) as 'dark' | 'light' | null)
-      : null
-  const [theme, setTheme] = useState<'dark' | 'light'>(stored ?? 'dark')
-  const [selectedPart, setSelectedPart] = useState('part-a')
-  const [setupTab, setSetupTab] = useState('geometry')
-  const [geometrySection, setGeometrySection] = useState('plate')
-  const [analysisTab, setAnalysisTab] = useState('standard')
-  const [resultsView, setResultsView] = useState<DemoResultsView>('summary')
-  const [partName, setPartName] = useState('Part A')
-  const [thickness, setThickness] = useState<number | null>(25)
-  const [width, setWidth] = useState<number | null>(300)
-  const [material, setMaterial] = useState<string | null>('mat-a')
-  const [standard, setStandard] = useState<string | null>('std-a')
-  const [condition, setCondition] = useState<string | null>('cond-1')
-  const [running, setRunning] = useState(false)
-  const [logLines, setLogLines] = useState<string[]>([])
-  const [layoutKey, setLayoutKey] = useState(0)
+  const [theme, setTheme] = useState<Theme>('dark')
+  const [textValue, setTextValue] = useState('Controlled text')
+  const [numberValue, setNumberValue] = useState<number | null>(42)
+  const [selectValue, setSelectValue] = useState<string | null>('beta')
+  const [checked, setChecked] = useState(true)
+  const [indeterminate, setIndeterminate] = useState(false)
+  const [toggleValue, setToggleValue] = useState(true)
+  const [inputTab, setInputTab] = useState<InputTab>('underline')
+  const [paneRail, setPaneRail] = useState<PaneRail>('rail-a')
+  const [paneSection, setPaneSection] = useState<PaneSection>('section-a')
   const [treeExpanded, setTreeExpanded] = useState<Set<string>>(
-    () => new Set(['project', 'structures', 'rigging']),
+    () => new Set(['root', 'group-a']),
   )
-  const [treeSelected, setTreeSelected] = useState<string | null>('padeye-b')
+  const [treeSelected, setTreeSelected] = useState<string | null>('item-a')
+  const [sidebarItem, setSidebarItem] = useState('one')
+  const [modalOpen, setModalOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
 
-  useEffect(() => {
-    localStorage.setItem(THEME_KEY, theme)
-  }, [theme])
+  const paneRailItems = useMemo(
+    () => [
+      { value: 'rail-a', label: 'Rail A' },
+      { value: 'rail-b', label: 'Rail B' },
+      { value: 'rail-c', label: 'Rail C', disabled: true },
+    ],
+    [],
+  )
+  const paneSectionItems = useMemo(
+    () => [
+      { value: 'section-a', label: 'Section A' },
+      { value: 'section-b', label: 'Section B' },
+    ],
+    [],
+  )
 
-  function handleRun() {
-    setRunning(true)
-    setLogLines([])
-    let i = 0
-    const interval = setInterval(() => {
-      const line = DEMO_LOG_LINES[i]
-      if (line !== undefined) setLogLines((prev) => [...prev, line])
-      i++
-      if (i >= DEMO_LOG_LINES.length) {
-        clearInterval(interval)
-        setRunning(false)
-      }
-    }, 150)
-  }
-
-  function renderSetup() {
-    return (
-      <PaneShell
-        rail={{
-          items: [
-            { value: 'geometry', label: 'Geometry' },
-            { value: 'material', label: 'Material' },
-            { value: 'loading', label: 'Loading' },
-          ],
-          value: setupTab,
-          onChange: setSetupTab,
-        }}
-        section={
-          setupTab === 'geometry'
-            ? {
-                items: [
-                  { value: 'plate', label: 'Plate' },
-                  { value: 'hole', label: 'Hole' },
-                  { value: 'edge', label: 'Edge' },
-                ],
-                value: geometrySection,
-                onChange: setGeometrySection,
-              }
-            : undefined
-        }
-      >
-        <div style={formStackStyle}>
-          {setupTab === 'geometry' && geometrySection === 'plate' && (
-            <>
-              <TextField value={partName} onChange={setPartName} label="Item name" />
-              <NumberField value={thickness} onChange={setThickness} label="Thickness (mm)" min={1} step={1} />
-              <NumberField value={width} onChange={setWidth} label="Width (mm)" min={10} step={5} />
-            </>
-          )}
-          {setupTab === 'geometry' && geometrySection === 'hole' && (
-            <>
-              <NumberField value={null} onChange={() => {}} label="Hole diameter (mm)" min={1} step={1} />
-              <NumberField value={null} onChange={() => {}} label="Edge distance (mm)" min={1} step={1} />
-            </>
-          )}
-          {setupTab === 'geometry' && geometrySection === 'edge' && (
-            <NumberField value={null} onChange={() => {}} label="Edge radius (mm)" min={1} step={1} />
-          )}
-          {setupTab === 'material' && (
-            <Select options={MATERIAL_OPTIONS} value={material} onChange={setMaterial} label="Material grade" placeholder="Select…" />
-          )}
-          {setupTab === 'loading' && (
-            <>
-              <NumberField value={null} onChange={() => {}} label="Applied value" placeholder="0.00" />
-              <NumberField value={null} onChange={() => {}} label="Scale factor" placeholder="1.00" step={0.05} />
-            </>
-          )}
-        </div>
-      </PaneShell>
-    )
-  }
-
-  function renderAnalysis() {
-    return (
-      <PaneShell
-        rail={{
-          items: [
-            { value: 'standard', label: 'Standard' },
-            { value: 'conditions', label: 'Conditions' },
-          ],
-          value: analysisTab,
-          onChange: setAnalysisTab,
-        }}
-      >
-        <div style={formStackStyle}>
-          {analysisTab === 'standard' && (
-            <Select options={STANDARDS} value={standard} onChange={setStandard} label="Standard" placeholder="Select…" />
-          )}
-          {analysisTab === 'conditions' && (
-            <Select options={CONDITIONS} value={condition} onChange={setCondition} label="Condition" placeholder="Select…" />
-          )}
-        </div>
-      </PaneShell>
-    )
-  }
-
-  function renderPanel(panel: DemoPanel) {
-    switch (panel) {
-      case 'items':
-        return (
-          <PaneShell flushBody>
-            <div style={{ height: '100%', overflow: 'auto' }}>
-              <Tree
-                nodes={DEMO_TREE as unknown as TreeNode[]}
-                expanded={treeExpanded}
-                onExpandedChange={setTreeExpanded}
-                selected={treeSelected}
-                onSelect={(id) => setTreeSelected(id)}
-                aria-label="Project tree"
-              />
-              <div style={{ borderTop: '1px solid var(--ps-border)', marginTop: 'var(--ps-space-sm)' }}>
-                <DemoRail selected={selectedPart} onSelect={setSelectedPart} />
-              </div>
-            </div>
-          </PaneShell>
-        )
-      case 'setup':
-        return renderSetup()
-      case 'diagram':
-        return (
-          <PaneShell flushBody>
-            <DemoDiagram />
-          </PaneShell>
-        )
-      case 'analysis':
-        return renderAnalysis()
-      case 'results':
-        return (
-          <PaneShell
-            flushBody
-            section={{
-              items: [
-                { value: 'summary', label: 'Summary' },
-                { value: 'log', label: 'Log' },
-              ],
-              value: resultsView,
-              onChange: (v) => setResultsView(v as DemoResultsView),
-            }}
-          >
-            <DemoResults view={resultsView} logLines={logLines} />
-          </PaneShell>
-        )
-      case 'log':
-        return (
-          <PaneShell flushBody>
-            <LogView lines={logLines} wrapLines={false} style={{ height: '100%', border: 0, background: 'transparent' }} />
-          </PaneShell>
-        )
+  function renderWorkspacePanel(tab: WorkspaceTab) {
+    if (tab === 'panel-c') {
+      return (
+        <PaneShell flushBody>
+          <DrawingViewer
+            source={{ kind: 'svg', content: drawingSvg, label: '<DrawingViewer>' }}
+            metadata="status=ready"
+          />
+        </PaneShell>
+      )
     }
+
+    if (tab === 'panel-d') {
+      return (
+        <PaneShell flushBody>
+          <LogView lines={logLines} style={{ height: '100%', border: 0 }} />
+        </PaneShell>
+      )
+    }
+
+    return (
+      <PaneShell>
+        <div className={styles.specimenText}>
+          {tab === 'panel-a' ? 'Workspace renderPanel: panel-a' : 'Workspace renderPanel: panel-b'}
+        </div>
+      </PaneShell>
+    )
   }
 
   return (
     <ThemeProvider theme={theme}>
-      <div
-        style={{
-          height: '100vh',
-          background: 'var(--ps-surface)',
-          color: 'var(--ps-text)',
-          fontFamily: 'var(--ps-font-mono)',
-          fontSize: 'var(--ps-text-sm)',
-          overflow: 'hidden',
-        }}
-      >
-        <AppShell
-          topbar={
-            <TopBar
-              title="Workbench"
-              subtitle="workspace showcase"
-              right={
+      <div className={styles.catalog}>
+        <header className={styles.header}>
+          <div className={styles.headerText}>
+            <span className={styles.packageName}>pyseas-ui</span>
+            <h1 className={styles.title}>Component catalog</h1>
+            <p className={styles.summary}>
+              Public UI exports rendered as documentation specimens, not as an application screen.
+            </p>
+          </div>
+          <Toolbar>
+            <Button
+              size="sm"
+              variant={theme === 'dark' ? 'primary' : 'default'}
+              onClick={() => setTheme('dark')}
+            >
+              Dark
+            </Button>
+            <Button
+              size="sm"
+              variant={theme === 'light' ? 'primary' : 'default'}
+              onClick={() => setTheme('light')}
+            >
+              Light
+            </Button>
+          </Toolbar>
+        </header>
+
+        <main className={styles.sections}>
+          <DocSection title="Theming">
+            <ComponentBlock
+              name="<ThemeProvider>"
+              source="src/components/ThemeProvider.tsx"
+              meta="ThemeProviderProps.theme: dark | light"
+            >
+              <div className={styles.themeGrid}>
+                <ThemeProvider theme="dark">
+                  <div className={styles.themeSample}>
+                    <StatusBadge variant="info" label="dark" />
+                    <span>data-theme=&quot;dark&quot;</span>
+                  </div>
+                </ThemeProvider>
+                <ThemeProvider theme="light">
+                  <div className={styles.themeSample}>
+                    <StatusBadge variant="info" label="light" />
+                    <span>data-theme=&quot;light&quot;</span>
+                  </div>
+                </ThemeProvider>
+              </div>
+            </ComponentBlock>
+          </DocSection>
+
+          <DocSection title="Controls">
+            <div className={styles.grid}>
+              <ComponentBlock
+                name="<Button>"
+                source="src/components/Button.tsx"
+                meta="variants: default | primary | danger | ghost; sizes: sm | md"
+              >
+                <div className={styles.wrapRow}>
+                  <Button>Default</Button>
+                  <Button variant="primary">Primary</Button>
+                  <Button variant="danger">Danger</Button>
+                  <Button variant="ghost">Ghost</Button>
+                  <Button size="sm">Small</Button>
+                  <Button icon={<span>+</span>}>Icon</Button>
+                  <Button loading>Loading</Button>
+                  <Button disabled>Disabled</Button>
+                </div>
+              </ComponentBlock>
+
+              <ComponentBlock
+                name="<IconButton>"
+                source="src/components/IconButton.tsx"
+                meta="icon-only Button variant; title is required"
+              >
+                <div className={styles.wrapRow}>
+                  <IconButton title="Default icon button" icon={<span>A</span>} />
+                  <IconButton title="Primary icon button" variant="primary" icon={<span>B</span>} />
+                  <IconButton title="Danger icon button" variant="danger" icon={<span>C</span>} />
+                  <IconButton title="Small icon button" size="sm" icon={<span>+</span>} />
+                  <IconButton title="Loading icon button" loading icon={<span>L</span>} />
+                  <IconButton title="Disabled icon button" disabled icon={<span>D</span>} />
+                </div>
+              </ComponentBlock>
+
+              <ComponentBlock
+                name="<Toolbar>"
+                source="src/components/Toolbar.tsx"
+                meta="horizontal control cluster"
+              >
                 <Toolbar>
-                  <Button variant="primary" size="sm" loading={running} onClick={handleRun}>
-                    {running ? 'Running…' : 'Run'}
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setLayoutKey((value) => value + 1)}>
-                    Reset layout
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-                    {theme === 'dark' ? 'Light' : 'Dark'}
-                  </Button>
+                  <Button size="sm">One</Button>
+                  <Button size="sm" variant="primary">Two</Button>
+                  <IconButton title="Toolbar action" size="sm" icon={<span>+</span>} />
+                  <StatusBadge variant="ok" label="ok" />
                 </Toolbar>
-              }
-            />
-          }
-          sidebar={
-            <IconSidebar
-              activeItem={selectedPart}
-              brand={<span style={{ fontSize: 13, fontWeight: 700 }}>PS</span>}
-              items={[
-                { id: 'part-a', label: 'Item A', icon: <span aria-hidden="true">A</span> },
-                { id: 'part-b', label: 'Item B', icon: <span aria-hidden="true">B</span> },
-                { id: 'part-c', label: 'Item C', icon: <span aria-hidden="true">C</span> },
-              ]}
-              onItemSelect={setSelectedPart}
-            />
-          }
-          statusbar={
-            <StatusBar
-              left={
-                <Toolbar>
-                  <StatusBadge variant="info" label="DEMO" />
-                  <span>{panelLabels.setup}</span>
-                  <span>{panelLabels.diagram}</span>
-                  <span>{panelLabels.results}</span>
-                </Toolbar>
-              }
-              right={running ? 'running' : 'ready'}
-            />
-          }
-        >
-          <Workspace
-            key={layoutKey}
-            defaultLayout={defaultLayout}
-            minPaneSize={180}
-            renderPanel={renderPanel}
-            renderTabLabel={(panel) => panelLabels[panel]}
-            aria-label="Demo workspace"
-          />
-        </AppShell>
+              </ComponentBlock>
+
+              <ComponentBlock
+                name="<Tabs>"
+                source="src/components/Tabs.tsx"
+                meta="orientation: horizontal | vertical; marker: underline | bracket | slash"
+              >
+                <div className={styles.tabsGrid}>
+                  <Tabs
+                    items={[
+                      { value: 'underline', label: 'Underline' },
+                      { value: 'bracket', label: 'Bracket' },
+                      { value: 'slash', label: 'Slash' },
+                    ]}
+                    value={inputTab}
+                    onChange={(value) => setInputTab(value as InputTab)}
+                  />
+                  <Tabs
+                    items={[
+                      { value: 'underline', label: 'Underline' },
+                      { value: 'bracket', label: 'Bracket' },
+                      { value: 'slash', label: 'Slash' },
+                    ]}
+                    value={inputTab}
+                    marker="slash"
+                    onChange={(value) => setInputTab(value as InputTab)}
+                  />
+                  <div className={styles.verticalTabsFrame}>
+                    <Tabs
+                      items={[
+                        { value: 'underline', label: 'Alpha' },
+                        { value: 'bracket', label: 'Beta' },
+                        { value: 'slash', label: 'Gamma', disabled: true },
+                      ]}
+                      value={inputTab}
+                      orientation="vertical"
+                      marker="bracket"
+                      onChange={(value) => setInputTab(value as InputTab)}
+                    />
+                  </div>
+                </div>
+              </ComponentBlock>
+            </div>
+          </DocSection>
+
+          <DocSection title="Fields">
+            <div className={styles.fieldGrid}>
+              <TextField
+                label="<TextField>"
+                hint="controlled string value"
+                value={textValue}
+                onChange={setTextValue}
+              />
+              <TextField
+                label="<TextField error>"
+                value="Invalid"
+                onChange={() => {}}
+                error
+              />
+              <TextField
+                label="<TextField readOnly>"
+                value="Read only"
+                onChange={() => {}}
+                readOnly
+              />
+              <NumberField
+                label="<NumberField>"
+                hint="number | null"
+                value={numberValue}
+                onChange={setNumberValue}
+                min={0}
+                step={1}
+              />
+              <NumberField
+                label="<NumberField empty>"
+                value={null}
+                onChange={() => {}}
+                placeholder="0"
+              />
+              <Select
+                label="<Select>"
+                options={selectOptions}
+                value={selectValue}
+                onChange={setSelectValue}
+                placeholder="Select option"
+              />
+              <div className={styles.controlStack}>
+                <Checkbox checked={checked} onChange={setChecked} label="<Checkbox checked>" />
+                <Checkbox checked={false} onChange={() => {}} label="<Checkbox disabled>" disabled />
+                <Checkbox
+                  checked={false}
+                  indeterminate={indeterminate}
+                  onChange={(next) => {
+                    setIndeterminate(false)
+                    setChecked(next)
+                  }}
+                  label="<Checkbox indeterminate>"
+                />
+                <Button size="sm" variant="ghost" onClick={() => setIndeterminate((value) => !value)}>
+                  Toggle indeterminate
+                </Button>
+              </div>
+              <div className={styles.controlStack}>
+                <Toggle value={toggleValue} onChange={setToggleValue} label="<Toggle md>" />
+                <Toggle value={!toggleValue} onChange={() => {}} label="<Toggle sm>" size="sm" />
+                <Toggle value={false} onChange={() => {}} label="<Toggle disabled>" disabled />
+              </div>
+            </div>
+          </DocSection>
+
+          <DocSection title="Status and output">
+            <div className={styles.grid}>
+              <ComponentBlock
+                name="<StatusBadge>"
+                source="src/components/StatusBadge.tsx"
+                meta="variants: ok | warn | err | info"
+              >
+                <div className={styles.wrapRow}>
+                  <StatusBadge variant="ok" />
+                  <StatusBadge variant="warn" />
+                  <StatusBadge variant="err" />
+                  <StatusBadge variant="info" />
+                  <StatusBadge variant="info" label="custom label" />
+                </div>
+              </ComponentBlock>
+
+              <ComponentBlock
+                name="<Result>"
+                source="src/components/Result.tsx"
+                meta="label, value, unit, ratio, note, status"
+              >
+                <div className={styles.resultStack}>
+                  <Result label="Result ok" value={0.72} status="ok" ratio="0.72 / 1.00" />
+                  <Result label="Result warn" value={0.94} status="warn" ratio="0.94 / 1.00" note="note prop" />
+                  <Result label="Result err" value="ERR" status="err" ratio="1.08 / 1.00" />
+                  <Result label="Result none" value={120} unit="unit" />
+                </div>
+              </ComponentBlock>
+
+              <ComponentBlock
+                name="<LogView>"
+                source="src/components/LogView.tsx"
+                meta="streamed monospace lines; wrapLines optional"
+              >
+                <LogView lines={logLines} maxHeight={160} />
+              </ComponentBlock>
+            </div>
+          </DocSection>
+
+          <DocSection title="Data display">
+            <div className={styles.grid}>
+              <ComponentBlock
+                name="<Tree>"
+                source="src/components/Tree.tsx"
+                meta="controlled expanded set and selected id"
+              >
+                <Tree
+                  nodes={treeNodes}
+                  expanded={treeExpanded}
+                  onExpandedChange={setTreeExpanded}
+                  selected={treeSelected}
+                  onSelect={(id) => setTreeSelected(id)}
+                  aria-label="Component Tree specimen"
+                />
+              </ComponentBlock>
+
+              <ComponentBlock
+                name="<DrawingViewer>"
+                source="src/components/DrawingViewer.tsx"
+                meta="DrawingSource: svg | svg-url | image"
+              >
+                <div className={styles.viewerFrame}>
+                  <DrawingViewer
+                    source={{ kind: 'svg', content: drawingSvg, label: '<DrawingViewer>' }}
+                    metadata="inline svg"
+                    download={{ href: '#', label: 'download' }}
+                  />
+                </div>
+              </ComponentBlock>
+
+              <ComponentBlock
+                name="<CadDxfViewer> / <CadStepViewer>"
+                source="src/components/CadViewer.tsx"
+                meta="CAD frames for DXF and STEP states"
+              >
+                <div className={styles.cadGrid}>
+                  <CadDxfViewer
+                    status="idle"
+                    title="<CadDxfViewer>"
+                    metadata="status=idle"
+                    style={{ height: 190 }}
+                  />
+                  <CadStepViewer
+                    status="error"
+                    error="error prop"
+                    title="<CadStepViewer>"
+                    metadata="status=error"
+                    style={{ height: 190 }}
+                  />
+                </div>
+              </ComponentBlock>
+            </div>
+          </DocSection>
+
+          <DocSection title="Surfaces">
+            <div className={styles.grid}>
+              <ComponentBlock
+                name="<Panel>"
+                source="src/components/Panel.tsx"
+                meta="title bar, headerActions slot, body slot"
+              >
+                <Panel
+                  title="<Panel>"
+                  headerActions={
+                    <Toolbar>
+                      <StatusBadge variant="info" label="slot" />
+                      <IconButton title="Panel action" size="sm" icon={<span>+</span>} />
+                    </Toolbar>
+                  }
+                >
+                  <div className={styles.panelBodySpecimen}>
+                    Panel children render inside the body slot.
+                  </div>
+                </Panel>
+              </ComponentBlock>
+
+              <ComponentBlock
+                name="<PaneShell>"
+                source="src/components/PaneShell.tsx"
+                meta="rail, section, sectionOptions, body"
+              >
+                <div className={styles.paneFrame}>
+                  <PaneShell
+                    rail={{
+                      items: paneRailItems,
+                      value: paneRail,
+                      onChange: (value) => setPaneRail(value as PaneRail),
+                    }}
+                    section={{
+                      items: paneSectionItems,
+                      value: paneSection,
+                      onChange: (value) => setPaneSection(value as PaneSection),
+                    }}
+                    sectionOptions={
+                      <Toolbar>
+                        <Button size="sm">Option</Button>
+                      </Toolbar>
+                    }
+                    railResizable={false}
+                  >
+                    <div className={styles.specimenText}>
+                      PaneShell body. Rail and section tabs are rendered by PaneShell.
+                    </div>
+                  </PaneShell>
+                </div>
+              </ComponentBlock>
+            </div>
+          </DocSection>
+
+          <DocSection title="Layout components">
+            <ComponentBlock
+              name="<AppShell> / <TopBar> / <IconSidebar> / <StatusBar>"
+              source="src/components/AppShell.tsx"
+              meta="four exported shell components rendered as one specimen"
+            >
+              <div className={styles.appShellFrame}>
+                <AppShell
+                  topbar={
+                    <TopBar
+                      title="<TopBar>"
+                      subtitle="topbar slot"
+                      right={
+                        <Toolbar>
+                          <Button size="sm">Action</Button>
+                        </Toolbar>
+                      }
+                    />
+                  }
+                  sidebar={
+                    <IconSidebar
+                      brand={<span className={styles.sidebarBrand}>UI</span>}
+                      items={[
+                        { id: 'one', label: 'One', icon: <span>1</span> },
+                        { id: 'two', label: 'Two', icon: <span>2</span> },
+                        { id: 'three', label: 'Three disabled', icon: <span>3</span>, disabled: true },
+                      ]}
+                      footerItems={[{ id: 'four', label: 'Four', icon: <span>4</span> }]}
+                      activeItem={sidebarItem}
+                      onItemSelect={setSidebarItem}
+                    />
+                  }
+                  statusbar={
+                    <StatusBar
+                      left={
+                        <Toolbar>
+                          <StatusBadge variant="ok" label="<StatusBar>" />
+                        </Toolbar>
+                      }
+                      right="right slot"
+                    />
+                  }
+                >
+                  <div className={styles.appShellContent}>AppShell children slot</div>
+                </AppShell>
+              </div>
+            </ComponentBlock>
+
+            <div className={styles.layoutGrid}>
+              <ComponentBlock
+                name="<WorkbenchLayout>"
+                source="src/components/WorkbenchLayout.tsx"
+                meta="rail plus four fixed content slots"
+              >
+                <div className={styles.workbenchFrame}>
+                  <WorkbenchLayout
+                    rail={<SpecimenSlot label="rail" />}
+                    setupPanel={<SpecimenSlot label="setupPanel" />}
+                    diagramPanel={<SpecimenSlot label="diagramPanel" />}
+                    analysisPanel={<SpecimenSlot label="analysisPanel" />}
+                    resultsPanel={<SpecimenSlot label="resultsPanel" />}
+                    railWidth={112}
+                    columnSplit={0.46}
+                    rowSplit={0.54}
+                  />
+                </div>
+              </ComponentBlock>
+
+              <ComponentBlock
+                name="<Workspace>"
+                source="src/components/Workspace.tsx"
+                meta="draggable tabbed pane tree"
+              >
+                <div className={styles.workspaceFrame}>
+                  <Workspace
+                    defaultLayout={workspaceLayout}
+                    renderPanel={renderWorkspacePanel}
+                    renderTabLabel={(tab) => workspaceLabels[tab]}
+                    renderToolbar={(_activeTab, leaf) => (
+                      <Toolbar>
+                        <StatusBadge variant="info" label={leaf.id} />
+                      </Toolbar>
+                    )}
+                    aria-label="Workspace specimen"
+                  />
+                </div>
+              </ComponentBlock>
+            </div>
+          </DocSection>
+
+          <DocSection title="Overlays">
+            <div className={styles.grid}>
+              <ComponentBlock
+                name="<Modal>"
+                source="src/components/Modal.tsx"
+                meta="portal overlay with title, body, footer, close action"
+              >
+                <div className={styles.wrapRow}>
+                  <Button onClick={() => setModalOpen(true)}>Open Modal</Button>
+                  <StatusBadge variant="info" label="open=false by default" />
+                </div>
+                <Modal
+                  open={modalOpen}
+                  onClose={() => setModalOpen(false)}
+                  title="<Modal>"
+                  titleActions={<StatusBadge variant="ok" label="titleActions" />}
+                  footer={
+                    <Toolbar>
+                      <Button size="sm" variant="ghost" onClick={() => setModalOpen(false)}>
+                        Close
+                      </Button>
+                      <Button size="sm" variant="primary" onClick={() => setModalOpen(false)}>
+                        Confirm
+                      </Button>
+                    </Toolbar>
+                  }
+                >
+                  <div className={styles.specimenText}>Modal children render in the body slot.</div>
+                </Modal>
+              </ComponentBlock>
+
+              <ComponentBlock
+                name="<Dialog>"
+                source="src/components/Modal.tsx"
+                meta="Dialog is an alias export of Modal"
+              >
+                <div className={styles.wrapRow}>
+                  <Button onClick={() => setDialogOpen(true)}>Open Dialog</Button>
+                  <StatusBadge variant="info" label="alias" />
+                </div>
+                <Dialog
+                  open={dialogOpen}
+                  onClose={() => setDialogOpen(false)}
+                  title="<Dialog>"
+                  size="sm"
+                  footer={
+                    <Button size="sm" onClick={() => setDialogOpen(false)}>
+                      Close
+                    </Button>
+                  }
+                >
+                  <div className={styles.specimenText}>Dialog uses the Modal implementation.</div>
+                </Dialog>
+              </ComponentBlock>
+            </div>
+          </DocSection>
+        </main>
       </div>
     </ThemeProvider>
   )
 }
 
-const formStackStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 8,
+interface DocSectionProps {
+  title: string
+  children: ReactNode
+}
+
+function DocSection({ title, children }: DocSectionProps) {
+  return (
+    <section className={styles.section}>
+      <h2 className={styles.sectionTitle}>{title}</h2>
+      {children}
+    </section>
+  )
+}
+
+interface ComponentBlockProps {
+  name: string
+  source: string
+  meta: string
+  children: ReactNode
+}
+
+function ComponentBlock({ name, source, meta, children }: ComponentBlockProps) {
+  return (
+    <article className={styles.componentBlock}>
+      <div className={styles.componentHeader}>
+        <div>
+          <h3 className={styles.componentName}>{name}</h3>
+          <p className={styles.componentMeta}>{meta}</p>
+        </div>
+        <code className={styles.componentSource}>{source}</code>
+      </div>
+      <div className={styles.componentBody}>{children}</div>
+    </article>
+  )
+}
+
+function SpecimenSlot({ label }: { label: string }) {
+  return <div className={styles.specimenSlot}>{label}</div>
 }

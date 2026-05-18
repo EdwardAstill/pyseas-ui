@@ -278,7 +278,9 @@ interface TextFieldProps {
 
 ## `<NumberField>`
 
-Controlled numeric input. Enforces numeric-only characters; exposes parsed value.
+Controlled numeric input. Renders without native browser spinner arrows while
+keeping decimal keyboard hints and `spinbutton` semantics. Exposes parsed
+`number | null` values only; nonnumeric text is rejected.
 
 ```tsx
 interface NumberFieldProps {
@@ -296,6 +298,10 @@ interface NumberFieldProps {
   style?: CSSProperties;
 }
 ```
+
+**Interaction:** `ArrowUp` / `ArrowDown` step by `step` (default `1`) and
+respect `min` / `max`. Mouse wheel stepping is enabled only while the input is
+focused, so normal page scrolling is not hijacked.
 
 **States:** same as `<TextField>`.
 

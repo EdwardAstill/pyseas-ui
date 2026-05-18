@@ -8,6 +8,8 @@ Domain-neutral React component library for web-based engineering workbench appli
 
 A collection of controlled, composable UI primitives and a workbench layout skeleton. The visual language is dense, precise, and flat: compact controls, square corners, monospace labels, dark-first theming. It is designed for engineering tooling, not consumer or marketing interfaces.
 
+The design direction is tracked in [`docs/ui-brief.md`](docs/ui-brief.md), with external inspiration recorded in [`docs/design-references.md`](docs/design-references.md).
+
 ## What it is NOT
 
 - No Yard or Dock domain logic (no padeye geometry, no lift conditions, no check results)
@@ -106,7 +108,7 @@ const [theme, setTheme] = useState<'dark' | 'light'>(stored ?? 'dark')
 | `Button` | Action button — variants: `default`, `primary`, `danger`, `ghost` |
 | `IconButton` | Square icon-only button; same variant / size model as `Button` |
 | `TextField` | Controlled single-line text input |
-| `NumberField` | Controlled numeric input; exposes parsed `number \| null` |
+| `NumberField` | Spinner-free controlled numeric input; exposes parsed `number \| null` and supports arrow / focused-wheel stepping |
 | `Select` | Controlled single-select dropdown |
 | `Checkbox` | Controlled checkbox with optional label; supports indeterminate |
 | `Toggle` | Controlled boolean toggle switch |

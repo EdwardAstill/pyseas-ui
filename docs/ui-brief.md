@@ -20,6 +20,24 @@ Target aesthetic: engineering workbench, not marketing. Dense, precise, legible.
 
 ---
 
+## Design References
+
+Keep a short, current list of external sites that express the visual direction
+we want `pyseas-ui` to learn from. The list is for taste calibration only: copy
+the useful principles, not the site layout or brand.
+
+Current reference list: [`docs/design-references.md`](design-references.md).
+
+The current baseline is Bun's website: clean developer-tool UI, restrained
+system typography, dark-first surfaces, and JetBrains Mono for code-like and
+numeric content.
+
+`pyseas-ui` adopts this as the default token direction: system sans for normal
+UI text, and packaged JetBrains Mono for technical labels, code-like text, and
+numeric fields.
+
+---
+
 ## Theme Tokens
 
 All tokens are CSS custom properties on `:root` (or a scoped container). Components reference only these variables — never raw hex values.
@@ -66,8 +84,8 @@ Default component radius: `--ps-radius-none`. Inputs and badges may use `--ps-ra
 
 | Token | Value | Usage |
 |---|---|---|
-| `--ps-font-sans` | `'Geist', system-ui, -apple-system, sans-serif` | Body text |
-| `--ps-font-mono` | `'Geist Mono', 'JetBrains Mono', monospace` | Labels, headings, values |
+| `--ps-font-sans` | `system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif` | Body text |
+| `--ps-font-mono` | `'JetBrains Mono', 'Fira Code', 'Hack', 'Source Code Pro', 'SF Mono', ui-monospace, monospace` | Labels, headings, values |
 | `--ps-text-xs` | `10.5px` | Table cells, compact labels |
 | `--ps-text-sm` | `11px` | Most UI chrome |
 | `--ps-text-md` | `12px` | Body, descriptions |
