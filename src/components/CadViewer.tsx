@@ -57,8 +57,9 @@ const LIGHT_BG = 0xf5f5f5
 function detectTheme(element: HTMLElement | null): CadViewerTheme {
   if (typeof window === 'undefined' || element === null) return 'dark'
   const themed = element.closest('[data-theme]') as HTMLElement | null
-  const value = themed?.dataset.theme
-  return value === 'light' ? 'light' : 'dark'
+  const mode = themed?.dataset.themeMode
+  const legacyTheme = themed?.dataset.theme
+  return mode === 'light' || legacyTheme === 'light' ? 'light' : 'dark'
 }
 
 interface OcctMesh {
@@ -166,7 +167,7 @@ export function CadDxfViewer({
     const themed = frame.closest('[data-theme]')
     if (themed === null) return
     const observer = new MutationObserver(() => setAutoTheme(detectTheme(frame)))
-    observer.observe(themed, { attributes: true, attributeFilter: ['data-theme'] })
+    observer.observe(themed, { attributes: true, attributeFilter: ['data-theme', 'data-theme-mode'] })
     return () => observer.disconnect()
   }, [theme])
 
@@ -272,7 +273,7 @@ export function CadStepViewer({
     const themed = frame.closest('[data-theme]')
     if (themed === null) return
     const observer = new MutationObserver(() => setAutoTheme(detectTheme(frame)))
-    observer.observe(themed, { attributes: true, attributeFilter: ['data-theme'] })
+    observer.observe(themed, { attributes: true, attributeFilter: ['data-theme', 'data-theme-mode'] })
     return () => observer.disconnect()
   }, [theme])
   const message =

@@ -3,12 +3,12 @@
   align-items: center;
   padding: 0 var(--ps-space-xs);
   border-radius: var(--ps-radius-none);
-  font-family: var(--ps-font-mono);
+  font-family: var(--ps-font-sans);
   font-size: var(--ps-text-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  line-height: 18px;
+  line-height: var(--ps-badge-height);
   user-select: none;
 }
 

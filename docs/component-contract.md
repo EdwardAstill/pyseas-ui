@@ -58,14 +58,27 @@ The rail is **resizable** by default — a slider on its right edge.
 
 ## `<ThemeProvider>`
 
-Mounts `--ps-*` CSS custom properties on a wrapping element. Switches between `dark` and `light` token sets.
+Mounts `--ps-*` CSS custom properties on a wrapping element. Switches named token packs with one prop.
 
 ```tsx
+type ThemeName = "default" | "light" | "bun" | "high-contrast" | "compact" | "dark";
+type ThemeMode = "dark" | "light";
+
 interface ThemeProviderProps {
-  theme: "dark" | "light";
+  theme: ThemeName;
   children: ReactNode;
 }
 ```
+
+Built-in packs:
+- `default` — dense neutral dark baseline.
+- `light` — light counterpart for conventional environments.
+- `bun` — warmer Bun-like developer-tool treatment.
+- `high-contrast` — larger, stronger borders and brighter status colours.
+- `compact` — tighter density for information-heavy screens.
+- `dark` — legacy alias of `default`.
+
+The provider writes `data-theme` and `data-theme-mode` so components with canvas/CAD rendering can choose dark or light internals without knowing each pack.
 
 **Not responsible for:** persisting theme preference, OS media-query detection (caller must pass the resolved value).
 
@@ -119,7 +132,7 @@ interface PaneShellProps {
 - Body is padded (`14px 16px`) and scrolls. `flushBody` removes both for canvases / log views that own their own chrome.
 - Both rail and section are independently optional.
 
-**Forbidden inside a pane:** raw `<Tabs marker="underline" />`. Use the rail/section slots. Underline tabs are reserved for free-standing surfaces (e.g. inside a `<Modal>`).
+**Forbidden inside a pane:** raw `<Tabs marker="underline" />`. Use the rail/section slots. Underline tabs are reserved for free-standing surfaces (e.g. inside a `<Dialog>`).
 
 **Not responsible for:** the pane's outer tab strip / drag handling (use `<Workspace>`), or the pane's contents themselves.
 
@@ -299,9 +312,10 @@ interface NumberFieldProps {
 }
 ```
 
-**Interaction:** `ArrowUp` / `ArrowDown` step by `step` (default `1`) and
-respect `min` / `max`. Mouse wheel stepping is enabled only while the input is
-focused, so normal page scrolling is not hijacked.
+**Interaction:** `ArrowUp` / `ArrowDown` and mouse-wheel events over the input
+step by `step` (default `1`) and respect `min` / `max`. Input wheel events use a
+native non-passive listener and call `preventDefault()` so the page does not
+scroll while the pointer is over the field.
 
 **States:** same as `<TextField>`.
 
@@ -378,20 +392,20 @@ interface ToggleProps {
 
 ---
 
-## `<Modal>` / `<Dialog>`
+## `<Dialog>`
 
 Three-slot dialog shell: **title bar** (mono caps title + optional actions + close X), **body** (scrollable), **footer** (right-aligned action buttons). Manages overlay, focus trap, Escape-to-close, and portal mounting. No built-in form wiring.
 
 ```tsx
-type ModalSize = "sm" | "md" | "lg";
+type DialogSize = "sm" | "md" | "lg";
 
-interface ModalProps {
+interface DialogProps {
   open: boolean;
   onClose: () => void;
   title?: string;
   titleActions?: ReactNode;   // header trailing slot (before the close X)
   footer?: ReactNode;         // typically right-aligned action <Button>s
-  size?: ModalSize;           // default: "md"
+  size?: DialogSize;          // default: "md"
   children: ReactNode;
   className?: string;
 }
@@ -534,13 +548,30 @@ interface TreeRenderArgs<T> {
   selected: boolean;
 }
 
+interface TreeDisclosureArgs<T> extends TreeRenderArgs<T> {
+  disabled: boolean;
+}
+
+type TreeDropPosition = 'before' | 'inside' | 'after';
+
+interface TreeMoveArgs<T = unknown> {
+  draggedId: string;
+  targetId: string;
+  position: TreeDropPosition;
+  draggedNode: TreeNode<T>;
+  targetNode: TreeNode<T>;
+}
+
 interface TreeProps<T = unknown> {
   nodes: TreeNode<T>[];
   expanded: ReadonlySet<string>;
   onExpandedChange: (next: Set<string>) => void;
   selected?: string | null;
   onSelect?: (id: string, node: TreeNode<T>) => void;
+  onMove?: (args: TreeMoveArgs<T>) => void;
+  canDrop?: (args: TreeMoveArgs<T>) => boolean;
   indent?: number;                              // px per depth level, default 14
+  renderDisclosure?: (args: TreeDisclosureArgs<T>) => ReactNode;
   renderNode?: (args: TreeRenderArgs<T>) => ReactNode;
   className?: string;
   style?: CSSProperties;
@@ -550,39 +581,16 @@ interface TreeProps<T = unknown> {
 
 **Interaction:** click a row to select it; click a row with children to toggle
 expansion (selection also fires). Arrow Right expands a collapsed row; Arrow
-Left collapses an expanded row.
+Left collapses an expanded row. Supplying `onMove` enables drag-to-move rows.
+The tree reports `before`, `inside`, or `after` drop intent; caller updates
+`nodes` and may use `canDrop` to reject moves such as dropping into leaf nodes.
+The tree prevents dropping a node onto itself, onto a descendant, or onto a
+disabled target.
 
 **States per row:** default, hover, selected (uses `--ps-accent`), disabled,
-focused (focus ring inside the row).
+focused (focus ring inside the row), dragging, drop-before, drop-inside,
+drop-after.
 
-**Not responsible for:** loading children async, virtualisation, drag-and-drop,
-multi-select, checkbox selection, filtering or search, persisting expansion
-state.
-
----
-
-## `<WorkbenchLayout>`
-
-Four-pane workbench skeleton. All slots are optional ReactNode. Handles proportional column layout; individual pane scroll is managed by the panel content.
-
-```tsx
-interface WorkbenchLayoutProps {
-  rail?: ReactNode;           // narrow left nav column
-  setupPanel?: ReactNode;     // left-of-centre input area
-  diagramPanel?: ReactNode;   // centre visual/diagram area
-  analysisPanel?: ReactNode;  // right-of-centre analysis pane
-  resultsPanel?: ReactNode;   // far-right results / output pane
-  className?: string;
-  style?: CSSProperties;
-}
-```
-
-Default column proportions (CSS `grid-template-columns`):
-```
-48px  240px  1fr  280px  300px
-```
-(rail, setup, diagram, analysis, results)
-
-Columns with no content (`undefined` slot) collapse to zero. The layout does not scroll the viewport — each pane manages its own overflow.
-
-**Not responsible for:** pane resize handles (may be added in a later version), routing or tab state, pane visibility toggles.
+**Not responsible for:** loading children async, virtualisation, multi-select,
+checkbox selection, filtering or search, persisting expansion state, or mutating
+the caller-owned node data.

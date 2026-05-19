@@ -58,7 +58,7 @@
 
 .subtitle {
   color: var(--ps-text-subtle, var(--ps-text-muted));
-  font-family: var(--ps-font-mono);
+  font-family: var(--ps-font-sans);
   font-size: var(--ps-text-sm);
   white-space: nowrap;
 }
@@ -135,7 +135,7 @@
   border-top: 1px solid var(--ps-border);
   background: var(--ps-surface);
   color: var(--ps-text-muted);
-  font-family: var(--ps-font-mono);
+  font-family: var(--ps-font-sans);
   font-size: var(--ps-text-xs);
   white-space: nowrap;
 }

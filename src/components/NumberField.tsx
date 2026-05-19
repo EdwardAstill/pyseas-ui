@@ -1,4 +1,4 @@
-import type { ChangeEvent, CSSProperties, KeyboardEvent, WheelEvent } from 'react'
+import type { ChangeEvent, CSSProperties, KeyboardEvent } from 'react'
 import styles from './fields.module.css'
 import { cx } from './cx'
 import { FieldRoot } from './FieldRoot'
@@ -89,13 +89,27 @@ export function NumberField({
     stepValue(event.key === 'ArrowUp' ? 1 : -1)
   }
 
-  function handleWheel(event: WheelEvent<HTMLInputElement>) {
-    if (disabled === true || readOnly === true) return
-    if (document.activeElement !== event.currentTarget) return
-    if (event.deltaY === 0) return
+  let detachWheelListener: (() => void) | undefined
 
-    event.preventDefault()
-    stepValue(event.deltaY < 0 ? 1 : -1)
+  function setInputRef(input: HTMLInputElement | null) {
+    detachWheelListener?.()
+    detachWheelListener = undefined
+
+    if (input === null) return
+
+    const element = input
+
+    function handleWheel(event: WheelEvent) {
+      if (disabled === true) return
+
+      event.preventDefault()
+      element.focus({ preventScroll: true })
+      if (readOnly === true || event.deltaY === 0) return
+      stepValue(event.deltaY < 0 ? 1 : -1)
+    }
+
+    element.addEventListener('wheel', handleWheel, { passive: false })
+    detachWheelListener = () => element.removeEventListener('wheel', handleWheel)
   }
 
   return (
@@ -105,10 +119,10 @@ export function NumberField({
         type="text"
         inputMode="decimal"
         role="spinbutton"
+        ref={setInputRef}
         value={displayValue}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        onWheel={handleWheel}
         placeholder={placeholder}
         disabled={disabled}
         readOnly={readOnly}

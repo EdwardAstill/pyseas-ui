@@ -3,7 +3,7 @@
   grid-template-columns: minmax(96px, 34%) minmax(90px, 1fr);
   align-items: center;
   gap: var(--ps-space-sm);
-  min-height: 28px;
+  min-height: var(--ps-control-height-md);
 }
 
 .label {
@@ -31,7 +31,7 @@
   color: var(--ps-text);
   font-family: var(--ps-font-sans);
   font-size: var(--ps-text-md);
-  height: 28px;
+  height: var(--ps-control-height-md);
   padding: 0 var(--ps-space-sm);
   outline: none;
   transition: border-color 0.1s;
@@ -75,7 +75,7 @@
   color: var(--ps-text);
   font-family: var(--ps-font-mono);
   font-size: var(--ps-text-md);
-  height: 28px;
+  height: var(--ps-control-height-md);
   padding: 0 var(--ps-space-sm);
   padding-right: 24px;
   outline: none;
@@ -107,7 +107,7 @@
   gap: var(--ps-space-sm);
   cursor: pointer;
   user-select: none;
-  min-height: 28px;
+  min-height: var(--ps-control-height-md);
 }
 
 .checkboxInput {

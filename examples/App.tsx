@@ -14,7 +14,6 @@ import {
   IconButton,
   IconSidebar,
   LogView,
-  Modal,
   NumberField,
   PaneShell,
   Panel,
@@ -29,17 +28,37 @@ import {
   Toolbar,
   TopBar,
   Tree,
-  WorkbenchLayout,
   Workspace,
   type LayoutNode,
+  type ThemeName,
+  type TreeDisclosureArgs,
+  type TreeMoveArgs,
   type TreeNode,
+  type TreeRenderArgs,
 } from '../src/index'
 
-type Theme = 'dark' | 'light'
+type Theme = ThemeName
 type InputTab = 'underline' | 'bracket' | 'slash'
 type PaneRail = 'rail-a' | 'rail-b' | 'rail-c'
 type PaneSection = 'section-a' | 'section-b'
 type WorkspaceTab = 'panel-a' | 'panel-b' | 'panel-c' | 'panel-d'
+type FileSystemNodeMeta =
+  | { kind: 'folder'; detail: string }
+  | { kind: 'file'; detail: string }
+type TreeVisualOption = 'blocks' | 'marks' | 'rail'
+
+const appearanceOptions: Array<{ value: Theme; label: string }> = [
+  { value: 'bun', label: 'Bun' },
+  { value: 'default', label: 'Default' },
+  { value: 'compact', label: 'Compact' },
+]
+
+const coloringOptions: Array<{ value: Theme; label: string }> = [
+  { value: 'dark', label: 'Dark' },
+  { value: 'light', label: 'Light' },
+  { value: 'neon-pink', label: 'Neon Pink' },
+  { value: 'cobalt', label: 'Cobalt' },
+]
 
 const selectOptions = [
   { value: 'alpha', label: 'Option alpha' },
@@ -47,22 +66,57 @@ const selectOptions = [
   { value: 'gamma', label: 'Option gamma', disabled: true },
 ]
 
-const treeNodes: TreeNode[] = [
+const treeVisualOptions: Array<{ value: TreeVisualOption; label: string }> = [
+  { value: 'blocks', label: 'Blocks' },
+  { value: 'marks', label: 'Plus / minus' },
+  { value: 'rail', label: 'Rail' },
+]
+
+const initialFileTreeNodes: TreeNode<FileSystemNodeMeta>[] = [
   {
-    id: 'root',
-    label: 'Root node',
-    trailing: '3',
+    id: 'workspace',
+    label: 'workspace',
+    data: { kind: 'folder', detail: 'root' },
     children: [
       {
-        id: 'group-a',
-        label: 'Group node',
-        trailing: '2',
+        id: 'src',
+        label: 'src',
+        data: { kind: 'folder', detail: 'folder' },
         children: [
-          { id: 'item-a', label: 'Leaf node A', trailing: 'ready' },
-          { id: 'item-b', label: 'Leaf node B', trailing: 'locked', disabled: true },
+          {
+            id: 'src-components',
+            label: 'components',
+            data: { kind: 'folder', detail: 'folder' },
+            children: [
+              { id: 'src-components-tree', label: 'Tree.tsx', data: { kind: 'file', detail: 'tsx' } },
+              { id: 'src-components-tree-css', label: 'Tree.module.css', data: { kind: 'file', detail: 'css' } },
+              { id: 'src-components-panel', label: 'Panel.tsx', data: { kind: 'file', detail: 'tsx' } },
+            ],
+          },
+          { id: 'src-index', label: 'index.ts', data: { kind: 'file', detail: 'ts' } },
+          { id: 'src-styles', label: 'styles.css', data: { kind: 'file', detail: 'css' } },
         ],
       },
-      { id: 'item-c', label: 'Leaf node C', trailing: 'idle' },
+      {
+        id: 'examples',
+        label: 'examples',
+        data: { kind: 'folder', detail: 'folder' },
+        children: [
+          { id: 'examples-app', label: 'App.tsx', data: { kind: 'file', detail: 'tsx' } },
+          { id: 'examples-data', label: 'demoData.ts', data: { kind: 'file', detail: 'ts' } },
+        ],
+      },
+      {
+        id: 'tests',
+        label: 'tests',
+        data: { kind: 'folder', detail: 'folder' },
+        children: [
+          { id: 'tests-smoke', label: 'smoke.test.ts', data: { kind: 'file', detail: 'test' } },
+          { id: 'tests-number', label: 'numberField.test.ts', data: { kind: 'file', detail: 'test' } },
+        ],
+      },
+      { id: 'package-json', label: 'package.json', data: { kind: 'file', detail: 'json' } },
+      { id: 'readme', label: 'README.md', data: { kind: 'file', detail: 'md' } },
     ],
   },
 ]
@@ -102,6 +156,172 @@ const logLines = [
   '[ok] render complete',
 ]
 
+function classNames(...values: Array<string | false | undefined>) {
+  return values.filter(Boolean).join(' ')
+}
+
+function renderFileTreeNode(
+  { node, selected }: TreeRenderArgs<FileSystemNodeMeta>,
+  visual: TreeVisualOption,
+) {
+  const kind = node.data?.kind ?? 'file'
+
+  return (
+    <span
+      className={classNames(
+        styles.fileTreeNode,
+        selected && styles.fileTreeNodeSelected,
+        visual === 'rail' && styles.fileTreeNodeRail,
+      )}
+    >
+      <span
+        className={classNames(
+          styles.fileTreeIcon,
+          kind === 'folder' ? styles.fileTreeFolderIcon : styles.fileTreeFileIcon,
+        )}
+        aria-hidden="true"
+      />
+      <span className={styles.fileTreeLabel}>{node.label}</span>
+      <span className={styles.fileTreeDetail}>{node.data?.detail}</span>
+    </span>
+  )
+}
+
+function renderFileTreeDisclosure(
+  { expanded, selected }: TreeDisclosureArgs<FileSystemNodeMeta>,
+  visual: TreeVisualOption,
+) {
+  if (visual === 'marks') {
+    return (
+      <span
+        className={classNames(
+          styles.treeDisclosure,
+          styles.treeDisclosureMark,
+          expanded && styles.treeDisclosureMarkExpanded,
+          selected && styles.treeDisclosureSelected,
+        )}
+        aria-hidden="true"
+      >
+        {expanded ? '−' : '+'}
+      </span>
+    )
+  }
+
+  if (visual === 'rail') {
+    return (
+      <span
+        className={classNames(
+          styles.treeDisclosure,
+          styles.treeDisclosureRail,
+          expanded && styles.treeDisclosureRailExpanded,
+          selected && styles.treeDisclosureSelected,
+        )}
+        aria-hidden="true"
+      />
+    )
+  }
+
+  return (
+    <span
+      className={classNames(
+        styles.treeDisclosure,
+        styles.treeDisclosureBlock,
+        expanded && styles.treeDisclosureBlockExpanded,
+        selected && styles.treeDisclosureSelected,
+      )}
+      aria-hidden="true"
+    />
+  )
+}
+
+function canDropFileTreeNode({ position, targetNode }: TreeMoveArgs<FileSystemNodeMeta>) {
+  return position !== 'inside' || targetNode.data?.kind === 'folder'
+}
+
+function moveFileTreeNode(
+  nodes: TreeNode<FileSystemNodeMeta>[],
+  args: TreeMoveArgs<FileSystemNodeMeta>,
+) {
+  const { nodes: withoutDragged, removed } = removeTreeNode(nodes, args.draggedId)
+  if (removed === null) return nodes
+
+  const { nodes: nextNodes, inserted } = insertTreeNode(
+    withoutDragged,
+    args.targetId,
+    args.position,
+    removed,
+  )
+
+  return inserted ? nextNodes : nodes
+}
+
+function removeTreeNode(
+  nodes: TreeNode<FileSystemNodeMeta>[],
+  id: string,
+): { nodes: TreeNode<FileSystemNodeMeta>[]; removed: TreeNode<FileSystemNodeMeta> | null } {
+  let removed: TreeNode<FileSystemNodeMeta> | null = null
+  const nextNodes: TreeNode<FileSystemNodeMeta>[] = []
+
+  for (const node of nodes) {
+    if (node.id === id) {
+      removed = node
+      continue
+    }
+
+    if (node.children === undefined) {
+      nextNodes.push(node)
+      continue
+    }
+
+    const childResult = removeTreeNode(node.children, id)
+    if (childResult.removed !== null) removed = childResult.removed
+    nextNodes.push({ ...node, children: childResult.nodes })
+  }
+
+  return { nodes: nextNodes, removed }
+}
+
+function insertTreeNode(
+  nodes: TreeNode<FileSystemNodeMeta>[],
+  targetId: string,
+  position: TreeMoveArgs<FileSystemNodeMeta>['position'],
+  nodeToInsert: TreeNode<FileSystemNodeMeta>,
+): { nodes: TreeNode<FileSystemNodeMeta>[]; inserted: boolean } {
+  let inserted = false
+  const nextNodes: TreeNode<FileSystemNodeMeta>[] = []
+
+  for (const node of nodes) {
+    if (node.id === targetId && position === 'before') {
+      nextNodes.push(nodeToInsert)
+      inserted = true
+    }
+
+    if (node.id === targetId && position === 'inside') {
+      nextNodes.push({
+        ...node,
+        children: [...(node.children ?? []), nodeToInsert],
+      })
+      inserted = true
+      continue
+    }
+
+    if (node.children === undefined) {
+      nextNodes.push(node)
+    } else {
+      const childResult = insertTreeNode(node.children, targetId, position, nodeToInsert)
+      if (childResult.inserted) inserted = true
+      nextNodes.push({ ...node, children: childResult.nodes })
+    }
+
+    if (node.id === targetId && position === 'after') {
+      nextNodes.push(nodeToInsert)
+      inserted = true
+    }
+  }
+
+  return { nodes: nextNodes, inserted }
+}
+
 const workspaceLabels: Record<WorkspaceTab, string> = {
   'panel-a': '<PaneShell>',
   'panel-b': '<Tabs>',
@@ -110,7 +330,8 @@ const workspaceLabels: Record<WorkspaceTab, string> = {
 }
 
 export function App() {
-  const [theme, setTheme] = useState<Theme>('dark')
+  const [theme, setTheme] = useState<Theme>('bun')
+  const [coloring, setColoring] = useState<Theme>('bun')
   const [textValue, setTextValue] = useState('Controlled text')
   const [numberValue, setNumberValue] = useState<number | null>(42)
   const [selectValue, setSelectValue] = useState<string | null>('beta')
@@ -120,13 +341,15 @@ export function App() {
   const [inputTab, setInputTab] = useState<InputTab>('underline')
   const [paneRail, setPaneRail] = useState<PaneRail>('rail-a')
   const [paneSection, setPaneSection] = useState<PaneSection>('section-a')
+  const [treeNodes, setTreeNodes] = useState<TreeNode<FileSystemNodeMeta>[]>(initialFileTreeNodes)
   const [treeExpanded, setTreeExpanded] = useState<Set<string>>(
-    () => new Set(['root', 'group-a']),
+    () => new Set(['workspace', 'src', 'src-components', 'examples', 'tests']),
   )
-  const [treeSelected, setTreeSelected] = useState<string | null>('item-a')
+  const [treeSelected, setTreeSelected] = useState<string | null>('src-components-tree')
+  const [treeVisual, setTreeVisual] = useState<TreeVisualOption>('blocks')
   const [sidebarItem, setSidebarItem] = useState('one')
-  const [modalOpen, setModalOpen] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [navOpen, setNavOpen] = useState(false)
 
   const paneRailItems = useMemo(
     () => [
@@ -143,6 +366,19 @@ export function App() {
     ],
     [],
   )
+
+  function handleTreeMove(args: TreeMoveArgs<FileSystemNodeMeta>) {
+    setTreeNodes((nodes) => moveFileTreeNode(nodes, args))
+    setTreeSelected(args.draggedId)
+
+    if (args.position === 'inside') {
+      setTreeExpanded((expanded) => {
+        const next = new Set(expanded)
+        next.add(args.targetId)
+        return next
+      })
+    }
+  }
 
   function renderWorkspacePanel(tab: WorkspaceTab) {
     if (tab === 'panel-c') {
@@ -174,54 +410,158 @@ export function App() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme} coloring={coloring}>
       <div className={styles.catalog}>
+        <div className={styles.announcement}>pyseas-ui demo, tuned toward bun.com →</div>
+
         <header className={styles.header}>
-          <div className={styles.headerText}>
-            <span className={styles.packageName}>pyseas-ui</span>
-            <h1 className={styles.title}>Component catalog</h1>
-            <p className={styles.summary}>
-              Public UI exports rendered as documentation specimens, not as an application screen.
-            </p>
-          </div>
+          <a className={styles.brand} href="#" aria-label="pyseas-ui demo home">
+            <span className={styles.bunMark} aria-hidden="true">ps</span>
+            <span>pyseas-ui</span>
+          </a>
+          <nav className={classNames(styles.headerNav, navOpen && styles.headerNavOpen)} aria-label="Catalog sections">
+            <a href="#theming" onClick={() => setNavOpen(false)}>Themes</a>
+            <a href="#controls" onClick={() => setNavOpen(false)}>Controls</a>
+            <a href="#data-display" onClick={() => setNavOpen(false)}>Data</a>
+            <a href="#layout-components" onClick={() => setNavOpen(false)}>Layout</a>
+          </nav>
           <Toolbar>
-            <Button
-              size="sm"
-              variant={theme === 'dark' ? 'primary' : 'default'}
-              onClick={() => setTheme('dark')}
+            <button
+              className={classNames(styles.hamburger, navOpen && styles.hamburgerOpen)}
+              type="button"
+              aria-label={navOpen ? 'Close navigation' : 'Open navigation'}
+              aria-expanded={navOpen}
+              onClick={() => setNavOpen((open) => !open)}
             >
-              Dark
-            </Button>
-            <Button
-              size="sm"
-              variant={theme === 'light' ? 'primary' : 'default'}
-              onClick={() => setTheme('light')}
-            >
-              Light
-            </Button>
+              <span className={styles.hamburgerBar} />
+              <span className={styles.hamburgerBar} />
+            </button>
           </Toolbar>
         </header>
+
+        <section className={styles.hero} aria-labelledby="demo-title">
+          <div className={styles.headerText}>
+            <span className={styles.releasePill}>Bun theme for the demo →</span>
+            <h1 id="demo-title" className={styles.title}>
+              <span className={styles.titleCode}>bun demo</span>
+              <span>component catalog</span>
+            </h1>
+            <p className={styles.summary}>
+              Same exported pyseas-ui components, presented with a bun.com-style shell: charcoal
+              surfaces, pink accents, rounded code panels, and dense developer-tool chrome.
+            </p>
+            <div className={styles.heroActions}>
+              <Button
+                variant="primary"
+                onClick={() => document.getElementById('controls')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Browse components
+              </Button>
+              <Button onClick={() => document.getElementById('theming')?.scrollIntoView({ behavior: 'smooth' })}>
+                Token packs
+              </Button>
+            </div>
+            <div className={styles.installCard} aria-label="Demo command">
+              <span className={styles.prompt}>$</span>
+              <code>bun run demo</code>
+              <span className={styles.copyGlyph} aria-hidden="true">⌘</span>
+            </div>
+            <p className={styles.heroFootnote}>Theme switcher stays available; the demo opens on the Bun pack by default.</p>
+          </div>
+
+          <aside className={styles.previewCard} aria-label="Bun-style component preview">
+            <Tabs
+              items={[
+                { value: 'underline', label: 'Controls' },
+                { value: 'bracket', label: 'Surfaces' },
+                { value: 'slash', label: 'Layout' },
+              ]}
+              value={inputTab}
+              onChange={(value) => setInputTab(value as InputTab)}
+            />
+            <div className={styles.previewBody}>
+              <div className={styles.metricRows}>
+                <div className={styles.metricRow}>
+                  <span>Button</span>
+                  <span className={styles.metricBarTrack}><span className={classNames(styles.metricBarFill, styles.metricBarFillSm)} /></span>
+                  <code>24 px</code>
+                </div>
+                <div className={styles.metricRow}>
+                  <span>Field</span>
+                  <span className={styles.metricBarTrack}><span className={classNames(styles.metricBarFill, styles.metricBarFillMd)} /></span>
+                  <code>30 px</code>
+                </div>
+                <div className={styles.metricRow}>
+                  <span>Panel</span>
+                  <span className={styles.metricBarTrack}><span className={classNames(styles.metricBarFill, styles.metricBarFillLg)} /></span>
+                  <code>34 px</code>
+                </div>
+                <div className={styles.metricRow}>
+                  <span>Workspace</span>
+                  <span className={styles.metricBarTrack}><span className={classNames(styles.metricBarFill, styles.metricBarFillXl)} /></span>
+                  <code>4 panes</code>
+                </div>
+              </div>
+              <Result label="Reference fit" value={0.92} status="ok" ratio="bun.com-inspired" />
+              <Toolbar>
+                <StatusBadge variant="info" label={theme} />
+                <Button size="sm" variant="primary">Primary</Button>
+                <Button size="sm">Default</Button>
+              </Toolbar>
+            </div>
+          </aside>
+        </section>
 
         <main className={styles.sections}>
           <DocSection title="Theming">
             <ComponentBlock
               name="<ThemeProvider>"
               source="src/components/ThemeProvider.tsx"
-              meta="ThemeProviderProps.theme: dark | light"
+              meta={`theme={appearance} coloring={color scheme} overrides={custom vars}`}
             >
+              <div className={styles.themePickerLabel}>Appearance pack</div>
               <div className={styles.themeGrid}>
-                <ThemeProvider theme="dark">
-                  <div className={styles.themeSample}>
-                    <StatusBadge variant="info" label="dark" />
-                    <span>data-theme=&quot;dark&quot;</span>
-                  </div>
-                </ThemeProvider>
-                <ThemeProvider theme="light">
-                  <div className={styles.themeSample}>
-                    <StatusBadge variant="info" label="light" />
-                    <span>data-theme=&quot;light&quot;</span>
-                  </div>
-                </ThemeProvider>
+                {appearanceOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    className={classNames(styles.themeSample, theme === option.value && styles.themeSampleActive)}
+                    onClick={() => setTheme(option.value)}
+                  >
+                    <ThemeProvider theme={option.value}>
+                      <StatusBadge variant="info" label={option.label} />
+                      <span>{option.value}</span>
+                    </ThemeProvider>
+                  </button>
+                ))}
+              </div>
+              <div className={styles.themePickerLabel} style={{ marginTop: 'var(--ps-space-lg)' }}>
+                Coloring scheme
+              </div>
+              <div className={styles.themeGrid}>
+                {coloringOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    className={classNames(styles.coloringSample, coloring === option.value && styles.coloringSampleActive)}
+                    onClick={() => setColoring(option.value)}
+                    style={{
+                      '--ps-sample-surface': `var(--ps-surface)`,
+                      '--ps-sample-text': `var(--ps-text)`,
+                      '--ps-sample-accent': `var(--ps-accent)`,
+                      '--ps-sample-muted': `var(--ps-text-muted)`,
+                    } as React.CSSProperties}
+                  >
+                    <ThemeProvider theme={theme} coloring={option.value}>
+                      <span className={styles.coloringSwatch}>
+                        <span className={styles.coloringDot} style={{ background: 'var(--ps-surface)' }} />
+                        <span className={styles.coloringDot} style={{ background: 'var(--ps-accent)' }} />
+                        <span className={styles.coloringDot} style={{ background: 'var(--ps-text-muted)' }} />
+                      </span>
+                      <span>{option.label}</span>
+                    </ThemeProvider>
+                  </button>
+                ))}
               </div>
             </ComponentBlock>
           </DocSection>
@@ -425,16 +765,56 @@ export function App() {
               <ComponentBlock
                 name="<Tree>"
                 source="src/components/Tree.tsx"
-                meta="controlled expanded set and selected id"
+                meta="controlled filesystem mockup with drag-to-move"
               >
-                <Tree
-                  nodes={treeNodes}
-                  expanded={treeExpanded}
-                  onExpandedChange={setTreeExpanded}
-                  selected={treeSelected}
-                  onSelect={(id) => setTreeSelected(id)}
-                  aria-label="Component Tree specimen"
-                />
+                <div className={styles.treeVisualPanel} aria-label="Tree visual options">
+                  {treeVisualOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      className={classNames(
+                        styles.treeVisualOption,
+                        treeVisual === option.value && styles.treeVisualOptionActive,
+                      )}
+                      onClick={() => setTreeVisual(option.value)}
+                    >
+                      <span className={styles.treeVisualPreview} aria-hidden="true">
+                        <span className={styles.treeVisualPreviewLine}>
+                          {renderFileTreeDisclosure({
+                            node: initialFileTreeNodes[0]!,
+                            depth: 0,
+                            expanded: true,
+                            selected: false,
+                            disabled: false,
+                          }, option.value)}
+                          <span className={styles.treeVisualPreviewFolder} />
+                          <span className={styles.treeVisualPreviewText} />
+                        </span>
+                        <span className={styles.treeVisualPreviewLine}>
+                          <span className={styles.treeVisualPreviewIndent} />
+                          <span className={styles.treeVisualPreviewSpacer} />
+                          <span className={styles.treeVisualPreviewFile} />
+                          <span className={styles.treeVisualPreviewTextShort} />
+                        </span>
+                      </span>
+                      <span>{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className={styles.fileTreeFrame}>
+                  <Tree
+                    nodes={treeNodes}
+                    expanded={treeExpanded}
+                    onExpandedChange={setTreeExpanded}
+                    selected={treeSelected}
+                    onSelect={(id) => setTreeSelected(id)}
+                    onMove={handleTreeMove}
+                    canDrop={canDropFileTreeNode}
+                    renderDisclosure={(args) => renderFileTreeDisclosure(args, treeVisual)}
+                    renderNode={(args) => renderFileTreeNode(args, treeVisual)}
+                    aria-label="Filesystem Tree specimen"
+                  />
+                </div>
               </ComponentBlock>
 
               <ComponentBlock
@@ -580,25 +960,6 @@ export function App() {
 
             <div className={styles.layoutGrid}>
               <ComponentBlock
-                name="<WorkbenchLayout>"
-                source="src/components/WorkbenchLayout.tsx"
-                meta="rail plus four fixed content slots"
-              >
-                <div className={styles.workbenchFrame}>
-                  <WorkbenchLayout
-                    rail={<SpecimenSlot label="rail" />}
-                    setupPanel={<SpecimenSlot label="setupPanel" />}
-                    diagramPanel={<SpecimenSlot label="diagramPanel" />}
-                    analysisPanel={<SpecimenSlot label="analysisPanel" />}
-                    resultsPanel={<SpecimenSlot label="resultsPanel" />}
-                    railWidth={112}
-                    columnSplit={0.46}
-                    rowSplit={0.54}
-                  />
-                </div>
-              </ComponentBlock>
-
-              <ComponentBlock
                 name="<Workspace>"
                 source="src/components/Workspace.tsx"
                 meta="draggable tabbed pane tree"
@@ -623,55 +984,31 @@ export function App() {
           <DocSection title="Overlays">
             <div className={styles.grid}>
               <ComponentBlock
-                name="<Modal>"
-                source="src/components/Modal.tsx"
+                name="<Dialog>"
+                source="src/components/Dialog.tsx"
                 meta="portal overlay with title, body, footer, close action"
               >
                 <div className={styles.wrapRow}>
-                  <Button onClick={() => setModalOpen(true)}>Open Modal</Button>
-                  <StatusBadge variant="info" label="open=false by default" />
-                </div>
-                <Modal
-                  open={modalOpen}
-                  onClose={() => setModalOpen(false)}
-                  title="<Modal>"
-                  titleActions={<StatusBadge variant="ok" label="titleActions" />}
-                  footer={
-                    <Toolbar>
-                      <Button size="sm" variant="ghost" onClick={() => setModalOpen(false)}>
-                        Close
-                      </Button>
-                      <Button size="sm" variant="primary" onClick={() => setModalOpen(false)}>
-                        Confirm
-                      </Button>
-                    </Toolbar>
-                  }
-                >
-                  <div className={styles.specimenText}>Modal children render in the body slot.</div>
-                </Modal>
-              </ComponentBlock>
-
-              <ComponentBlock
-                name="<Dialog>"
-                source="src/components/Modal.tsx"
-                meta="Dialog is an alias export of Modal"
-              >
-                <div className={styles.wrapRow}>
                   <Button onClick={() => setDialogOpen(true)}>Open Dialog</Button>
-                  <StatusBadge variant="info" label="alias" />
+                  <StatusBadge variant="info" label="open=false by default" />
                 </div>
                 <Dialog
                   open={dialogOpen}
                   onClose={() => setDialogOpen(false)}
                   title="<Dialog>"
-                  size="sm"
+                  titleActions={<StatusBadge variant="ok" label="titleActions" />}
                   footer={
-                    <Button size="sm" onClick={() => setDialogOpen(false)}>
-                      Close
-                    </Button>
+                    <Toolbar>
+                      <Button size="sm" variant="ghost" onClick={() => setDialogOpen(false)}>
+                        Close
+                      </Button>
+                      <Button size="sm" variant="primary" onClick={() => setDialogOpen(false)}>
+                        Confirm
+                      </Button>
+                    </Toolbar>
                   }
                 >
-                  <div className={styles.specimenText}>Dialog uses the Modal implementation.</div>
+                  <div className={styles.specimenText}>Dialog children render in the body slot.</div>
                 </Dialog>
               </ComponentBlock>
             </div>
@@ -687,9 +1024,13 @@ interface DocSectionProps {
   children: ReactNode
 }
 
+function sectionIdFromTitle(title: string) {
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+}
+
 function DocSection({ title, children }: DocSectionProps) {
   return (
-    <section className={styles.section}>
+    <section id={sectionIdFromTitle(title)} className={styles.section}>
       <h2 className={styles.sectionTitle}>{title}</h2>
       {children}
     </section>
@@ -716,8 +1057,4 @@ function ComponentBlock({ name, source, meta, children }: ComponentBlockProps) {
       <div className={styles.componentBody}>{children}</div>
     </article>
   )
-}
-
-function SpecimenSlot({ label }: { label: string }) {
-  return <div className={styles.specimenSlot}>{label}</div>
 }

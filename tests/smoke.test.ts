@@ -1,5 +1,6 @@
 import { expect, test } from 'bun:test'
 import type {
+  ThemeName,
   ThemeProviderProps,
   PanelProps,
   TabsProps,
@@ -15,18 +16,22 @@ import type {
   SelectOption,
   CheckboxProps,
   ToggleProps,
-  ModalProps,
-  ModalSize,
+  DialogProps,
+  DialogSize,
   StatusBadgeProps,
   StatusVariant,
   ResultProps,
   ResultStatus,
   LogViewProps,
+  TreeDisclosureArgs,
+  TreeDropPosition,
+  TreeMoveArgs,
+  TreeNode,
+  TreeProps,
   DrawingDownload,
   DrawingSource,
   DrawingViewerProps,
   DrawingViewerStatus,
-  WorkbenchLayoutProps,
   WorkspaceProps,
   AppShellProps,
   TopBarProps,
@@ -39,8 +44,9 @@ import type {
 // Type-level smoke: all exports resolve. Runtime check: basic instantiation.
 test('all component types are importable', () => {
   // Verify type shapes at runtime by constructing minimal valid objects.
-  const themeProps: ThemeProviderProps = { theme: 'dark', children: null }
-  expect(themeProps.theme).toBe('dark')
+  const themeName: ThemeName = 'compact'
+  const themeProps: ThemeProviderProps = { theme: themeName, children: null }
+  expect(themeProps.theme).toBe('compact')
 
   const panelProps: PanelProps = { children: null }
   expect(panelProps.children).toBeNull()
@@ -76,9 +82,9 @@ test('all component types are importable', () => {
   const toggleProps: ToggleProps = { value: true, onChange: () => {} }
   expect(toggleProps.value).toBe(true)
 
-  const modalSize: ModalSize = 'lg'
-  const modalProps: ModalProps = { open: false, onClose: () => {}, children: null, size: modalSize }
-  expect(modalProps.open).toBe(false)
+  const dialogSize: DialogSize = 'lg'
+  const dialogProps: DialogProps = { open: false, onClose: () => {}, children: null, size: dialogSize }
+  expect(dialogProps.open).toBe(false)
 
   const sv: StatusVariant = 'ok'
   const sbProps: StatusBadgeProps = { variant: sv }
@@ -91,6 +97,33 @@ test('all component types are importable', () => {
   const lvProps: LogViewProps = { lines: ['line1'] }
   expect(lvProps.lines[0]).toBe('line1')
 
+  const treeNode: TreeNode = { id: 'node', label: 'Node' }
+  const treeDisclosure: TreeDisclosureArgs = {
+    node: treeNode,
+    depth: 0,
+    expanded: true,
+    selected: false,
+    disabled: false,
+  }
+  const treeDropPosition: TreeDropPosition = 'inside'
+  const treeMove: TreeMoveArgs = {
+    draggedId: 'node',
+    targetId: 'target',
+    position: treeDropPosition,
+    draggedNode: treeNode,
+    targetNode: { id: 'target', label: 'Target' },
+  }
+  const treeProps: TreeProps = {
+    nodes: [treeNode],
+    expanded: new Set(),
+    onExpandedChange: () => {},
+    onMove: () => {},
+    renderDisclosure: () => null,
+  }
+  expect(treeDisclosure.expanded).toBe(true)
+  expect(treeMove.position).toBe('inside')
+  expect(treeProps.nodes[0]?.id).toBe('node')
+
   const drawingSource: DrawingSource = { kind: 'svg', content: '<svg />' }
   const drawingStatus: DrawingViewerStatus = 'ready'
   const drawingDownload: DrawingDownload = { href: '/drawing.dxf', label: 'DXF' }
@@ -100,15 +133,6 @@ test('all component types are importable', () => {
     download: drawingDownload,
   }
   expect(drawingProps.source?.kind).toBe('svg')
-
-  const wbProps: WorkbenchLayoutProps = {
-    rail: null,
-    setupPanel: null,
-    diagramPanel: null,
-    analysisPanel: null,
-    resultsPanel: null,
-  }
-  expect(wbProps.railWidth).toBeUndefined()
 
   const workspaceLayout: LayoutNode<'one'> = { type: 'leaf', id: 'leaf', tabs: ['one'], activeTab: 'one' }
   const workspaceProps: WorkspaceProps<'one'> = {
@@ -145,13 +169,12 @@ test('named exports are present', async () => {
     'Select',
     'Checkbox',
     'Toggle',
-    'Modal',
     'Dialog',
     'StatusBadge',
     'Result',
     'LogView',
+    'Tree',
     'DrawingViewer',
-    'WorkbenchLayout',
     'Workspace',
     'PaneShell',
     'AppShell',

@@ -1,28 +1,29 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import styles from './Modal.module.css'
+import styles from './Dialog.module.css'
 import { cx } from './cx'
+import { useTheme } from './ThemeProvider'
 
-export type ModalSize = 'sm' | 'md' | 'lg'
+export type DialogSize = 'sm' | 'md' | 'lg'
 
-export interface ModalProps {
+export interface DialogProps {
   open: boolean
   onClose: () => void
   title?: string
   titleActions?: ReactNode
   footer?: ReactNode
-  size?: ModalSize
+  size?: DialogSize
   children: ReactNode
   className?: string
 }
 
-const sizeClass: Record<ModalSize, string> = {
+const sizeClass: Record<DialogSize, string> = {
   sm: styles.sm ?? '',
   md: styles.md ?? '',
   lg: styles.lg ?? '',
 }
 
-export function Modal({
+export function Dialog({
   open,
   onClose,
   title,
@@ -31,7 +32,7 @@ export function Modal({
   size = 'md',
   children,
   className,
-}: ModalProps) {
+}: DialogProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -51,6 +52,8 @@ export function Modal({
     }
   }, [open])
 
+  const themeCtx = useTheme()
+
   if (!open) return null
 
   const dialogCls = cx(styles.dialog, sizeClass[size], className)
@@ -65,16 +68,19 @@ export function Modal({
       }}
       aria-modal="true"
       role="dialog"
+      data-theme={themeCtx?.theme}
+      data-coloring={themeCtx?.coloring}
+      data-theme-mode={themeCtx?.mode}
     >
       <div
         ref={dialogRef}
         className={dialogCls}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        data-pyseas-ui="modal"
+        data-pyseas-ui="dialog"
       >
         {hasTitle && (
-          <div className={styles.titleBar} data-pyseas-ui="modal-title-bar">
+          <div className={styles.titleBar} data-pyseas-ui="dialog-title-bar">
             <span className={styles.title}>{title}</span>
             {titleActions !== undefined && (
               <div className={styles.titleActions}>{titleActions}</div>
@@ -89,16 +95,12 @@ export function Modal({
             </button>
           </div>
         )}
-        <div className={styles.body} data-pyseas-ui="modal-body">{children}</div>
+        <div className={styles.body} data-pyseas-ui="dialog-body">{children}</div>
         {hasFooter && (
-          <div className={styles.footer} data-pyseas-ui="modal-footer">{footer}</div>
+          <div className={styles.footer} data-pyseas-ui="dialog-footer">{footer}</div>
         )}
       </div>
     </div>,
     document.body,
   )
 }
-
-/** @alias Modal */
-export const Dialog = Modal
-export type { ModalProps as DialogProps }

@@ -2,8 +2,8 @@ import './styles.css'
 
 // pyseas-ui public API
 
-export { ThemeProvider } from './components/ThemeProvider'
-export type { ThemeProviderProps } from './components/ThemeProvider'
+export { ThemeProvider, useTheme } from './components/ThemeProvider'
+export type { ThemeContextValue, ThemeMode, ThemeName, ThemeProviderProps } from './components/ThemeProvider'
 
 export { Panel } from './components/Panel'
 export type { PanelProps } from './components/Panel'
@@ -35,8 +35,8 @@ export type { CheckboxProps } from './components/Checkbox'
 export { Toggle } from './components/Toggle'
 export type { ToggleProps } from './components/Toggle'
 
-export { Modal, Dialog } from './components/Modal'
-export type { ModalProps, ModalSize, DialogProps } from './components/Modal'
+export { Dialog } from './components/Dialog'
+export type { DialogProps, DialogSize } from './components/Dialog'
 
 export { StatusBadge } from './components/StatusBadge'
 export type { StatusBadgeProps, StatusVariant } from './components/StatusBadge'
@@ -65,10 +65,14 @@ export type {
 } from './components/CadViewer'
 
 export { Tree } from './components/Tree'
-export type { TreeProps, TreeNode, TreeRenderArgs } from './components/Tree'
-
-export { WorkbenchLayout } from './components/WorkbenchLayout'
-export type { WorkbenchLayoutProps } from './components/WorkbenchLayout'
+export type {
+  TreeDisclosureArgs,
+  TreeDropPosition,
+  TreeMoveArgs,
+  TreeNode,
+  TreeProps,
+  TreeRenderArgs,
+} from './components/Tree'
 
 export { Workspace } from './components/Workspace'
 export type { WorkspaceProps } from './components/Workspace'

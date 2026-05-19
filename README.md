@@ -6,7 +6,7 @@ Domain-neutral React component library for web-based engineering workbench appli
 
 ## What it is
 
-A collection of controlled, composable UI primitives and a workbench layout skeleton. The visual language is dense, precise, and flat: compact controls, square corners, monospace labels, dark-first theming. It is designed for engineering tooling, not consumer or marketing interfaces.
+A collection of controlled, composable UI primitives and layout building blocks. The visual language is dense, precise, and flat: compact controls, square corners, monospace labels, dark-first theming. It is designed for engineering tooling, not consumer or marketing interfaces.
 
 The design direction is tracked in [`docs/ui-brief.md`](docs/ui-brief.md), with external inspiration recorded in [`docs/design-references.md`](docs/design-references.md).
 
@@ -67,13 +67,15 @@ This must load before any `pyseas-ui` component renders. Without it the theme to
 
 ## Theming
 
-Wrap the application (or any sub-tree) in `<ThemeProvider>`. Pass the resolved theme value — `ThemeProvider` does not read `prefers-color-scheme` or localStorage itself; the caller must supply the resolved string.
+Wrap the application (or any sub-tree) in `<ThemeProvider>`. Pass the resolved theme pack — `ThemeProvider` does not read `prefers-color-scheme` or localStorage itself; the caller must supply the resolved string.
+
+Built-in theme packs: `default`, `light`, `bun`, `high-contrast`, and `compact`. The legacy `dark` value is accepted as an alias of `default`.
 
 ```tsx
-import { ThemeProvider } from 'pyseas-ui'
+import { ThemeProvider, type ThemeName } from 'pyseas-ui'
 
 function App() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const [theme, setTheme] = useState<ThemeName>('default')
 
   // Persist across sessions
   useEffect(() => {
@@ -91,8 +93,8 @@ function App() {
 On mount, read the stored value:
 
 ```tsx
-const stored = localStorage.getItem('app-theme') as 'dark' | 'light' | null
-const [theme, setTheme] = useState<'dark' | 'light'>(stored ?? 'dark')
+const stored = localStorage.getItem('app-theme') as ThemeName | null
+const [theme, setTheme] = useState<ThemeName>(stored ?? 'default')
 ```
 
 ---
@@ -101,18 +103,18 @@ const [theme, setTheme] = useState<'dark' | 'light'>(stored ?? 'dark')
 
 | Component | Purpose |
 |---|---|
-| `ThemeProvider` | Mounts `--ps-*` CSS tokens; switches dark / light |
+| `ThemeProvider` | Mounts `--ps-*` CSS tokens; switches named theme packs |
 | `Panel` | Rectangular container with optional title bar and header action slot |
 | `Tabs` | Controlled horizontal tab strip; caller renders panel body |
 | `Toolbar` | Horizontal row of tightly-spaced small controls |
 | `Button` | Action button — variants: `default`, `primary`, `danger`, `ghost` |
 | `IconButton` | Square icon-only button; same variant / size model as `Button` |
 | `TextField` | Controlled single-line text input |
-| `NumberField` | Spinner-free controlled numeric input; exposes parsed `number \| null` and supports arrow / focused-wheel stepping |
+| `NumberField` | Spinner-free controlled numeric input; exposes parsed `number \| null` and supports arrow-key/input-wheel stepping |
 | `Select` | Controlled single-select dropdown |
 | `Checkbox` | Controlled checkbox with optional label; supports indeterminate |
 | `Toggle` | Controlled boolean toggle switch |
-| `Modal` / `Dialog` | Overlay shell with focus trap and Escape-to-close; no built-in form wiring |
+| `Dialog` | Overlay shell with focus trap and Escape-to-close; no built-in form wiring |
 | `StatusBadge` | Inline status badge — `ok`, `warn`, `err`, `info` |
 | `Result` | Display row for a pre-computed result: label, value, unit, status, utilisation |
 | `LogView` | Scrollable monospace area for streamed text; auto-scrolls to bottom |
@@ -123,7 +125,6 @@ const [theme, setTheme] = useState<'dark' | 'light'>(stored ?? 'dark')
 | `IconSidebar` | 48px icon rail matching the workbench icon-rail pattern |
 | `StatusBar` | Compact bottom status row |
 | `Workspace` | pane tree with square tabs, split resizing, tab moves, and pane moves |
-| `WorkbenchLayout` | Legacy fixed four-pane workbench skeleton |
 
 Full prop interfaces are in [`docs/component-contract.md`](docs/component-contract.md).
 
@@ -182,7 +183,7 @@ const layout: LayoutNode<PanelId> = {
 
 function MyApp() {
   return (
-    <ThemeProvider theme="light">
+    <ThemeProvider theme="default">
       <AppShell
         topbar={<TopBar title="Engineering App" subtitle="workflow" />}
         sidebar={<IconSidebar activeItem="parts" items={[]} />}
@@ -203,57 +204,13 @@ The exported pure helpers (`moveTab`, `moveGroup`,
 `setSplitSizesAtPath`, `computeDropEdge`, and related functions) are
 available for tests, persistence, or app-specific layout commands.
 
-## WorkbenchLayout example
-
-```tsx
-import 'pyseas-ui/dist/pyseas-ui.css'
-import { ThemeProvider, WorkbenchLayout, Panel } from 'pyseas-ui'
-
-function MyApp() {
-  return (
-    <ThemeProvider theme="dark">
-      <div style={{ height: '100vh', overflow: 'hidden' }}>
-        <WorkbenchLayout
-          rail={<NavRail />}
-          setupPanel={
-            <Panel title="Setup" style={{ height: '100%' }}>
-              {/* input fields */}
-            </Panel>
-          }
-          diagramPanel={
-            <Panel title="Diagram" style={{ height: '100%' }}>
-              {/* SVG or canvas */}
-            </Panel>
-          }
-          analysisPanel={
-            <Panel title="Analysis" style={{ height: '100%' }}>
-              {/* options and controls */}
-            </Panel>
-          }
-          resultsPanel={
-            <Panel title="Results" style={{ height: '100%' }}>
-              {/* Result rows, LogView */}
-            </Panel>
-          }
-        />
-      </div>
-    </ThemeProvider>
-  )
-}
-```
-
-Default column proportions: `48px 240px 1fr 280px 300px` (rail, setup, diagram, analysis, results). Slots set to `undefined` collapse to zero. The layout does not scroll the viewport — each pane manages its own overflow.
-
----
-
 ## Boundaries with pyseas-yard-gui and pyseas-dock-gui
 
 `pyseas-ui` owns:
 
 - Presentation primitives (buttons, fields, panels, badges, log view)
 - Source-agnostic drawing preview presentation (`DrawingViewer`)
-- Workbench layout skeleton
-- workbench pane shell, tabstrips, splitters, and drag/drop layout state
+- Workbench pane shell, tabstrips, splitters, and drag/drop layout state
 - Design tokens (`--ps-*` CSS custom properties)
 - Theme switching mechanics
 
