@@ -1,7 +1,6 @@
 {
   "name": "pyseas-ui",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "main": "./dist/pyseas-ui.es.js",
   "module": "./dist/pyseas-ui.es.js",
