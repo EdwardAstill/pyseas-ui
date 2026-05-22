@@ -1,6 +1,6 @@
 import '../src/styles.css'
 
-import { useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 
 import styles from './App.module.css'
 import {
@@ -42,6 +42,7 @@ type InputTab = 'underline' | 'bracket' | 'slash'
 type PaneRail = 'rail-a' | 'rail-b' | 'rail-c'
 type PaneSection = 'section-a' | 'section-b'
 type WorkspaceTab = 'panel-a' | 'panel-b' | 'panel-c' | 'panel-d'
+type NavSectionId = 'theming' | 'controls' | 'data-display' | 'layout-components'
 type FileSystemNodeMeta =
   | { kind: 'folder'; detail: string }
   | { kind: 'file'; detail: string }
@@ -70,6 +71,13 @@ const treeVisualOptions: Array<{ value: TreeVisualOption; label: string }> = [
   { value: 'blocks', label: 'Blocks' },
   { value: 'marks', label: 'Plus / minus' },
   { value: 'rail', label: 'Rail' },
+]
+
+const navItems: Array<{ id: NavSectionId; label: string }> = [
+  { id: 'theming', label: 'Themes' },
+  { id: 'controls', label: 'Controls' },
+  { id: 'data-display', label: 'Data' },
+  { id: 'layout-components', label: 'Layout' },
 ]
 
 const initialFileTreeNodes: TreeNode<FileSystemNodeMeta>[] = [
@@ -331,7 +339,7 @@ const workspaceLabels: Record<WorkspaceTab, string> = {
 
 export function App() {
   const [theme, setTheme] = useState<Theme>('bun')
-  const [coloring, setColoring] = useState<Theme>('bun')
+  const [coloring, setColoring] = useState<Theme>('neon-pink')
   const [textValue, setTextValue] = useState('Controlled text')
   const [numberValue, setNumberValue] = useState<number | null>(42)
   const [selectValue, setSelectValue] = useState<string | null>('beta')
@@ -350,6 +358,30 @@ export function App() {
   const [sidebarItem, setSidebarItem] = useState('one')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [navOpen, setNavOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState<NavSectionId>('theming')
+
+  useEffect(() => {
+    function updateActiveSection() {
+      const anchorY = window.scrollY + 140
+      let nextSection: NavSectionId = navItems[0]!.id
+
+      for (const item of navItems) {
+        const section = document.getElementById(item.id)
+        if (section !== null && section.offsetTop <= anchorY) nextSection = item.id
+      }
+
+      setActiveSection(nextSection)
+    }
+
+    updateActiveSection()
+    window.addEventListener('scroll', updateActiveSection, { passive: true })
+    window.addEventListener('resize', updateActiveSection)
+
+    return () => {
+      window.removeEventListener('scroll', updateActiveSection)
+      window.removeEventListener('resize', updateActiveSection)
+    }
+  }, [])
 
   const paneRailItems = useMemo(
     () => [
@@ -420,10 +452,20 @@ export function App() {
             <span>pyseas-ui</span>
           </a>
           <nav className={classNames(styles.headerNav, navOpen && styles.headerNavOpen)} aria-label="Catalog sections">
-            <a href="#theming" onClick={() => setNavOpen(false)}>Themes</a>
-            <a href="#controls" onClick={() => setNavOpen(false)}>Controls</a>
-            <a href="#data-display" onClick={() => setNavOpen(false)}>Data</a>
-            <a href="#layout-components" onClick={() => setNavOpen(false)}>Layout</a>
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                className={activeSection === item.id ? styles.headerNavLinkActive : undefined}
+                href={`#${item.id}`}
+                aria-current={activeSection === item.id ? 'location' : undefined}
+                onClick={() => {
+                  setActiveSection(item.id)
+                  setNavOpen(false)
+                }}
+              >
+                {item.label}
+              </a>
+            ))}
           </nav>
           <Toolbar>
             <button
@@ -522,45 +564,44 @@ export function App() {
               <div className={styles.themePickerLabel}>Appearance pack</div>
               <div className={styles.themeGrid}>
                 {appearanceOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    className={classNames(styles.themeSample, theme === option.value && styles.themeSampleActive)}
-                    onClick={() => setTheme(option.value)}
-                  >
-                    <ThemeProvider theme={option.value}>
-                      <StatusBadge variant="info" label={option.label} />
+                  <ThemeProvider key={option.value} theme={option.value} coloring={coloring}>
+                    <button
+                      type="button"
+                      className={classNames(styles.themeSample, theme === option.value && styles.themeSampleActive)}
+                      onClick={() => setTheme(option.value)}
+                    >
+                      <span className={styles.themeSampleTopline}>
+                        <StatusBadge variant="info" label={option.label} />
+                        <span className={styles.themeSampleTicks} aria-hidden="true">
+                          <span />
+                          <span />
+                          <span />
+                        </span>
+                      </span>
                       <span>{option.value}</span>
-                    </ThemeProvider>
-                  </button>
+                    </button>
+                  </ThemeProvider>
                 ))}
               </div>
-              <div className={styles.themePickerLabel} style={{ marginTop: 'var(--ps-space-lg)' }}>
+              <div className={classNames(styles.themePickerLabel, styles.themePickerLabelSpaced)}>
                 Coloring scheme
               </div>
               <div className={styles.themeGrid}>
                 {coloringOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    className={classNames(styles.coloringSample, coloring === option.value && styles.coloringSampleActive)}
-                    onClick={() => setColoring(option.value)}
-                    style={{
-                      '--ps-sample-surface': `var(--ps-surface)`,
-                      '--ps-sample-text': `var(--ps-text)`,
-                      '--ps-sample-accent': `var(--ps-accent)`,
-                      '--ps-sample-muted': `var(--ps-text-muted)`,
-                    } as React.CSSProperties}
-                  >
-                    <ThemeProvider theme={theme} coloring={option.value}>
+                  <ThemeProvider key={option.value} theme={theme} coloring={option.value}>
+                    <button
+                      type="button"
+                      className={classNames(styles.coloringSample, coloring === option.value && styles.coloringSampleActive)}
+                      onClick={() => setColoring(option.value)}
+                    >
                       <span className={styles.coloringSwatch}>
                         <span className={styles.coloringDot} style={{ background: 'var(--ps-surface)' }} />
                         <span className={styles.coloringDot} style={{ background: 'var(--ps-accent)' }} />
                         <span className={styles.coloringDot} style={{ background: 'var(--ps-text-muted)' }} />
                       </span>
                       <span>{option.label}</span>
-                    </ThemeProvider>
-                  </button>
+                    </button>
+                  </ThemeProvider>
                 ))}
               </div>
             </ComponentBlock>
@@ -657,68 +698,74 @@ export function App() {
           </DocSection>
 
           <DocSection title="Fields">
-            <div className={styles.fieldGrid}>
-              <TextField
-                label="<TextField>"
-                hint="controlled string value"
-                value={textValue}
-                onChange={setTextValue}
-              />
-              <TextField
-                label="<TextField error>"
-                value="Invalid"
-                onChange={() => {}}
-                error
-              />
-              <TextField
-                label="<TextField readOnly>"
-                value="Read only"
-                onChange={() => {}}
-                readOnly
-              />
-              <NumberField
-                label="<NumberField>"
-                hint="number | null"
-                value={numberValue}
-                onChange={setNumberValue}
-                min={0}
-                step={1}
-              />
-              <NumberField
-                label="<NumberField empty>"
-                value={null}
-                onChange={() => {}}
-                placeholder="0"
-              />
-              <Select
-                label="<Select>"
-                options={selectOptions}
-                value={selectValue}
-                onChange={setSelectValue}
-                placeholder="Select option"
-              />
-              <div className={styles.controlStack}>
-                <Checkbox checked={checked} onChange={setChecked} label="<Checkbox checked>" />
-                <Checkbox checked={false} onChange={() => {}} label="<Checkbox disabled>" disabled />
-                <Checkbox
-                  checked={false}
-                  indeterminate={indeterminate}
-                  onChange={(next) => {
-                    setIndeterminate(false)
-                    setChecked(next)
-                  }}
-                  label="<Checkbox indeterminate>"
+            <ComponentBlock
+              name="<TextField> / <NumberField> / <Select> / <Checkbox> / <Toggle>"
+              source="src/components/FieldRoot.tsx"
+              meta="shared field chrome, hints, error, read-only, disabled, and boolean states"
+            >
+              <div className={styles.fieldGrid}>
+                <TextField
+                  label="<TextField>"
+                  hint="controlled string value"
+                  value={textValue}
+                  onChange={setTextValue}
                 />
-                <Button size="sm" variant="ghost" onClick={() => setIndeterminate((value) => !value)}>
-                  Toggle indeterminate
-                </Button>
+                <TextField
+                  label="<TextField error>"
+                  value="Invalid"
+                  onChange={() => {}}
+                  error
+                />
+                <TextField
+                  label="<TextField readOnly>"
+                  value="Read only"
+                  onChange={() => {}}
+                  readOnly
+                />
+                <NumberField
+                  label="<NumberField>"
+                  hint="number | null"
+                  value={numberValue}
+                  onChange={setNumberValue}
+                  min={0}
+                  step={1}
+                />
+                <NumberField
+                  label="<NumberField empty>"
+                  value={null}
+                  onChange={() => {}}
+                  placeholder="0"
+                />
+                <Select
+                  label="<Select>"
+                  options={selectOptions}
+                  value={selectValue}
+                  onChange={setSelectValue}
+                  placeholder="Select option"
+                />
+                <div className={styles.controlStack}>
+                  <Checkbox checked={checked} onChange={setChecked} label="<Checkbox checked>" />
+                  <Checkbox checked={false} onChange={() => {}} label="<Checkbox disabled>" disabled />
+                  <Checkbox
+                    checked={false}
+                    indeterminate={indeterminate}
+                    onChange={(next) => {
+                      setIndeterminate(false)
+                      setChecked(next)
+                    }}
+                    label="<Checkbox indeterminate>"
+                  />
+                  <Button size="sm" variant="ghost" onClick={() => setIndeterminate((value) => !value)}>
+                    Toggle indeterminate
+                  </Button>
+                </div>
+                <div className={styles.controlStack}>
+                  <Toggle value={toggleValue} onChange={setToggleValue} label="<Toggle md>" />
+                  <Toggle value={!toggleValue} onChange={() => {}} label="<Toggle sm>" size="sm" />
+                  <Toggle value={false} onChange={() => {}} label="<Toggle disabled>" disabled />
+                </div>
               </div>
-              <div className={styles.controlStack}>
-                <Toggle value={toggleValue} onChange={setToggleValue} label="<Toggle md>" />
-                <Toggle value={!toggleValue} onChange={() => {}} label="<Toggle sm>" size="sm" />
-                <Toggle value={false} onChange={() => {}} label="<Toggle disabled>" disabled />
-              </div>
-            </div>
+            </ComponentBlock>
           </DocSection>
 
           <DocSection title="Status and output">
@@ -1028,6 +1075,10 @@ function sectionIdFromTitle(title: string) {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
+function sourceLabelFromPath(source: string) {
+  return source.split('/').pop() ?? source
+}
+
 function DocSection({ title, children }: DocSectionProps) {
   return (
     <section id={sectionIdFromTitle(title)} className={styles.section}>
@@ -1052,7 +1103,7 @@ function ComponentBlock({ name, source, meta, children }: ComponentBlockProps) {
           <h3 className={styles.componentName}>{name}</h3>
           <p className={styles.componentMeta}>{meta}</p>
         </div>
-        <code className={styles.componentSource}>{source}</code>
+        <code className={styles.componentSource} title={source}>{sourceLabelFromPath(source)}</code>
       </div>
       <div className={styles.componentBody}>{children}</div>
     </article>
