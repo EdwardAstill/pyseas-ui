@@ -14,7 +14,7 @@
   flex-direction: row;
   align-items: center;
   gap: var(--ps-space-xs);
-  height: 22px;
+  height: var(--ps-control-height-sm);
   padding: 0 var(--ps-space-sm);
   cursor: pointer;
   border: none;

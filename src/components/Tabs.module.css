@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid var(--ps-border);
-  height: 32px;
+  height: var(--ps-panel-header-height);
   align-items: stretch;
   padding: 0 12px;
   flex-shrink: 0;
@@ -55,7 +55,7 @@
 .tabsVertical .tab {
   border-bottom: none;
   margin-bottom: 0;
-  height: 26px;
+  height: var(--ps-control-height-sm);
   padding: 0 14px;
   text-align: left;
   display: flex;
@@ -92,7 +92,7 @@
 }
 
 .tabsSlash {
-  height: 26px;
+  height: var(--ps-control-height-sm);
   padding: 0 14px;
   gap: 0;
   align-items: center;

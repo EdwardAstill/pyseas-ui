@@ -67,7 +67,7 @@
   display: grid;
   gap: var(--ps-space-sm);
   border: 1px solid var(--ps-border);
-  border-radius: var(--ps-radius-none);
+  border-radius: var(--ps-radius-sm);
   background: var(--ps-panel-elevated);
   color: var(--ps-text);
   cursor: pointer;
@@ -104,6 +104,7 @@
   line-height: 1.35;
 }
 
+/* 1.1fr on the right column gives the readout panel slightly more breathing room */
 .stage {
   display: grid;
   grid-template-columns: minmax(340px, 0.9fr) minmax(340px, 1.1fr);

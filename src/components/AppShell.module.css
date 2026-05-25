@@ -39,7 +39,7 @@
 }
 
 .topbar {
-  height: 40px;
+  height: var(--ps-topbar-height);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -127,7 +127,7 @@
 }
 
 .statusbar {
-  height: 24px;
+  height: var(--ps-statusbar-height);
   display: flex;
   align-items: center;
   gap: 12px;

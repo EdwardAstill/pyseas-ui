@@ -79,7 +79,7 @@ export function DesignLab() {
         <section className={styles.fontPanel}>
           <Panel
             title="Font direction"
-            headerActions={<StatusBadge variant="info" label={fontModes[fontMode].label} />}
+            headerActions={<StatusBadge variant="info" label={fontModes[fontMode].label} size="control" />}
           >
             <div className={styles.fontOptions}>
               {(Object.keys(fontModes) as FontMode[]).map((mode) => (
@@ -106,7 +106,7 @@ export function DesignLab() {
         </section>
 
         <section className={styles.stage}>
-          <Panel title="Form specimen" headerActions={<StatusBadge variant="ok" label="spinner-free" />}>
+          <Panel title="Form specimen" headerActions={<StatusBadge variant="ok" label="spinner-free" size="control" />}>
             <div className={styles.formGrid}>
               <TextField
                 label="Label"

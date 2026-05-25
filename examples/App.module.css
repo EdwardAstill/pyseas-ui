@@ -34,8 +34,8 @@
   gap: var(--ps-space-lg);
   padding: 0 clamp(var(--ps-space-lg), 4vw, 48px);
   border-bottom: 1px solid var(--ps-border);
-  background: color-mix(in srgb, var(--ps-surface) 88%, transparent);
-  backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--ps-surface) 96%, transparent);
+  backdrop-filter: blur(4px);
 }
 
 .brand {

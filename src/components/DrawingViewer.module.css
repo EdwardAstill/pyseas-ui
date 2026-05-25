@@ -3,7 +3,7 @@
   min-width: 0;
   min-height: 0;
   display: grid;
-  grid-template-rows: 32px minmax(0, 1fr);
+  grid-template-rows: var(--ps-panel-header-height) minmax(0, 1fr);
   background: var(--ps-panel);
   color: var(--ps-text);
   overflow: hidden;
@@ -24,7 +24,7 @@
 .toolbarGroup {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--ps-space-xs);
 }
 
 .toolbarMeta {
@@ -38,8 +38,7 @@
 
 .zoomLabel,
 .metadata,
-.downloadLink,
-.textButton {
+.downloadLink {
   font-family: var(--ps-font-mono);
   font-size: var(--ps-text-xs);
   line-height: 1;
@@ -58,33 +57,23 @@
   white-space: nowrap;
 }
 
-.textButton,
 .downloadLink {
-  min-height: 24px;
-  border: 1px solid var(--ps-border);
+  min-height: var(--ps-control-height-sm);
+  border: 1px solid var(--ps-border-strong);
   border-radius: var(--ps-radius-none);
   background: transparent;
-  color: var(--ps-text);
+  color: var(--ps-text-muted);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 8px;
+  padding: 0 var(--ps-control-padding-sm);
   text-decoration: none;
 }
 
-.textButton {
-  cursor: pointer;
-}
-
-.textButton:disabled {
-  cursor: default;
-  opacity: 0.45;
-}
-
-.textButton:not(:disabled):hover,
 .downloadLink:hover {
-  border-color: var(--ps-border-strong);
-  background: color-mix(in srgb, var(--ps-accent) 6%, transparent);
+  border-color: color-mix(in srgb, var(--ps-accent) 16%, transparent);
+  background: color-mix(in srgb, var(--ps-accent) 4%, transparent);
+  color: var(--ps-text);
 }
 
 .viewport {

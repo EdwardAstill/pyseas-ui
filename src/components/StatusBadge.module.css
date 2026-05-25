@@ -12,6 +12,12 @@
   user-select: none;
 }
 
+.control {
+  min-height: var(--ps-control-height-sm);
+  padding: 0 var(--ps-control-padding-sm);
+  line-height: 1;
+}
+
 .ok {
   background: color-mix(in srgb, var(--ps-success) 18%, transparent);
   color: var(--ps-success);

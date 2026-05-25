@@ -29,15 +29,15 @@
   padding: var(--ps-space-sm) var(--ps-space-md);
   border-bottom: 1px solid var(--ps-border);
   background: var(--ps-panel);
-  min-height: 36px;
+  min-height: var(--ps-dialog-title-height);
   flex-shrink: 0;
 }
 
 .title {
   font-family: var(--ps-font-sans);
   font-size: var(--ps-text-lg);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   text-transform: none;
   color: var(--ps-text);
   flex: 1;

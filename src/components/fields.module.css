@@ -77,7 +77,7 @@
   font-size: var(--ps-text-md);
   height: var(--ps-control-height-md);
   padding: 0 var(--ps-space-sm);
-  padding-right: 24px;
+  padding-right: calc(var(--ps-control-height-md) - 4px);
   outline: none;
   transition: border-color 0.1s;
   width: 100%;
@@ -111,8 +111,8 @@
 }
 
 .checkboxInput {
-  width: 13px;
-  height: 13px;
+  width: var(--ps-text-md);
+  height: var(--ps-text-md);
   accent-color: var(--ps-accent);
   cursor: pointer;
   flex-shrink: 0;

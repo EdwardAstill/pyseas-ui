@@ -6,6 +6,7 @@ import type {
 } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
+import { Button } from './Button'
 import { IconButton } from './IconButton'
 import { cx } from './cx'
 import styles from './DrawingViewer.module.css'
@@ -122,11 +123,11 @@ export function DrawingViewer({
     <div className={cx(styles.viewer, className)} style={style} data-pyseas-ui="drawing-viewer">
       <div className={styles.toolbar}>
         <div className={styles.toolbarGroup}>
-          <IconButton title="Zoom out" size="sm" icon={<span>-</span>} disabled={!canInteract} onClick={() => zoomBy(1 / ZOOM_STEP)} />
+          <IconButton title="Zoom out" size="sm" icon={<span>−</span>} disabled={!canInteract} onClick={() => zoomBy(1 / ZOOM_STEP)} />
           <IconButton title="Zoom in" size="sm" icon={<span>+</span>} disabled={!canInteract} onClick={() => zoomBy(ZOOM_STEP)} />
-          <button className={styles.textButton} type="button" disabled={!canInteract} onClick={resetView}>
+          <Button size="sm" disabled={!canInteract} onClick={resetView}>
             Fit
-          </button>
+          </Button>
         </div>
         <div className={styles.toolbarMeta}>
           <span className={styles.zoomLabel}>{Math.round(zoom * 100)}%</span>

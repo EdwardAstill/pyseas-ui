@@ -11,6 +11,7 @@
   cursor: pointer;
   user-select: none;
   transition: background 0.1s, border-color 0.1s, color 0.1s, opacity 0.1s;
+  line-height: 1;
   white-space: nowrap;
   outline: none;
 }
@@ -96,5 +97,7 @@
 .iconSlot {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  line-height: 1;
 }

@@ -38,6 +38,9 @@
   --ps-control-padding-md: 12px;
   --ps-panel-header-height: 32px;
   --ps-badge-height: 18px;
+  --ps-topbar-height: 40px;
+  --ps-statusbar-height: 24px;
+  --ps-dialog-title-height: 36px;
 }
 
 /* ==============================================
@@ -143,6 +146,9 @@
   --ps-control-padding-md: 12px;
   --ps-panel-header-height: 32px;
   --ps-badge-height: 18px;
+  --ps-topbar-height: 40px;
+  --ps-statusbar-height: 24px;
+  --ps-dialog-title-height: 36px;
 }
 
 [data-theme="bun"] {
@@ -166,6 +172,9 @@
   --ps-control-padding-md: 14px;
   --ps-panel-header-height: 38px;
   --ps-badge-height: 22px;
+  --ps-topbar-height: 46px;
+  --ps-statusbar-height: 28px;
+  --ps-dialog-title-height: 42px;
 }
 
 [data-theme="high-contrast"],
@@ -190,4 +199,7 @@
   --ps-control-padding-md: 10px;
   --ps-panel-header-height: 28px;
   --ps-badge-height: 16px;
+  --ps-topbar-height: 34px;
+  --ps-statusbar-height: 20px;
+  --ps-dialog-title-height: 30px;
 }

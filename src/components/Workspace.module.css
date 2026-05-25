@@ -111,9 +111,9 @@
 }
 
 .tabStrip {
-  flex: 0 0 32px;
-  height: 32px;
-  min-height: 32px;
+  flex: 0 0 var(--ps-panel-header-height);
+  height: var(--ps-panel-header-height);
+  min-height: var(--ps-panel-header-height);
   min-width: 0;
   display: flex;
   align-items: stretch;
@@ -168,7 +168,7 @@
   flex: 0 0 auto;
   min-width: 0;
   margin-left: auto;
-  height: 32px;
+  height: var(--ps-panel-header-height);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -195,27 +195,27 @@
 }
 
 .dropLeft {
-  inset: 32px auto 0 0;
+  inset: var(--ps-panel-header-height) auto 0 0;
   width: 34%;
 }
 
 .dropRight {
-  inset: 32px 0 0 auto;
+  inset: var(--ps-panel-header-height) 0 0 auto;
   width: 34%;
 }
 
 .dropTop {
-  inset: 32px 0 auto 0;
-  height: calc((100% - 32px) * 0.34);
+  inset: var(--ps-panel-header-height) 0 auto 0;
+  height: calc((100% - var(--ps-panel-header-height)) * 0.34);
 }
 
 .dropBottom {
   inset: auto 0 0 0;
-  height: calc((100% - 32px) * 0.34);
+  height: calc((100% - var(--ps-panel-header-height)) * 0.34);
 }
 
 .dropCenter {
-  inset: 32px 0 0 0;
+  inset: var(--ps-panel-header-height) 0 0 0;
 }
 
 @media (max-width: 760px) {
