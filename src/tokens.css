@@ -1,46 +1,49 @@
 /* pyseas-ui design tokens — color packs + appearance packs compose into a theme. */
 
 :root {
-  /* --- Colour tokens (default dark fallback) --- */
-  --ps-surface: #0a0a0b;
-  --ps-panel: #0f0f10;
-  --ps-panel-elevated: #161617;
-  --ps-border: rgba(255, 255, 255, 0.08);
-  --ps-border-strong: rgba(255, 255, 255, 0.14);
-  --ps-text: #e8e8e8;
-  --ps-text-muted: #6b6b6b;
-  --ps-text-subtle: #4a4a4a;
-  --ps-accent: #ffffff;
-  --ps-danger: #f87171;
-  --ps-success: #4ade80;
-  --ps-warning: #facc15;
-  --ps-info: #8ab4f8;
-  --ps-overlay: rgba(0, 0, 0, 0.6);
+	/* --- Colour tokens (default dark fallback) --- */
+	--ps-surface: #0a0a0b;
+	--ps-panel: #0f0f10;
+	--ps-panel-elevated: #161617;
+	--ps-border: rgba(255, 255, 255, 0.08);
+	--ps-border-strong: rgba(255, 255, 255, 0.14);
+	--ps-text: #e8e8e8;
+	--ps-text-muted: #6b6b6b;
+	--ps-text-subtle: #4a4a4a;
+	--ps-accent: #ffffff;
+	--ps-danger: #f87171;
+	--ps-success: #4ade80;
+	--ps-warning: #facc15;
+	--ps-info: #8ab4f8;
+	--ps-overlay: rgba(0, 0, 0, 0.6);
 
-  /* --- Appearance tokens (default dense fallback) --- */
-  --ps-space-xs: 4px;
-  --ps-space-sm: 8px;
-  --ps-space-md: 12px;
-  --ps-space-lg: 20px;
-  --ps-space-xl: 32px;
-  --ps-radius-none: 0px;
-  --ps-radius-xs: 2px;
-  --ps-radius-sm: 4px;
-  --ps-font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  --ps-font-mono: 'JetBrains Mono', 'Fira Code', 'Hack', 'Source Code Pro', 'SF Mono', ui-monospace, monospace;
-  --ps-text-xs: 10.5px;
-  --ps-text-sm: 11px;
-  --ps-text-md: 12px;
-  --ps-text-lg: 13px;
-  --ps-control-height-sm: 24px;
-  --ps-control-height-md: 28px;
-  --ps-control-padding-sm: 10px;
-  --ps-control-padding-md: 12px;
-  --ps-panel-header-height: 32px;
-  --ps-badge-height: 18px;
-  --ps-topbar-height: 40px;
-  --ps-statusbar-height: 24px;
-  --ps-dialog-title-height: 36px;
+	/* --- Appearance tokens (default dense fallback) --- */
+	--ps-space-xs: 4px;
+	--ps-space-sm: 8px;
+	--ps-space-md: 12px;
+	--ps-space-lg: 20px;
+	--ps-space-xl: 32px;
+	--ps-radius-none: 0px;
+	--ps-radius-xs: 2px;
+	--ps-radius-sm: 4px;
+	--ps-font-sans:
+		system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		"Helvetica Neue", sans-serif;
+	--ps-font-mono:
+		"JetBrains Mono", "Fira Code", "Hack", "Source Code Pro", "SF Mono",
+		ui-monospace, monospace;
+	--ps-text-xs: 10.5px;
+	--ps-text-sm: 11px;
+	--ps-text-md: 12px;
+	--ps-text-lg: 13px;
+	--ps-control-height-sm: 24px;
+	--ps-control-height-md: 28px;
+	--ps-control-padding-sm: 10px;
+	--ps-control-padding-md: 12px;
+	--ps-panel-header-height: 32px;
+	--ps-topbar-height: 40px;
+	--ps-statusbar-height: 24px;
+	--ps-dialog-title-height: 36px;
 }
 
 /* ==============================================
@@ -50,73 +53,73 @@
 [data-coloring="dark"],
 [data-coloring="default"],
 [data-coloring="high-contrast"] {
-  --ps-surface: #0a0a0b;
-  --ps-panel: #0f0f10;
-  --ps-panel-elevated: #161617;
-  --ps-border: rgba(255, 255, 255, 0.08);
-  --ps-border-strong: rgba(255, 255, 255, 0.14);
-  --ps-text: #e8e8e8;
-  --ps-text-muted: #6b6b6b;
-  --ps-text-subtle: #4a4a4a;
-  --ps-accent: #ffffff;
-  --ps-danger: #f87171;
-  --ps-success: #4ade80;
-  --ps-warning: #facc15;
-  --ps-info: #8ab4f8;
-  --ps-overlay: rgba(0, 0, 0, 0.6);
+	--ps-surface: #0a0a0b;
+	--ps-panel: #0f0f10;
+	--ps-panel-elevated: #161617;
+	--ps-border: rgba(255, 255, 255, 0.08);
+	--ps-border-strong: rgba(255, 255, 255, 0.14);
+	--ps-text: #e8e8e8;
+	--ps-text-muted: #6b6b6b;
+	--ps-text-subtle: #4a4a4a;
+	--ps-accent: #ffffff;
+	--ps-danger: #f87171;
+	--ps-success: #4ade80;
+	--ps-warning: #facc15;
+	--ps-info: #8ab4f8;
+	--ps-overlay: rgba(0, 0, 0, 0.6);
 }
 
 [data-coloring="light"] {
-  --ps-surface: #ffffff;
-  --ps-panel: #fafafa;
-  --ps-panel-elevated: #efefef;
-  --ps-border: rgba(0, 0, 0, 0.08);
-  --ps-border-strong: rgba(0, 0, 0, 0.14);
-  --ps-text: #1a1a1a;
-  --ps-text-muted: #7a7a7a;
-  --ps-text-subtle: #aaaaaa;
-  --ps-accent: #000000;
-  --ps-danger: #c02020;
-  --ps-success: #1d7a4e;
-  --ps-warning: #9a6800;
-  --ps-info: #2255aa;
-  --ps-overlay: rgba(0, 0, 0, 0.4);
+	--ps-surface: #ffffff;
+	--ps-panel: #fafafa;
+	--ps-panel-elevated: #efefef;
+	--ps-border: rgba(0, 0, 0, 0.08);
+	--ps-border-strong: rgba(0, 0, 0, 0.14);
+	--ps-text: #1a1a1a;
+	--ps-text-muted: #7a7a7a;
+	--ps-text-subtle: #aaaaaa;
+	--ps-accent: #000000;
+	--ps-danger: #c02020;
+	--ps-success: #1d7a4e;
+	--ps-warning: #9a6800;
+	--ps-info: #2255aa;
+	--ps-overlay: rgba(0, 0, 0, 0.4);
 }
 
 [data-coloring="neon-pink"],
 [data-coloring="bun"] {
-  --ps-surface: #14151a;
-  --ps-panel: #191a22;
-  --ps-panel-elevated: #282a36;
-  --ps-border: rgba(255, 255, 255, 0.16);
-  --ps-border-strong: rgba(255, 255, 255, 0.24);
-  --ps-text: #fbfbfe;
-  --ps-text-muted: #d1d5db;
-  --ps-text-subtle: #6b7280;
-  --ps-accent: #f472b6;
-  --ps-danger: #ef4444;
-  --ps-success: #22c55e;
-  --ps-warning: #eab308;
-  --ps-info: #a78bfa;
-  --ps-overlay: rgba(13, 14, 17, 0.72);
+	--ps-surface: #14151a;
+	--ps-panel: #191a22;
+	--ps-panel-elevated: #282a36;
+	--ps-border: rgba(255, 255, 255, 0.16);
+	--ps-border-strong: rgba(255, 255, 255, 0.24);
+	--ps-text: #fbfbfe;
+	--ps-text-muted: #d1d5db;
+	--ps-text-subtle: #6b7280;
+	--ps-accent: #f472b6;
+	--ps-danger: #ef4444;
+	--ps-success: #22c55e;
+	--ps-warning: #eab308;
+	--ps-info: #a78bfa;
+	--ps-overlay: rgba(13, 14, 17, 0.72);
 }
 
 [data-coloring="cobalt"],
 [data-coloring="compact"] {
-  --ps-surface: #faf8f3;
-  --ps-panel: #f3f0eb;
-  --ps-panel-elevated: #e8e3da;
-  --ps-border: rgba(0, 0, 0, 0.09);
-  --ps-border-strong: rgba(37, 99, 235, 0.28);
-  --ps-text: #1e293b;
-  --ps-text-muted: #78716c;
-  --ps-text-subtle: #a8a29e;
-  --ps-accent: #2563eb;
-  --ps-danger: #dc2626;
-  --ps-success: #16a34a;
-  --ps-warning: #ea580c;
-  --ps-info: #3b82f6;
-  --ps-overlay: rgba(30, 41, 59, 0.55);
+	--ps-surface: #faf8f3;
+	--ps-panel: #f3f0eb;
+	--ps-panel-elevated: #e8e3da;
+	--ps-border: rgba(0, 0, 0, 0.09);
+	--ps-border-strong: rgba(37, 99, 235, 0.28);
+	--ps-text: #1e293b;
+	--ps-text-muted: #78716c;
+	--ps-text-subtle: #a8a29e;
+	--ps-accent: #2563eb;
+	--ps-danger: #dc2626;
+	--ps-success: #16a34a;
+	--ps-warning: #ea580c;
+	--ps-info: #3b82f6;
+	--ps-overlay: rgba(30, 41, 59, 0.55);
 }
 
 /* ==============================================
@@ -126,80 +129,89 @@
 [data-theme="default"],
 [data-theme="dark"],
 [data-theme="light"] {
-  --ps-space-xs: 4px;
-  --ps-space-sm: 8px;
-  --ps-space-md: 12px;
-  --ps-space-lg: 20px;
-  --ps-space-xl: 32px;
-  --ps-radius-none: 0px;
-  --ps-radius-xs: 2px;
-  --ps-radius-sm: 4px;
-  --ps-font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  --ps-font-mono: 'JetBrains Mono', 'Fira Code', 'Hack', 'Source Code Pro', 'SF Mono', ui-monospace, monospace;
-  --ps-text-xs: 10.5px;
-  --ps-text-sm: 11px;
-  --ps-text-md: 12px;
-  --ps-text-lg: 13px;
-  --ps-control-height-sm: 24px;
-  --ps-control-height-md: 28px;
-  --ps-control-padding-sm: 10px;
-  --ps-control-padding-md: 12px;
-  --ps-panel-header-height: 32px;
-  --ps-badge-height: 18px;
-  --ps-topbar-height: 40px;
-  --ps-statusbar-height: 24px;
-  --ps-dialog-title-height: 36px;
+	--ps-space-xs: 4px;
+	--ps-space-sm: 8px;
+	--ps-space-md: 12px;
+	--ps-space-lg: 20px;
+	--ps-space-xl: 32px;
+	--ps-radius-none: 0px;
+	--ps-radius-xs: 2px;
+	--ps-radius-sm: 4px;
+	--ps-font-sans:
+		system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		"Helvetica Neue", sans-serif;
+	--ps-font-mono:
+		"JetBrains Mono", "Fira Code", "Hack", "Source Code Pro", "SF Mono",
+		ui-monospace, monospace;
+	--ps-text-xs: 10.5px;
+	--ps-text-sm: 11px;
+	--ps-text-md: 12px;
+	--ps-text-lg: 13px;
+	--ps-control-height-sm: 24px;
+	--ps-control-height-md: 28px;
+	--ps-control-padding-sm: 10px;
+	--ps-control-padding-md: 12px;
+	--ps-panel-header-height: 32px;
+	--ps-topbar-height: 40px;
+	--ps-statusbar-height: 24px;
+	--ps-dialog-title-height: 36px;
 }
 
 [data-theme="bun"] {
-  --ps-space-xs: 4px;
-  --ps-space-sm: 8px;
-  --ps-space-md: 12px;
-  --ps-space-lg: 20px;
-  --ps-space-xl: 32px;
-  --ps-radius-none: 6px;
-  --ps-radius-xs: 8px;
-  --ps-radius-sm: 10px;
-  --ps-font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  --ps-font-mono: 'JetBrains Mono', 'Fira Code', 'Hack', 'Source Code Pro', 'SF Mono', ui-monospace, monospace;
-  --ps-text-xs: 11px;
-  --ps-text-sm: 12px;
-  --ps-text-md: 13px;
-  --ps-text-lg: 14px;
-  --ps-control-height-sm: 28px;
-  --ps-control-height-md: 34px;
-  --ps-control-padding-sm: 12px;
-  --ps-control-padding-md: 14px;
-  --ps-panel-header-height: 38px;
-  --ps-badge-height: 22px;
-  --ps-topbar-height: 46px;
-  --ps-statusbar-height: 28px;
-  --ps-dialog-title-height: 42px;
+	--ps-space-xs: 4px;
+	--ps-space-sm: 8px;
+	--ps-space-md: 12px;
+	--ps-space-lg: 20px;
+	--ps-space-xl: 32px;
+	--ps-radius-none: 6px;
+	--ps-radius-xs: 8px;
+	--ps-radius-sm: 10px;
+	--ps-font-sans:
+		system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+		Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+	--ps-font-mono:
+		"JetBrains Mono", "Fira Code", "Hack", "Source Code Pro", "SF Mono",
+		ui-monospace, monospace;
+	--ps-text-xs: 11px;
+	--ps-text-sm: 12px;
+	--ps-text-md: 13px;
+	--ps-text-lg: 14px;
+	--ps-control-height-sm: 28px;
+	--ps-control-height-md: 34px;
+	--ps-control-padding-sm: 12px;
+	--ps-control-padding-md: 14px;
+	--ps-panel-header-height: 38px;
+	--ps-topbar-height: 46px;
+	--ps-statusbar-height: 28px;
+	--ps-dialog-title-height: 42px;
 }
 
 [data-theme="high-contrast"],
 [data-theme="compact"] {
-  --ps-space-xs: 3px;
-  --ps-space-sm: 6px;
-  --ps-space-md: 9px;
-  --ps-space-lg: 14px;
-  --ps-space-xl: 22px;
-  --ps-radius-none: 0px;
-  --ps-radius-xs: 1px;
-  --ps-radius-sm: 2px;
-  --ps-font-sans: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --ps-font-mono: 'JetBrains Mono', 'Fira Code', 'Hack', 'Source Code Pro', 'SF Mono', ui-monospace, monospace;
-  --ps-text-xs: 10px;
-  --ps-text-sm: 10.5px;
-  --ps-text-md: 11px;
-  --ps-text-lg: 12px;
-  --ps-control-height-sm: 20px;
-  --ps-control-height-md: 24px;
-  --ps-control-padding-sm: 8px;
-  --ps-control-padding-md: 10px;
-  --ps-panel-header-height: 28px;
-  --ps-badge-height: 16px;
-  --ps-topbar-height: 34px;
-  --ps-statusbar-height: 20px;
-  --ps-dialog-title-height: 30px;
+	--ps-space-xs: 3px;
+	--ps-space-sm: 6px;
+	--ps-space-md: 9px;
+	--ps-space-lg: 14px;
+	--ps-space-xl: 22px;
+	--ps-radius-none: 0px;
+	--ps-radius-xs: 1px;
+	--ps-radius-sm: 2px;
+	--ps-font-sans:
+		"IBM Plex Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+		sans-serif;
+	--ps-font-mono:
+		"JetBrains Mono", "Fira Code", "Hack", "Source Code Pro", "SF Mono",
+		ui-monospace, monospace;
+	--ps-text-xs: 10px;
+	--ps-text-sm: 10.5px;
+	--ps-text-md: 11px;
+	--ps-text-lg: 12px;
+	--ps-control-height-sm: 20px;
+	--ps-control-height-md: 24px;
+	--ps-control-padding-sm: 8px;
+	--ps-control-padding-md: 10px;
+	--ps-panel-header-height: 28px;
+	--ps-topbar-height: 34px;
+	--ps-statusbar-height: 20px;
+	--ps-dialog-title-height: 30px;
 }

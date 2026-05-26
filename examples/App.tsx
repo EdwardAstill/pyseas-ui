@@ -11,6 +11,7 @@ import {
 	Checkbox,
 	Dialog,
 	DrawingViewer,
+	FreeformCanvas,
 	IconButton,
 	IconSidebar,
 	LogView,
@@ -19,6 +20,7 @@ import {
 	Panel,
 	Result,
 	Select,
+	SortableList,
 	StatusBadge,
 	StatusBar,
 	Tabs,
@@ -36,6 +38,7 @@ import {
 	type TreeNode,
 	type TreeRenderArgs,
 } from "../src/index";
+import type { FreeformCanvasItem } from "../src/index";
 
 type Theme = ThemeName;
 type InputTab = "underline" | "bracket" | "slash";
@@ -437,6 +440,25 @@ export function App() {
 		"src-components-tree",
 	);
 	const [treeVisual, setTreeVisual] = useState<TreeVisualOption>("blocks");
+	const [sortableValues, setSortableValues] = useState([
+		"Shackle GN ROV H7",
+		"Padeye design check",
+		"Sling assembly 12m",
+		"Lift point 1",
+		"Load case: offshore",
+		"Spreader bar SB-01",
+		"Weight report",
+	]);
+	const [freeformItems, setFreeformItems] = useState<FreeformCanvasItem[]>([
+		{ id: "a", x: 20, y: 20 },
+		{ id: "b", x: 240, y: 20 },
+		{ id: "c", x: 460, y: 20 },
+		{ id: "d", x: 20, y: 150 },
+		{ id: "e", x: 240, y: 150 },
+		{ id: "f", x: 460, y: 150 },
+		{ id: "g", x: 20, y: 280 },
+	]);
+	const [freeformSelected, setFreeformSelected] = useState<string | null>(null);
 	const [sidebarItem, setSidebarItem] = useState("one");
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [navOpen, setNavOpen] = useState(false);
@@ -1140,6 +1162,56 @@ export function App() {
 										aria-label="Filesystem Tree specimen"
 									/>
 								</div>
+							</ComponentBlock>
+
+							<ComponentBlock
+								name="<SortableList>"
+								source="src/components/SortableList.tsx"
+								meta="manual pointer-tracking drag-to-reorder list"
+							>
+								<div className={styles.sortableListFrame}>
+									<SortableList
+										items={sortableValues}
+										onReorder={setSortableValues}
+										getKey={(item) => item}
+										renderItem={(item) => (
+											<div className={styles.sortableRow}>
+												<span className={styles.sortableLabel}>{item}</span>
+											</div>
+										)}
+										aria-label="Sortable list specimen"
+									/>
+								</div>
+							</ComponentBlock>
+
+							<ComponentBlock
+								name="<FreeformCanvas>"
+								source="src/components/FreeformCanvas.tsx"
+								meta="absolute-positioned cards, drag anywhere, double-click to select"
+							>
+								<FreeformCanvas
+									items={freeformItems}
+									renderItem={(item) => {
+										const labels = ["Shackle GN ROV H7", "Padeye design check", "Sling assembly 12m", "Lift point 1", "Load case: offshore", "Spreader bar SB-01", "Weight report"];
+										const tags = ["Component", "Analysis", "Component", "Arrangement", "Load", "Component", "Report"];
+										const i = freeformItems.findIndex(fi => fi.id === item.id);
+										return (
+											<div>
+												<div className={styles.cardTitle}>{labels[i] ?? item.id}</div>
+												<div className={styles.cardMeta}>Card at ({item.x}, {item.y})</div>
+												<div className={styles.cardTag}>{tags[i] ?? "Item"}</div>
+											</div>
+										);
+									}}
+									onPositionChange={(id, x, y) =>
+										setFreeformItems((prev) =>
+											prev.map((fi) => (fi.id === id ? { ...fi, x, y } : fi))
+										)
+									}
+									selectedId={freeformSelected}
+									onSelect={setFreeformSelected}
+									aria-label="Freeform canvas specimen"
+								/>
 							</ComponentBlock>
 
 							<ComponentBlock

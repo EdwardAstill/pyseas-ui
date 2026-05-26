@@ -969,3 +969,46 @@
     min-height: 320px;
   }
 }
+
+.sortableListFrame {
+  border: 1px solid var(--ps-border);
+  border-radius: var(--ps-radius-sm);
+  background: var(--ps-surface);
+  max-width: 360px;
+}
+
+.sortableRow {
+  display: flex;
+  align-items: center;
+  padding: var(--ps-space-sm) var(--ps-space-md);
+  border: 1px solid var(--ps-border);
+  border-radius: var(--ps-radius-xs);
+  background: var(--ps-panel);
+  font-size: var(--ps-text-sm);
+  font-weight: 500;
+}
+
+.sortableLabel {
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: var(--ps-text-sm);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.cardMeta {
+  font-size: var(--ps-text-xs);
+  color: var(--ps-text-muted);
+}
+
+.cardTag {
+  display: inline-block;
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ps-info) 15%, transparent);
+  color: var(--ps-info);
+  margin-top: 4px;
+}

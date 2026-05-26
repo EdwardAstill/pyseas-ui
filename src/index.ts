@@ -111,6 +111,12 @@ export type {
 	StatusBarProps,
 } from "./components/AppShell";
 
+export { SortableList } from "./components/SortableList";
+export type { SortableListProps } from "./components/SortableList";
+
+export { FreeformCanvas } from "./components/FreeformCanvas";
+export type { FreeformCanvasItem, FreeformCanvasProps } from "./components/FreeformCanvas";
+
 export {
 	cloneLayout,
 	computeDropEdge,

@@ -1,43 +1,43 @@
 .badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 var(--ps-space-xs);
-  border-radius: var(--ps-radius-none);
-  font-family: var(--ps-font-sans);
-  font-size: var(--ps-text-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: var(--ps-badge-height);
-  user-select: none;
+	display: inline-flex;
+	align-items: center;
+	padding: 0 var(--ps-space-xs);
+	border-radius: var(--ps-radius-none);
+	font-family: var(--ps-font-sans);
+	font-size: var(--ps-text-xs);
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	height: var(--ps-control-height-sm);
+	user-select: none;
 }
 
 .control {
-  min-height: var(--ps-control-height-sm);
-  padding: 0 var(--ps-control-padding-sm);
-  line-height: 1;
+	min-height: var(--ps-control-height-sm);
+	padding: 0 var(--ps-control-padding-sm);
+	line-height: 1;
 }
 
 .ok {
-  background: color-mix(in srgb, var(--ps-success) 18%, transparent);
-  color: var(--ps-success);
-  border: 1px solid color-mix(in srgb, var(--ps-success) 35%, transparent);
+	background: color-mix(in srgb, var(--ps-success) 18%, transparent);
+	color: var(--ps-success);
+	border: 1px solid color-mix(in srgb, var(--ps-success) 35%, transparent);
 }
 
 .warn {
-  background: color-mix(in srgb, var(--ps-warning) 18%, transparent);
-  color: var(--ps-warning);
-  border: 1px solid color-mix(in srgb, var(--ps-warning) 35%, transparent);
+	background: color-mix(in srgb, var(--ps-warning) 18%, transparent);
+	color: var(--ps-warning);
+	border: 1px solid color-mix(in srgb, var(--ps-warning) 35%, transparent);
 }
 
 .err {
-  background: color-mix(in srgb, var(--ps-danger) 18%, transparent);
-  color: var(--ps-danger);
-  border: 1px solid color-mix(in srgb, var(--ps-danger) 35%, transparent);
+	background: color-mix(in srgb, var(--ps-danger) 18%, transparent);
+	color: var(--ps-danger);
+	border: 1px solid color-mix(in srgb, var(--ps-danger) 35%, transparent);
 }
 
 .info {
-  background: color-mix(in srgb, var(--ps-info) 18%, transparent);
-  color: var(--ps-info);
-  border: 1px solid color-mix(in srgb, var(--ps-info) 35%, transparent);
+	background: color-mix(in srgb, var(--ps-info) 18%, transparent);
+	color: var(--ps-info);
+	border: 1px solid color-mix(in srgb, var(--ps-info) 35%, transparent);
 }
