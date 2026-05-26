@@ -44,6 +44,14 @@ export type { AppShellProps, TopBarProps, IconSidebarProps, IconSidebarItem, Sta
 export { SortableList } from "./components/SortableList";
 export type { SortableListProps } from "./components/SortableList";
 export { FreeformCanvas } from "./components/FreeformCanvas";
-export type { FreeformCanvasItem, FreeformCanvasProps } from "./components/FreeformCanvas";
+export type { FreeformCanvasItem, FreeformCanvasProps, } from "./components/FreeformCanvas";
+export { CsvViewer } from "./components/CsvViewer";
+export type { CsvData, CsvViewerProps } from "./components/CsvViewer";
+export { CodeViewer } from "./components/CodeViewer";
+export type { CodeViewerProps } from "./components/CodeViewer";
+export { TextViewer } from "./components/TextViewer";
+export type { TextViewerProps } from "./components/TextViewer";
+export { PdfViewer } from "./components/PdfViewer";
+export type { PdfViewerProps } from "./components/PdfViewer";
 export { cloneLayout, computeDropEdge, findLeafById, findLeafOfTab, insertLeafAt, insertTabAt, moveGroup, moveTab, normalizeSplitSizes, removeLeafById, setActiveTab, setSplitSizesAtPath, } from "./components/paneLayout";
 export type { DropEdge, LayoutNode, LeafNode, LeafSearchResult, LayoutPoint, LayoutRect, SplitDirection, SplitNode, MoveGroupOptions, MoveTabOptions, } from "./components/paneLayout";
