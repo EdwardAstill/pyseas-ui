@@ -1,6 +1,6 @@
 import "../src/styles.css";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import styles from "./App.module.css";
 import {
@@ -9,6 +9,8 @@ import {
 	CadDxfViewer,
 	CadStepViewer,
 	Checkbox,
+	CodeViewer,
+	CsvViewer,
 	Dialog,
 	DrawingViewer,
 	FreeformCanvas,
@@ -18,6 +20,7 @@ import {
 	NumberField,
 	PaneShell,
 	Panel,
+	PdfViewer,
 	Result,
 	Select,
 	SortableList,
@@ -25,403 +28,55 @@ import {
 	StatusBar,
 	Tabs,
 	TextField,
+	TextViewer,
 	ThemeProvider,
 	Toggle,
 	Toolbar,
 	TopBar,
 	Tree,
 	Workspace,
-	type LayoutNode,
-	type ThemeName,
-	type TreeDisclosureArgs,
+	type FreeformCanvasItem,
 	type TreeMoveArgs,
 	type TreeNode,
-	type TreeRenderArgs,
 } from "../src/index";
-import type { FreeformCanvasItem } from "../src/index";
-
-type Theme = ThemeName;
-type InputTab = "underline" | "bracket" | "slash";
-type PaneRail = "rail-a" | "rail-b" | "rail-c";
-type PaneSection = "section-a" | "section-b";
-type WorkspaceTab = "panel-a" | "panel-b" | "panel-c" | "panel-d";
-type NavSectionId =
-	| "theming"
-	| "controls"
-	| "data-display"
-	| "layout-components";
-type FileSystemNodeMeta =
-	| { kind: "folder"; detail: string }
-	| { kind: "file"; detail: string };
-type TreeVisualOption = "blocks" | "marks" | "rail";
-
-const appearanceOptions: Array<{ value: Theme; label: string }> = [
-	{ value: "bun", label: "Bun" },
-	{ value: "default", label: "Default" },
-	{ value: "compact", label: "Compact" },
-];
-
-const coloringOptions: Array<{ value: Theme; label: string }> = [
-	{ value: "dark", label: "Dark" },
-	{ value: "light", label: "Light" },
-	{ value: "neon-pink", label: "Neon Pink" },
-	{ value: "cobalt", label: "Cobalt" },
-];
-
-const selectOptions = [
-	{ value: "alpha", label: "Option alpha" },
-	{ value: "beta", label: "Option beta" },
-	{ value: "gamma", label: "Option gamma", disabled: true },
-];
-
-const treeVisualOptions: Array<{ value: TreeVisualOption; label: string }> = [
-	{ value: "blocks", label: "Blocks" },
-	{ value: "marks", label: "Plus / minus" },
-	{ value: "rail", label: "Rail" },
-];
-
-const navItems: Array<{ id: NavSectionId; label: string }> = [
-	{ id: "theming", label: "Themes" },
-	{ id: "controls", label: "Controls" },
-	{ id: "data-display", label: "Data" },
-	{ id: "layout-components", label: "Layout" },
-];
-
-const initialFileTreeNodes: TreeNode<FileSystemNodeMeta>[] = [
-	{
-		id: "workspace",
-		label: "workspace",
-		data: { kind: "folder", detail: "root" },
-		children: [
-			{
-				id: "src",
-				label: "src",
-				data: { kind: "folder", detail: "folder" },
-				children: [
-					{
-						id: "src-components",
-						label: "components",
-						data: { kind: "folder", detail: "folder" },
-						children: [
-							{
-								id: "src-components-tree",
-								label: "Tree.tsx",
-								data: { kind: "file", detail: "tsx" },
-							},
-							{
-								id: "src-components-tree-css",
-								label: "Tree.module.css",
-								data: { kind: "file", detail: "css" },
-							},
-							{
-								id: "src-components-panel",
-								label: "Panel.tsx",
-								data: { kind: "file", detail: "tsx" },
-							},
-						],
-					},
-					{
-						id: "src-index",
-						label: "index.ts",
-						data: { kind: "file", detail: "ts" },
-					},
-					{
-						id: "src-styles",
-						label: "styles.css",
-						data: { kind: "file", detail: "css" },
-					},
-				],
-			},
-			{
-				id: "examples",
-				label: "examples",
-				data: { kind: "folder", detail: "folder" },
-				children: [
-					{
-						id: "examples-app",
-						label: "App.tsx",
-						data: { kind: "file", detail: "tsx" },
-					},
-					{
-						id: "examples-data",
-						label: "demoData.ts",
-						data: { kind: "file", detail: "ts" },
-					},
-				],
-			},
-			{
-				id: "tests",
-				label: "tests",
-				data: { kind: "folder", detail: "folder" },
-				children: [
-					{
-						id: "tests-smoke",
-						label: "smoke.test.ts",
-						data: { kind: "file", detail: "test" },
-					},
-					{
-						id: "tests-number",
-						label: "numberField.test.ts",
-						data: { kind: "file", detail: "test" },
-					},
-				],
-			},
-			{
-				id: "package-json",
-				label: "package.json",
-				data: { kind: "file", detail: "json" },
-			},
-			{
-				id: "readme",
-				label: "README.md",
-				data: { kind: "file", detail: "md" },
-			},
-		],
-	},
-];
-
-const workspaceLayout: LayoutNode<WorkspaceTab> = {
-	type: "split",
-	dir: "row",
-	sizes: [0.34, 0.66],
-	children: [
-		{
-			type: "leaf",
-			id: "workspace-left",
-			tabs: ["panel-a", "panel-b"],
-			activeTab: "panel-a",
-		},
-		{
-			type: "split",
-			dir: "col",
-			sizes: [0.58, 0.42],
-			children: [
-				{
-					type: "leaf",
-					id: "workspace-top",
-					tabs: ["panel-c"],
-					activeTab: "panel-c",
-				},
-				{
-					type: "leaf",
-					id: "workspace-bottom",
-					tabs: ["panel-d"],
-					activeTab: "panel-d",
-				},
-			],
-		},
-	],
-};
-
-const drawingSvg = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 160" role="img" aria-label="DrawingViewer sample">
-  <rect x="28" y="42" width="204" height="76" fill="none" stroke="currentColor" stroke-width="2"/>
-  <circle cx="96" cy="80" r="22" fill="none" stroke="currentColor" stroke-width="2"/>
-  <circle cx="164" cy="80" r="22" fill="none" stroke="currentColor" stroke-width="2"/>
-  <path d="M52 132 H208" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="5 5"/>
-  <path d="M96 34 V126 M164 34 V126" fill="none" stroke="currentColor" stroke-width="1"/>
-  <text x="130" y="150" text-anchor="middle" font-size="10" font-family="monospace" fill="currentColor">DrawingSource.kind = svg</text>
-</svg>`;
-
-const logLines = [
-	"[info] component mounted",
-	"[info] controlled value changed",
-	"[warn] disabled option skipped",
-	"[ok] render complete",
-];
-
-function classNames(...values: Array<string | false | undefined>) {
-	return values.filter(Boolean).join(" ");
-}
-
-function renderFileTreeNode(
-	{ node, selected }: TreeRenderArgs<FileSystemNodeMeta>,
-	visual: TreeVisualOption,
-) {
-	const kind = node.data?.kind ?? "file";
-
-	return (
-		<span
-			className={classNames(
-				styles.fileTreeNode,
-				selected && styles.fileTreeNodeSelected,
-				visual === "rail" && styles.fileTreeNodeRail,
-			)}
-		>
-			<span
-				className={classNames(
-					styles.fileTreeIcon,
-					kind === "folder"
-						? styles.fileTreeFolderIcon
-						: styles.fileTreeFileIcon,
-				)}
-				aria-hidden="true"
-			/>
-			<span className={styles.fileTreeLabel}>{node.label}</span>
-			<span className={styles.fileTreeDetail}>{node.data?.detail}</span>
-		</span>
-	);
-}
-
-function renderFileTreeDisclosure(
-	{ expanded, selected }: TreeDisclosureArgs<FileSystemNodeMeta>,
-	visual: TreeVisualOption,
-) {
-	if (visual === "marks") {
-		return (
-			<span
-				className={classNames(
-					styles.treeDisclosure,
-					styles.treeDisclosureMark,
-					expanded && styles.treeDisclosureMarkExpanded,
-					selected && styles.treeDisclosureSelected,
-				)}
-				aria-hidden="true"
-			>
-				{expanded ? "−" : "+"}
-			</span>
-		);
-	}
-
-	if (visual === "rail") {
-		return (
-			<span
-				className={classNames(
-					styles.treeDisclosure,
-					styles.treeDisclosureRail,
-					expanded && styles.treeDisclosureRailExpanded,
-					selected && styles.treeDisclosureSelected,
-				)}
-				aria-hidden="true"
-			/>
-		);
-	}
-
-	return (
-		<span
-			className={classNames(
-				styles.treeDisclosure,
-				styles.treeDisclosureBlock,
-				expanded && styles.treeDisclosureBlockExpanded,
-				selected && styles.treeDisclosureSelected,
-			)}
-			aria-hidden="true"
-		/>
-	);
-}
-
-function canDropFileTreeNode({
-	position,
-	targetNode,
-}: TreeMoveArgs<FileSystemNodeMeta>) {
-	return position !== "inside" || targetNode.data?.kind === "folder";
-}
-
-function moveFileTreeNode(
-	nodes: TreeNode<FileSystemNodeMeta>[],
-	args: TreeMoveArgs<FileSystemNodeMeta>,
-) {
-	const { nodes: withoutDragged, removed } = removeTreeNode(
-		nodes,
-		args.draggedId,
-	);
-	if (removed === null) return nodes;
-
-	const { nodes: nextNodes, inserted } = insertTreeNode(
-		withoutDragged,
-		args.targetId,
-		args.position,
-		removed,
-	);
-
-	return inserted ? nextNodes : nodes;
-}
-
-function removeTreeNode(
-	nodes: TreeNode<FileSystemNodeMeta>[],
-	id: string,
-): {
-	nodes: TreeNode<FileSystemNodeMeta>[];
-	removed: TreeNode<FileSystemNodeMeta> | null;
-} {
-	let removed: TreeNode<FileSystemNodeMeta> | null = null;
-	const nextNodes: TreeNode<FileSystemNodeMeta>[] = [];
-
-	for (const node of nodes) {
-		if (node.id === id) {
-			removed = node;
-			continue;
-		}
-
-		if (node.children === undefined) {
-			nextNodes.push(node);
-			continue;
-		}
-
-		const childResult = removeTreeNode(node.children, id);
-		if (childResult.removed !== null) removed = childResult.removed;
-		nextNodes.push({ ...node, children: childResult.nodes });
-	}
-
-	return { nodes: nextNodes, removed };
-}
-
-function insertTreeNode(
-	nodes: TreeNode<FileSystemNodeMeta>[],
-	targetId: string,
-	position: TreeMoveArgs<FileSystemNodeMeta>["position"],
-	nodeToInsert: TreeNode<FileSystemNodeMeta>,
-): { nodes: TreeNode<FileSystemNodeMeta>[]; inserted: boolean } {
-	let inserted = false;
-	const nextNodes: TreeNode<FileSystemNodeMeta>[] = [];
-
-	for (const node of nodes) {
-		if (node.id === targetId && position === "before") {
-			nextNodes.push(nodeToInsert);
-			inserted = true;
-		}
-
-		if (node.id === targetId && position === "inside") {
-			nextNodes.push({
-				...node,
-				children: [...(node.children ?? []), nodeToInsert],
-			});
-			inserted = true;
-			continue;
-		}
-
-		if (node.children === undefined) {
-			nextNodes.push(node);
-		} else {
-			const childResult = insertTreeNode(
-				node.children,
-				targetId,
-				position,
-				nodeToInsert,
-			);
-			if (childResult.inserted) inserted = true;
-			nextNodes.push({ ...node, children: childResult.nodes });
-		}
-
-		if (node.id === targetId && position === "after") {
-			nextNodes.push(nodeToInsert);
-			inserted = true;
-		}
-	}
-
-	return { nodes: nextNodes, inserted };
-}
-
-const workspaceLabels: Record<WorkspaceTab, string> = {
-	"panel-a": "<PaneShell>",
-	"panel-b": "<Tabs>",
-	"panel-c": "<DrawingViewer>",
-	"panel-d": "<LogView>",
-};
+import { classNames, ComponentBlock, DocSection } from "./catalogShared";
+import {
+	appearanceOptions,
+	codeDemoSnippet,
+	coloringOptions,
+	csvDemoData,
+	drawingSvg,
+	freeformCardLabels,
+	freeformCardTags,
+	logLines,
+	navItems,
+	pdfDemoSrc,
+	selectOptions,
+	textDemoContent,
+	workspaceLabels,
+	workspaceLayout,
+	type InputTab,
+	type NavSectionId,
+	type PaneRail,
+	type PaneSection,
+	type ThemeAppearance,
+	type ThemeColoring,
+	type WorkspacePanelTab,
+} from "./catalogData";
+import {
+	canDropFileTreeNode,
+	initialFileTreeNodes,
+	moveFileTreeNode,
+	renderFileTreeDisclosure,
+	renderFileTreeNode,
+	treeVisualOptions,
+	type FileSystemNodeMeta,
+	type TreeVisualOption,
+} from "./fileTreeDemo";
 
 export function App() {
-	const [theme, setTheme] = useState<Theme>("bun");
-	const [coloring, setColoring] = useState<Theme>("neon-pink");
+	const [theme, setTheme] = useState<ThemeAppearance>("bun");
+	const [coloring, setColoring] = useState<ThemeColoring>("neon-pink");
 	const [textValue, setTextValue] = useState("Controlled text");
 	const [numberValue, setNumberValue] = useState<number | null>(42);
 	const [selectValue, setSelectValue] = useState<string | null>("beta");
@@ -517,7 +172,7 @@ export function App() {
 		}
 	}
 
-	function renderWorkspacePanel(tab: WorkspaceTab) {
+	function renderWorkspacePanel(tab: WorkspacePanelTab) {
 		if (tab === "panel-c") {
 			return (
 				<PaneShell flushBody>
@@ -1192,20 +847,26 @@ export function App() {
 								<FreeformCanvas
 									items={freeformItems}
 									renderItem={(item) => {
-										const labels = ["Shackle GN ROV H7", "Padeye design check", "Sling assembly 12m", "Lift point 1", "Load case: offshore", "Spreader bar SB-01", "Weight report"];
-										const tags = ["Component", "Analysis", "Component", "Arrangement", "Load", "Component", "Report"];
-										const i = freeformItems.findIndex(fi => fi.id === item.id);
+										const i = freeformItems.findIndex(
+											(fi) => fi.id === item.id,
+										);
 										return (
 											<div>
-												<div className={styles.cardTitle}>{labels[i] ?? item.id}</div>
-												<div className={styles.cardMeta}>Card at ({item.x}, {item.y})</div>
-												<div className={styles.cardTag}>{tags[i] ?? "Item"}</div>
+												<div className={styles.cardTitle}>
+													{freeformCardLabels[i] ?? item.id}
+												</div>
+												<div className={styles.cardMeta}>
+													Card at ({item.x}, {item.y})
+												</div>
+												<div className={styles.cardTag}>
+													{freeformCardTags[i] ?? "Item"}
+												</div>
 											</div>
 										);
 									}}
 									onPositionChange={(id, x, y) =>
 										setFreeformItems((prev) =>
-											prev.map((fi) => (fi.id === id ? { ...fi, x, y } : fi))
+											prev.map((fi) => (fi.id === id ? { ...fi, x, y } : fi)),
 										)
 									}
 									selectedId={freeformSelected}
@@ -1404,6 +1065,69 @@ export function App() {
 						</div>
 					</DocSection>
 
+					<DocSection title="Viewers">
+						<div className={styles.grid}>
+							<ComponentBlock
+								name="<CsvViewer>"
+								source="src/components/CsvViewer.tsx"
+								meta="sortable columns, filter, pagination"
+							>
+								<div className={styles.viewerFrame} style={{ height: 280 }}>
+									<CsvViewer
+										data={csvDemoData}
+										rowsPerPage={6}
+										filter
+										style={{ border: 0 }}
+									/>
+								</div>
+							</ComponentBlock>
+
+							<ComponentBlock
+								name="<CodeViewer>"
+								source="src/components/CodeViewer.tsx"
+								meta="monospace code block with language badge and line numbers"
+							>
+								<div className={styles.viewerFrame} style={{ height: 280 }}>
+									<CodeViewer
+										code={codeDemoSnippet}
+										language="tsx"
+										maxHeight={280}
+										style={{ border: 0 }}
+									/>
+								</div>
+							</ComponentBlock>
+
+							<ComponentBlock
+								name="<TextViewer>"
+								source="src/components/TextViewer.tsx"
+								meta="plain text display with optional line numbers"
+							>
+								<div className={styles.viewerFrame} style={{ height: 280 }}>
+									<TextViewer
+										text={textDemoContent}
+										maxHeight={280}
+										style={{ border: 0 }}
+									/>
+								</div>
+							</ComponentBlock>
+
+							<ComponentBlock
+								name="<PdfViewer>"
+								source="src/components/PdfViewer.tsx"
+								meta="sandboxed iframe; src is a URL or data URI"
+							>
+								<div className={styles.viewerFrame} style={{ height: 240 }}>
+									<PdfViewer
+										src={pdfDemoSrc}
+										height={240}
+										title="Sample PDF"
+										style={{ border: 0 }}
+									/>
+								</div>
+							</ComponentBlock>
+						</div>
+					</DocSection>
+
 					<DocSection title="Overlays">
 						<div className={styles.grid}>
 							<ComponentBlock
@@ -1461,54 +1185,5 @@ export function App() {
 				</main>
 			</div>
 		</ThemeProvider>
-	);
-}
-
-interface DocSectionProps {
-	title: string;
-	children: ReactNode;
-}
-
-function sectionIdFromTitle(title: string) {
-	return title
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, "-")
-		.replace(/(^-|-$)/g, "");
-}
-
-function sourceLabelFromPath(source: string) {
-	return source.split("/").pop() ?? source;
-}
-
-function DocSection({ title, children }: DocSectionProps) {
-	return (
-		<section id={sectionIdFromTitle(title)} className={styles.section}>
-			<h2 className={styles.sectionTitle}>{title}</h2>
-			{children}
-		</section>
-	);
-}
-
-interface ComponentBlockProps {
-	name: string;
-	source: string;
-	meta: string;
-	children: ReactNode;
-}
-
-function ComponentBlock({ name, source, meta, children }: ComponentBlockProps) {
-	return (
-		<article className={styles.componentBlock}>
-			<div className={styles.componentHeader}>
-				<div>
-					<h3 className={styles.componentName}>{name}</h3>
-					<p className={styles.componentMeta}>{meta}</p>
-				</div>
-				<code className={styles.componentSource} title={source}>
-					{sourceLabelFromPath(source)}
-				</code>
-			</div>
-			<div className={styles.componentBody}>{children}</div>
-		</article>
 	);
 }
