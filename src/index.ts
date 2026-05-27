@@ -135,6 +135,9 @@ export type { TextViewerProps } from "./components/TextViewer";
 export { PdfViewer } from "./components/PdfViewer";
 export type { PdfViewerProps } from "./components/PdfViewer";
 
+export { SvgViewer } from "./components/SvgViewer";
+export type { SvgViewerProps } from "./components/SvgViewer";
+
 export {
 	cloneLayout,
 	computeDropEdge,

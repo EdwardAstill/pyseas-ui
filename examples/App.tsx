@@ -25,6 +25,7 @@ import {
 	Select,
 	SortableList,
 	StatusBadge,
+	SvgViewer,
 	StatusBar,
 	Tabs,
 	TextField,
@@ -1067,6 +1068,19 @@ export function App() {
 
 					<DocSection title="Viewers">
 						<div className={styles.grid}>
+							<ComponentBlock
+								name="<SvgViewer>"
+								source="src/components/SvgViewer.tsx"
+								meta="dedicated SVG viewer with pan, zoom, and fit reset"
+							>
+								<div className={styles.viewerFrame} style={{ height: 280 }}>
+									<SvgViewer
+										svg={drawingSvg}
+										label="<SvgViewer>"
+										style={{ border: 0 }}
+									/>
+								</div>
+							</ComponentBlock>
 							<ComponentBlock
 								name="<CsvViewer>"
 								source="src/components/CsvViewer.tsx"
