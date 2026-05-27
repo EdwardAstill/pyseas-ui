@@ -1,0 +1,45 @@
+import { useMemo } from "react";
+import type { CSSProperties } from "react";
+import MarkdownIt from "markdown-it";
+import texmath from "markdown-it-texmath";
+import katex from "katex";
+import "katex/dist/katex.min.css";
+import styles from "./Viewers.module.css";
+
+export interface MarkdownViewerProps {
+	/** Raw markdown content. Supports $$/display/$$ and $inline$ LaTeX via KaTeX. */
+	content: string;
+	/** Maximum height before scrolling. Omit for auto-height. */
+	maxHeight?: number;
+	/** CSS overrides on the root element. */
+	style?: CSSProperties;
+}
+
+const md = new MarkdownIt({ html: false, linkify: true, breaks: false }).use(
+	texmath,
+	{
+		engine: katex,
+		delimiters: ["dollars", "brackets", "doxygen", "gitlab", "julia", "kramdown"],
+		macros: { "\\f": "#1f(#2)" },
+	},
+);
+
+export function MarkdownViewer({
+	content,
+	maxHeight,
+	style,
+}: MarkdownViewerProps) {
+	const html = useMemo(
+		() => md.render(content),
+		[content],
+	);
+
+	return (
+		<div className={styles.container} style={style}>
+			<div className={styles.markdownProse} style={{ maxHeight }}>
+				{/* eslint-disable-next-line react/no-danger */}
+				<div dangerouslySetInnerHTML={{ __html: html }} />
+			</div>
+		</div>
+	);
+}
