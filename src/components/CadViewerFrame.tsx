@@ -23,6 +23,7 @@ export const LIGHT_BG = 0xf5f5f5;
 interface CadViewerFrameProps {
 	title?: ReactNode;
 	metadata?: ReactNode;
+	controls?: ReactNode;
 	download?: CadViewerDownload | null;
 	children: ReactNode;
 	className?: string | undefined;
@@ -91,6 +92,7 @@ export function useCadTheme(theme: CadViewerTheme | undefined): {
 export function CadViewerFrame({
 	title,
 	metadata,
+	controls,
 	download = null,
 	children,
 	className,
@@ -99,7 +101,10 @@ export function CadViewerFrame({
 	theme,
 }: CadViewerFrameProps) {
 	const hasToolbar =
-		title !== undefined || metadata !== undefined || download !== null;
+		title !== undefined ||
+		metadata !== undefined ||
+		controls !== undefined ||
+		download !== null;
 
 	return (
 		<div
@@ -114,6 +119,9 @@ export function CadViewerFrame({
 					{title !== undefined && <span className={styles.title}>{title}</span>}
 					{metadata !== undefined && (
 						<span className={styles.metadata}>{metadata}</span>
+					)}
+					{controls !== undefined && (
+						<div className={styles.controls}>{controls}</div>
 					)}
 					{download !== null && (
 						<a

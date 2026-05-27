@@ -74,6 +74,8 @@ export type {
 export { CadDxfViewer, CadStepViewer } from "./components/CadViewer";
 export type {
 	CadDxfViewerProps,
+	CadStepEdgeMode,
+	CadStepSurfaceMode,
 	CadStepViewerProps,
 	CadViewerDownload,
 	CadViewerStatus,

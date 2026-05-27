@@ -47,12 +47,14 @@ import {
 	coloringOptions,
 	csvDemoData,
 	drawingSvg,
+	dxfDemoSrc,
 	freeformCardLabels,
 	freeformCardTags,
 	logLines,
 	navItems,
 	pdfDemoSrc,
 	selectOptions,
+	stepDemoMeshSrc,
 	textDemoContent,
 	workspaceLabels,
 	workspaceLayout,
@@ -1081,6 +1083,36 @@ export function App() {
 									/>
 								</div>
 							</ComponentBlock>
+							<ComponentBlock
+								name="<CadDxfViewer>"
+								source="src/components/CadDxfViewer.tsx"
+								meta="DXF preview powered by dxf-viewer and Three.js"
+							>
+								<div className={styles.viewerFrame} style={{ height: 280 }}>
+									<CadDxfViewer
+										fileUrl={dxfDemoSrc}
+										title="<CadDxfViewer>"
+										metadata="inline demo DXF"
+										style={{ border: 0 }}
+									/>
+								</div>
+							</ComponentBlock>
+
+							<ComponentBlock
+								name="<CadStepViewer>"
+								source="src/components/CadStepViewer.tsx"
+								meta="STEP mesh preview powered by occt-import-js output and Three.js"
+							>
+								<div className={styles.viewerFrame} style={{ height: 280 }}>
+									<CadStepViewer
+										meshUrl={stepDemoMeshSrc}
+										title="<CadStepViewer>"
+										metadata="demo tessellated mesh"
+										style={{ border: 0 }}
+									/>
+								</div>
+							</ComponentBlock>
+
 							<ComponentBlock
 								name="<CsvViewer>"
 								source="src/components/CsvViewer.tsx"

@@ -178,6 +178,75 @@ End of manifest.
 export const pdfDemoSrc =
 	"data:application/pdf;base64,JVBERi0xLjQKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+ZW5kb2JqCjIgMCBvYmo8PC9UeXBlL1BhZ2VzL0tpZHNbMyAwIFJdL0NvdW50IDE+PmVuZG9iagozIDAgb2JqPDwvVHlwZS9QYWdlL01lZGlhQm94WzAgMCAzMDAgMTUwXS9QYXJlbnQgMiAwIFIvUmVzb3VyY2VzPDw+Pj4+ZW5kb2JqCnhyZWYKMCA0CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAwOSAwMDAwMCBuIAowMDAwMDAwMDU4IDAwMDAwIG4gCjAwMDAwMDAxMTUgMDAwMDAgbiAKdHJhaWxlcjw8L1NpemUgNC9Sb290IDEgMCBSPj4Kc3RhcnR4cmVmCjIwNgolJUVPRA==";
 
+const dxfDemoContent = `0
+SECTION
+2
+ENTITIES
+0
+LINE
+8
+0
+10
+0
+20
+0
+30
+0
+11
+100
+21
+0
+31
+0
+0
+CIRCLE
+8
+0
+10
+50
+20
+30
+30
+0
+40
+20
+0
+ENDSEC
+0
+EOF`;
+
+export const dxfDemoSrc = `data:application/dxf;charset=utf-8,${encodeURIComponent(
+	dxfDemoContent,
+)}`;
+
+const stepDemoMesh = {
+	success: true,
+	meshes: [
+		{
+			name: "demo-cube",
+			color: [0.42, 0.55, 0.74],
+			attributes: {
+				position: {
+					array: [
+						-1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1,
+						1, 1, -1, 1, 1,
+					],
+				},
+			},
+			index: {
+				array: [
+					0, 1, 2, 0, 2, 3, 4, 6, 5, 4, 7, 6, 0, 4, 5, 0, 5, 1, 1, 5, 6, 1, 6,
+					2, 2, 6, 7, 2, 7, 3, 3, 7, 4, 3, 4, 0,
+				],
+			},
+		},
+	],
+};
+
+export const stepDemoMeshSrc = `data:application/json;charset=utf-8,${encodeURIComponent(
+	JSON.stringify(stepDemoMesh),
+)}`;
+
 export const logLines = [
 	"[info] component mounted",
 	"[info] controlled value changed",

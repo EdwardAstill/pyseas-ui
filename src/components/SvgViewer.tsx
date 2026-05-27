@@ -37,12 +37,7 @@ function clamp(value: number, min: number, max: number): number {
 	return Math.min(max, Math.max(min, value));
 }
 
-export function SvgViewer({
-	svg,
-	label,
-	className,
-	style,
-}: SvgViewerProps) {
+export function SvgViewer({ svg, label, className, style }: SvgViewerProps) {
 	const [zoom, setZoom] = useState(1);
 	const [pan, setPan] = useState({ x: 0, y: 0 });
 	const dragRef = useRef<DragState | null>(null);
