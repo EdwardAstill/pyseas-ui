@@ -19,7 +19,14 @@ const md = new MarkdownIt({ html: false, linkify: true, breaks: false }).use(
 	texmath,
 	{
 		engine: katex,
-		delimiters: ["dollars", "brackets", "doxygen", "gitlab", "julia", "kramdown"],
+		delimiters: [
+			"dollars",
+			"brackets",
+			"doxygen",
+			"gitlab",
+			"julia",
+			"kramdown",
+		],
 		macros: { "\\f": "#1f(#2)" },
 	},
 );
@@ -29,10 +36,7 @@ export function MarkdownViewer({
 	maxHeight,
 	style,
 }: MarkdownViewerProps) {
-	const html = useMemo(
-		() => md.render(content),
-		[content],
-	);
+	const html = useMemo(() => md.render(content), [content]);
 
 	return (
 		<div className={styles.container} style={style}>

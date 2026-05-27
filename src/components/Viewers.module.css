@@ -238,6 +238,143 @@
 	border: none;
 }
 
+/* --- Markdown prose --- */
+.markdownProse {
+	padding: var(--ps-space-md) var(--ps-space-lg);
+	overflow: auto;
+	color: var(--ps-text);
+	font-family: var(--ps-font-sans);
+	font-size: var(--ps-text-sm);
+	line-height: 1.65;
+}
+
+.markdownProse h1,
+.markdownProse h2,
+.markdownProse h3,
+.markdownProse h4 {
+	margin: 1.25em 0 0.5em;
+	color: var(--ps-text);
+	font-weight: 700;
+	line-height: 1.25;
+}
+
+.markdownProse h1 {
+	font-size: 1.42em;
+	border-bottom: 1px solid var(--ps-border);
+	padding-bottom: 0.3em;
+}
+.markdownProse h2 {
+	font-size: 1.22em;
+}
+.markdownProse h3 {
+	font-size: 1.08em;
+}
+.markdownProse h4 {
+	font-size: 1em;
+}
+
+.markdownProse h1:first-child,
+.markdownProse h2:first-child,
+.markdownProse h3:first-child {
+	margin-top: 0;
+}
+
+.markdownProse p {
+	margin: 0.65em 0;
+}
+
+.markdownProse a {
+	color: var(--ps-accent);
+	text-decoration: none;
+}
+
+.markdownProse a:hover {
+	text-decoration: underline;
+}
+
+.markdownProse code {
+	font-family: var(--ps-font-mono);
+	font-size: 0.9em;
+	padding: 0.15em 0.35em;
+	border-radius: var(--ps-radius-xs);
+	background: var(--ps-panel-elevated);
+	color: var(--ps-text);
+}
+
+.markdownProse pre {
+	margin: 0.75em 0;
+	padding: var(--ps-space-md);
+	border: 1px solid var(--ps-border);
+	border-radius: var(--ps-radius-sm);
+	background: var(--ps-panel);
+	overflow: auto;
+}
+
+.markdownProse pre code {
+	padding: 0;
+	background: transparent;
+	font-size: 0.85em;
+	line-height: 1.55;
+}
+
+.markdownProse ul,
+.markdownProse ol {
+	margin: 0.5em 0;
+	padding-left: 1.6em;
+}
+
+.markdownProse li {
+	margin: 0.2em 0;
+}
+
+.markdownProse blockquote {
+	margin: 0.65em 0;
+	padding: 0.35em 0 0.35em 0.85em;
+	border-left: 3px solid var(--ps-accent);
+	color: var(--ps-text-muted);
+}
+
+.markdownProse table {
+	width: 100%;
+	margin: 0.65em 0;
+	border-collapse: collapse;
+	font-family: var(--ps-font-mono);
+	font-size: 0.9em;
+}
+
+.markdownProse th,
+.markdownProse td {
+	padding: 4px var(--ps-space-sm);
+	border: 1px solid var(--ps-border);
+	text-align: left;
+	vertical-align: top;
+}
+
+.markdownProse th {
+	background: var(--ps-panel);
+	font-weight: 650;
+	color: var(--ps-text-muted);
+}
+
+.markdownProse tr:nth-child(even) td {
+	background: var(--ps-panel-elevated);
+}
+
+.markdownProse hr {
+	margin: 1em 0;
+	border: 0;
+	border-top: 1px solid var(--ps-border);
+}
+
+/* KaTeX overrides */
+.markdownProse .katex-display {
+	margin: 0.75em 0;
+}
+
+.markdownProse .katex {
+	font-size: 1.05em;
+}
+
 /* --- Viewer root (flex column) --- */
 .root {
 	display: flex;

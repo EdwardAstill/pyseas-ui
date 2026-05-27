@@ -17,6 +17,7 @@ import {
 	IconButton,
 	IconSidebar,
 	LogView,
+	MarkdownViewer,
 	NumberField,
 	PaneShell,
 	Panel,
@@ -47,6 +48,7 @@ import {
 	coloringOptions,
 	csvDemoData,
 	drawingSvg,
+	markdownDemoContent,
 	dxfDemoSrc,
 	freeformCardLabels,
 	freeformCardTags,
@@ -1167,6 +1169,20 @@ export function App() {
 										src={pdfDemoSrc}
 										height={240}
 										title="Sample PDF"
+										style={{ border: 0 }}
+									/>
+								</div>
+							</ComponentBlock>
+
+							<ComponentBlock
+								name="<MarkdownViewer>"
+								source="src/components/MarkdownViewer.tsx"
+								meta="GitHub-flavoured markdown with KaTeX LaTeX equation support"
+							>
+								<div className={styles.viewerFrame} style={{ height: 340 }}>
+									<MarkdownViewer
+										content={markdownDemoContent}
+										maxHeight={340}
 										style={{ border: 0 }}
 									/>
 								</div>

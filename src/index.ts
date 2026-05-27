@@ -134,6 +134,9 @@ export type { CodeViewerProps } from "./components/CodeViewer";
 export { TextViewer } from "./components/TextViewer";
 export type { TextViewerProps } from "./components/TextViewer";
 
+export { MarkdownViewer } from "./components/MarkdownViewer";
+export type { MarkdownViewerProps } from "./components/MarkdownViewer";
+
 export { PdfViewer } from "./components/PdfViewer";
 export type { PdfViewerProps } from "./components/PdfViewer";
 

@@ -215,6 +215,55 @@ ENDSEC
 0
 EOF`;
 
+export const markdownDemoContent = `# Lift Point Design Check
+
+## Input parameters
+
+| Parameter | Value | Unit |
+|---|---|---|
+| Shackle diameter | 32 | mm |
+| Material grade | S355 | — |
+| Design load | 120 | kN |
+| Safety factor | 2.5 | — |
+
+## Check results
+
+The padeye passes all checks at the reference orientation.
+
+### Shear capacity
+
+Phrase it as a limit-equilibrium check:
+
+$$V_{Rd} = \\frac{0.6 \\cdot f_y \\cdot A_v}{\\gamma_M} = \\frac{0.6 \\cdot 355 \\cdot 2010}{1.0} = 428\\ \\text{kN}$$
+
+The utilisation ratio is comfortable:
+
+$$ U = \\frac{V_{Ed}}{V_{Rd}} = \\frac{120}{428} = 0.28 $$
+
+### Bearing check
+
+For a 32 mm pin in a 34 mm hole:
+
+$$ \\sigma_{br} = \\frac{F}{d \\cdot t} = \\frac{120 \\times 10^3}{32 \\cdot 25} = 150\\ \\text{MPa} $$
+
+### Weld check
+
+Two 8 mm fillets, 100 mm long each:
+
+$$ \\tau_{\\parallel} = \\frac{F}{2 \\cdot a \\cdot L} = \\frac{120 \\times 10^3}{2 \\cdot 8 \\cdot 100} = 75\\ \\text{MPa} $$
+
+> **Note:** All welds are full-penetration and were inspected per DNV-ST-N001.
+
+## Summary
+
+- [x] Shear capacity OK
+- [x] Bearing capacity OK
+- [x] Weld strength OK
+- [x] Edge distance OK
+
+**Recommendation:** Approve for offshore lift.
+`;
+
 export const dxfDemoSrc = `data:application/dxf;charset=utf-8,${encodeURIComponent(
 	dxfDemoContent,
 )}`;
