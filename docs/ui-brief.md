@@ -10,13 +10,13 @@ Target aesthetic: engineering workbench, not marketing. Dense, precise, legible.
 
 ## Visual Language
 
-- **Density** — theme-controlled. Default controls are compact (sm: 24 px, md: 28 px); `compact` tightens further and `high-contrast` expands for legibility.
+- **Density** — theme-controlled. Default controls are compact (sm: 24 px, md: 28 px); `compact` tightens further. The legacy `high-contrast` name resolves to the compact appearance with dark colouring.
 - **Corners** — square by default (`radius: 0`). An optional `xs` radius (2–4 px) is available for inputs and badges; never decorative.
 - **Shadows** — structural only (dialog backdrop). No shadow as ambient decoration.
 - **Gradients** — none. Flat fills only.
 - **Motion** — state transitions only (color, opacity, border). No entrance/exit animations. No spring physics.
 - **Typography** — monospace for labels, headings, numeric values, and unit strings. Sans-serif for body/prose content.
-- **Themes** — named token packs. `default` is dark-first; `light`, `bun`, `high-contrast`, and `compact` are built-in alternatives. No hard-coded colour values in components.
+- **Themes** — composable token packs. `theme` controls appearance (`default`, `bun`, `compact`); `coloring` controls colour (`dark`, `light`, `neon-pink`, `cobalt`). Legacy single-value names still resolve for older callers. No hard-coded colour values in components.
 
 ---
 
@@ -42,33 +42,32 @@ numeric fields.
 
 All tokens are CSS custom properties on `:root` (or a scoped container). Components reference only these variables — never raw hex values.
 
-Built-in theme packs:
+`ThemeProvider` separates appearance from colouring:
 
-| Theme | Mode | Intent |
+| Prop | Values | Intent |
 |---|---|---|
-| `default` | dark | Dense neutral workbench baseline |
-| `light` | light | Light counterpart for conventional environments |
-| `bun` | dark | Warm Bun-like developer-tool treatment |
-| `high-contrast` | dark | Larger controls, brighter status colours, stronger borders |
-| `compact` | dark | Tighter density for information-heavy screens |
-| `dark` | dark | Legacy alias of `default` |
+| `theme` | `default`, `bun`, `compact` | Spacing, radius, font, density, chrome sizing |
+| `coloring` | `dark`, `light`, `neon-pink`, `cobalt` | Surface, text, accent, status, overlay colours |
+| `overrides` | CSS variable map | Local token overrides for one subtree |
+
+Legacy single-value names remain accepted as `ThemeName`: `dark`, `light`, `high-contrast`, `bun`, `default`, `compact`, `neon-pink`, and `cobalt`.
 
 ### Colour tokens
 
 | Token | Dark default | Light default | Purpose |
 |---|---|---|---|
-| `--ps-surface` | `#0F0F0F` | `#F0F0F0` | App background |
-| `--ps-panel` | `#1A1A1A` | `#FFFFFF` | Panel background |
-| `--ps-panel-elevated` | `#222222` | `#F7F7F7` | Raised panel / dialog |
-| `--ps-border` | `rgba(255,255,255,0.08)` | `rgba(0,0,0,0.10)` | Borders and dividers |
-| `--ps-border-strong` | `rgba(255,255,255,0.18)` | `rgba(0,0,0,0.22)` | Focused/active borders |
-| `--ps-text` | `#E8E8E8` | `#111111` | Primary text |
-| `--ps-text-muted` | `#888888` | `#666666` | Secondary/placeholder text |
-| `--ps-accent` | `#4D9CFF` | `#0068D6` | Interactive highlight |
-| `--ps-danger` | `#DD3333` | `#C02020` | Destructive / error |
-| `--ps-success` | `#3A9E6A` | `#1D7A4E` | Pass / ok |
-| `--ps-warning` | `#C88A18` | `#A06800` | Warning / caution |
-| `--ps-info` | `#5588BB` | `#2255AA` | Informational |
+| `--ps-surface` | `#0a0a0b` | `#ffffff` | App background |
+| `--ps-panel` | `#0f0f10` | `#fafafa` | Panel background |
+| `--ps-panel-elevated` | `#161617` | `#efefef` | Raised panel / dialog |
+| `--ps-border` | `rgba(255,255,255,0.08)` | `rgba(0,0,0,0.08)` | Borders and dividers |
+| `--ps-border-strong` | `rgba(255,255,255,0.14)` | `rgba(0,0,0,0.14)` | Focused/active borders |
+| `--ps-text` | `#e8e8e8` | `#1a1a1a` | Primary text |
+| `--ps-text-muted` | `#6b6b6b` | `#7a7a7a` | Secondary/placeholder text |
+| `--ps-accent` | `#ffffff` | `#000000` | Interactive highlight |
+| `--ps-danger` | `#f87171` | `#c02020` | Destructive / error |
+| `--ps-success` | `#4ade80` | `#1d7a4e` | Pass / ok |
+| `--ps-warning` | `#facc15` | `#9a6800` | Warning / caution |
+| `--ps-info` | `#8ab4f8` | `#2255aa` | Informational |
 | `--ps-overlay` | `rgba(0,0,0,0.60)` | `rgba(0,0,0,0.40)` | Dialog backdrop |
 
 ### Spacing scale

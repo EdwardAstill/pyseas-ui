@@ -23,7 +23,7 @@ The design direction is tracked in [`docs/ui-brief.md`](docs/ui-brief.md), with 
 
 ## Status
 
-Version 0.1.0. Pre-publish. `private: true` in `package.json` — not published to npm. Consumed by sibling apps via local path or workspace links only.
+Version 0.1.0. Pre-publish. The package is not published to npm yet; sibling apps consume it through local path or workspace links.
 
 ---
 
@@ -67,35 +67,39 @@ This must load before any `pyseas-ui` component renders. Without it the theme to
 
 ## Theming
 
-Wrap the application (or any sub-tree) in `<ThemeProvider>`. Pass the resolved theme pack — `ThemeProvider` does not read `prefers-color-scheme` or localStorage itself; the caller must supply the resolved string.
+Wrap the application (or any sub-tree) in `<ThemeProvider>`. The provider composes three concerns:
 
-Built-in theme packs: `default`, `light`, `bun`, `high-contrast`, and `compact`. The legacy `dark` value is accepted as an alias of `default`.
+- `theme` — appearance pack: `default`, `bun`, or `compact`.
+- `coloring` — colour scheme: `dark`, `light`, `neon-pink`, or `cobalt`.
+- `overrides` — optional CSS custom-property overrides for one subtree.
+
+Legacy single-value themes still work: `dark`, `light`, `high-contrast`, `bun`, `default`, `compact`, `neon-pink`, and `cobalt` are accepted as `ThemeName` values. `ThemeProvider` does not read `prefers-color-scheme` or localStorage itself; callers must pass the resolved values.
 
 ```tsx
-import { ThemeProvider, type ThemeName } from 'pyseas-ui'
+import {
+  ThemeProvider,
+  type ThemeAppearanceName,
+  type ThemeColoringName,
+} from 'pyseas-ui'
 
 function App() {
-  const [theme, setTheme] = useState<ThemeName>('default')
+  const [theme, setTheme] = useState<ThemeAppearanceName>('default')
+  const [coloring, setColoring] = useState<ThemeColoringName>('dark')
 
-  // Persist across sessions
   useEffect(() => {
     localStorage.setItem('app-theme', theme)
-  }, [theme])
+    localStorage.setItem('app-coloring', coloring)
+  }, [theme, coloring])
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme} coloring={coloring}>
       {/* rest of app */}
     </ThemeProvider>
   )
 }
 ```
 
-On mount, read the stored value:
-
-```tsx
-const stored = localStorage.getItem('app-theme') as ThemeName | null
-const [theme, setTheme] = useState<ThemeName>(stored ?? 'default')
-```
+On mount, read the stored values and validate them before passing them to the provider.
 
 ---
 
@@ -103,7 +107,7 @@ const [theme, setTheme] = useState<ThemeName>(stored ?? 'default')
 
 | Component | Purpose |
 |---|---|
-| `ThemeProvider` | Mounts `--ps-*` CSS tokens; switches named theme packs |
+| `ThemeProvider` | Mounts `--ps-*` CSS tokens; composes appearance, colouring, and overrides |
 | `Panel` | Rectangular container with optional title bar and header action slot |
 | `Tabs` | Controlled horizontal tab strip; caller renders panel body |
 | `Toolbar` | Horizontal row of tightly-spaced small controls |
@@ -118,8 +122,16 @@ const [theme, setTheme] = useState<ThemeName>(stored ?? 'default')
 | `StatusBadge` | Inline status badge — `ok`, `warn`, `err`, `info` |
 | `Result` | Display row for a pre-computed result: label, value, unit, status, utilisation |
 | `LogView` | Scrollable monospace area for streamed text; auto-scrolls to bottom |
-| `Tree` | Controlled hierarchical tree view with expand/collapse, selection, and per-node icon/trailing slots |
+| `Tree` | Controlled hierarchical tree view with expand/collapse, selection, drag-to-move, and per-node icon/trailing slots |
+| `SortableList` | Controlled pointer-drag list that reports reordered items |
+| `FreeformCanvas` | Absolute-positioned card canvas with drag-to-position and selection hooks |
 | `DrawingViewer` | Source-agnostic SVG/image drawing preview with pan, zoom, fit reset, metadata, and download action |
+| `CadDxfViewer` | DXF preview frame around `dxf-viewer`, with theme-aware background and status messages |
+| `CadStepViewer` | STEP mesh preview frame for pre-tessellated mesh JSON, with orbit controls and status messages |
+| `CsvViewer` | Parsed CSV table with filtering, sortable columns, pagination, and empty state |
+| `CodeViewer` | Monospace code block with optional line numbers and language badge |
+| `TextViewer` | Plain-text block with optional line numbers |
+| `PdfViewer` | Sandboxed PDF iframe wrapper |
 | `AppShell` | workbench app frame with top bar, icon sidebar, content slot, and status bar |
 | `TopBar` | Compact application top bar with title, subtitle, and action slots |
 | `IconSidebar` | 48px icon rail matching the workbench icon-rail pattern |

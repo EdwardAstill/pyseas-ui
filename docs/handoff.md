@@ -1,9 +1,11 @@
 # Handoff — pyseas-ui
 
+This is session state for maintainers, not public package documentation. `package.json` excludes this file from npm package contents.
+
 ## Project status
 
 Pre-publish component library. All checks pass (typecheck, lint, test, build).
-Demo runs via `bun run demo` on port 5178.
+Demo runs via `bun run demo`.
 
 ## Theme system
 
@@ -36,7 +38,7 @@ Coloring schemes:
 
 - `bun run typecheck` — clean
 - `bun run lint` — clean
-- `bun test` — 29 pass
+- `bun test` — 51 pass
 - `bun run build` — dist/ builds cleanly
 - Browser: NumberField wheel prevents page scroll, Dialog updates with theme changes
 

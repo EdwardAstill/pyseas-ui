@@ -4,6 +4,9 @@ import "./styles.css";
 
 export { ThemeProvider, useTheme } from "./components/ThemeProvider";
 export type {
+	LegacyThemeName,
+	ThemeAppearanceName,
+	ThemeColoringName,
 	ThemeContextValue,
 	ThemeMode,
 	ThemeName,

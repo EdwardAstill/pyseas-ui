@@ -1,9 +1,12 @@
 import { type ReactNode } from 'react';
-export type ThemeName = 'default' | 'light' | 'dark' | 'bun' | 'high-contrast' | 'compact' | 'neon-pink' | 'cobalt';
+export type ThemeAppearanceName = 'default' | 'bun' | 'compact';
+export type ThemeColoringName = 'dark' | 'light' | 'neon-pink' | 'cobalt';
+export type LegacyThemeName = 'dark' | 'light' | 'high-contrast';
+export type ThemeName = ThemeAppearanceName | ThemeColoringName | LegacyThemeName;
 export type ThemeMode = 'dark' | 'light';
 export interface ThemeContextValue {
-    theme: ThemeName;
-    coloring: ThemeName;
+    theme: ThemeAppearanceName;
+    coloring: ThemeColoringName;
     mode: ThemeMode;
 }
 export declare function useTheme(): ThemeContextValue | undefined;

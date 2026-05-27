@@ -1,4 +1,4 @@
-# Component Contract — pyseas-ui v1
+# Component Contract — pyseas-ui 0.1
 
 All components are:
 - **Controlled** — no internal state beyond UI interaction feedback (hover, focus).
@@ -58,29 +58,39 @@ The rail is **resizable** by default — a slider on its right edge.
 
 ## `<ThemeProvider>`
 
-Mounts `--ps-*` CSS custom properties on a wrapping element. Switches named token packs with one prop.
+Mounts `--ps-*` CSS custom properties on a wrapping element. Composes appearance, colour, and optional per-subtree token overrides.
 
 ```tsx
-type ThemeName = "default" | "light" | "bun" | "high-contrast" | "compact" | "dark";
+type ThemeAppearanceName = "default" | "bun" | "compact";
+type ThemeColoringName = "dark" | "light" | "neon-pink" | "cobalt";
+type LegacyThemeName = "dark" | "light" | "high-contrast";
+type ThemeName = ThemeAppearanceName | ThemeColoringName | LegacyThemeName;
 type ThemeMode = "dark" | "light";
 
 interface ThemeProviderProps {
   theme: ThemeName;
+  coloring?: ThemeName;
+  overrides?: Record<string, string>;
   children: ReactNode;
 }
 ```
 
-Built-in packs:
-- `default` — dense neutral dark baseline.
-- `light` — light counterpart for conventional environments.
+Appearance packs:
+- `default` — dense neutral baseline.
 - `bun` — warmer Bun-like developer-tool treatment.
-- `high-contrast` — larger, stronger borders and brighter status colours.
 - `compact` — tighter density for information-heavy screens.
-- `dark` — legacy alias of `default`.
 
-The provider writes `data-theme` and `data-theme-mode` so components with canvas/CAD rendering can choose dark or light internals without knowing each pack.
+Colouring packs:
+- `dark` — neutral dark workbench.
+- `light` — conventional light counterpart.
+- `neon-pink` — charcoal surfaces with pink accent.
+- `cobalt` — cream surfaces with blue accent and orange warning.
 
-**Not responsible for:** persisting theme preference, OS media-query detection (caller must pass the resolved value).
+Legacy single-value themes still work. `high-contrast` resolves to compact appearance with dark colouring; `light`, `dark`, `bun`, `compact`, `neon-pink`, and `cobalt` can be passed as the single `theme` value for older callers.
+
+The provider writes `data-theme`, `data-coloring`, and `data-theme-mode` so portal and canvas/CAD components can choose dark or light internals without knowing each pack.
+
+**Not responsible for:** persisting theme preference, OS media-query detection, or validating stored user preferences.
 
 ---
 
@@ -525,6 +535,116 @@ engineering units, layer semantics, entity selection, or domain-specific labels.
 
 ---
 
+## `<CadDxfViewer>` / `<CadStepViewer>`
+
+CAD preview frames for browser-displayable CAD sources. `CadDxfViewer` loads a DXF URL through `dxf-viewer`. `CadStepViewer` expects a pre-tessellated mesh JSON URL; it does not parse STEP files directly in the browser.
+
+```tsx
+type CadViewerStatus = 'idle' | 'loading' | 'error' | 'ready';
+type CadViewerTheme = 'dark' | 'light';
+
+interface CadViewerDownload {
+  href: string;
+  filename?: string;
+  label?: string;
+}
+
+interface BaseCadViewerProps {
+  status?: CadViewerStatus;
+  error?: string | null;
+  emptyMessage?: string;
+  loadingMessage?: string;
+  title?: ReactNode;
+  metadata?: ReactNode;
+  download?: CadViewerDownload | null;
+  className?: string;
+  style?: CSSProperties;
+}
+
+interface CadDxfViewerProps extends BaseCadViewerProps {
+  fileUrl?: string | null;
+  clearColor?: number;
+  theme?: CadViewerTheme;
+}
+
+interface CadStepViewerProps extends BaseCadViewerProps {
+  meshUrl?: string | null;
+  theme?: CadViewerTheme;
+}
+```
+
+**Interaction:** DXF preview handles its own pan/zoom through `dxf-viewer`; STEP preview uses orbit controls. If `theme` is omitted, both detect the nearest `ThemeProvider` mode.
+
+**Not responsible for:** file upload, DXF/STEP conversion, server tessellation, engineering units, layer editing, entity selection, or domain-specific labels.
+
+---
+
+## `<CsvViewer>`
+
+Parsed CSV table with optional filter bar, sortable columns, pagination, and empty state.
+
+```tsx
+interface CsvData {
+  headers: string[];
+  rows: string[][];
+}
+
+interface CsvViewerProps {
+  data: CsvData;
+  rowsPerPage?: number;   // default: 50
+  filter?: boolean;       // default: true
+  height?: number;
+  emptyMessage?: string;
+  style?: CSSProperties;
+}
+```
+
+**Not responsible for:** fetching files, parsing CSV text, virtualising large datasets, or editing cells.
+
+---
+
+## `<CodeViewer>` / `<TextViewer>`
+
+Monospace read-only text blocks. `CodeViewer` defaults to line numbers and can show a language badge; `TextViewer` defaults to no line numbers.
+
+```tsx
+interface CodeViewerProps {
+  code: string;
+  language?: string;
+  showLineNumbers?: boolean;
+  maxHeight?: number;
+  style?: CSSProperties;
+}
+
+interface TextViewerProps {
+  text: string;
+  showLineNumbers?: boolean;
+  maxHeight?: number;
+  style?: CSSProperties;
+}
+```
+
+**Not responsible for:** syntax highlighting, editing, search, clipboard actions, or diffing.
+
+---
+
+## `<PdfViewer>`
+
+Sandboxed iframe wrapper for an already-available PDF URL.
+
+```tsx
+interface PdfViewerProps {
+  src: string;
+  height?: number;  // default: 600
+  title?: string;   // default: "PDF viewer"
+  style?: CSSProperties;
+}
+```
+
+**Not responsible for:** PDF fetching/auth, pagination controls, annotations, or text extraction.
+
+---
+
 ## `<Tree>`
 
 Controlled hierarchical tree view. Caller owns node shape, expanded set, and
@@ -594,3 +714,53 @@ drop-after.
 **Not responsible for:** loading children async, virtualisation, multi-select,
 checkbox selection, filtering or search, persisting expansion state, or mutating
 the caller-owned node data.
+
+---
+
+## `<SortableList>`
+
+Controlled pointer-drag list. Caller owns the items and commits the reordered array returned by `onReorder`.
+
+```tsx
+interface SortableListProps<T = unknown> {
+  items: T[];
+  renderItem: (item: T, index: number) => ReactNode;
+  onReorder: (items: T[]) => void;
+  getKey?: (item: T, index: number) => string | number;
+  className?: string;
+  style?: CSSProperties;
+  'aria-label'?: string;
+}
+```
+
+**Not responsible for:** keyboard reordering, persistence, cross-list drag/drop, or virtualisation.
+
+---
+
+## `<FreeformCanvas>`
+
+Absolute-positioned card canvas. Caller owns item positions and updates them through `onPositionChange`.
+
+```tsx
+interface FreeformCanvasItem {
+  id: string;
+  x: number;
+  y: number;
+}
+
+interface FreeformCanvasProps<T extends FreeformCanvasItem = FreeformCanvasItem> {
+  items: T[];
+  renderItem: (item: T) => ReactNode;
+  onPositionChange: (id: string, x: number, y: number) => void;
+  selectedId?: string | null;
+  onSelect?: (id: string) => void;
+  cardWidth?: number;
+  className?: string;
+  style?: CSSProperties;
+  'aria-label'?: string;
+}
+```
+
+**Interaction:** pointer drag moves a card within the canvas bounds; double-click, Enter, and Space call `onSelect` when provided.
+
+**Not responsible for:** layout algorithms, zooming, connection lines, persistence, multi-select, or collision avoidance.

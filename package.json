@@ -9,7 +9,8 @@
     "bin",
     "dist",
     "README.md",
-    "docs"
+    "docs",
+    "!docs/handoff.md"
   ],
   "bin": {
     "pyseas-ui": "./bin/pyseas-ui.mjs"

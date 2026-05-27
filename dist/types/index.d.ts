@@ -1,6 +1,6 @@
 import "./styles.css";
 export { ThemeProvider, useTheme } from "./components/ThemeProvider";
-export type { ThemeContextValue, ThemeMode, ThemeName, ThemeProviderProps, } from "./components/ThemeProvider";
+export type { LegacyThemeName, ThemeAppearanceName, ThemeColoringName, ThemeContextValue, ThemeMode, ThemeName, ThemeProviderProps, } from "./components/ThemeProvider";
 export { Panel } from "./components/Panel";
 export type { PanelProps } from "./components/Panel";
 export { Tabs } from "./components/Tabs";
