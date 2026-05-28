@@ -1,9 +1,9 @@
-import { type ReactNode } from 'react';
-export type ThemeAppearanceName = 'default' | 'bun' | 'compact';
-export type ThemeColoringName = 'dark' | 'light' | 'neon-pink' | 'cobalt';
-export type LegacyThemeName = 'dark' | 'light' | 'high-contrast';
+import { type ReactNode } from "react";
+export type ThemeAppearanceName = "default" | "bun" | "compact";
+export type ThemeColoringName = "dark" | "light" | "neon-pink" | "cobalt";
+export type LegacyThemeName = "dark" | "light" | "high-contrast";
 export type ThemeName = ThemeAppearanceName | ThemeColoringName | LegacyThemeName;
-export type ThemeMode = 'dark' | 'light';
+export type ThemeMode = "dark" | "light";
 export interface ThemeContextValue {
     theme: ThemeAppearanceName;
     coloring: ThemeColoringName;
@@ -16,4 +16,4 @@ export interface ThemeProviderProps {
     overrides?: Record<string, string>;
     children: ReactNode;
 }
-export declare function ThemeProvider({ theme, coloring, overrides, children }: ThemeProviderProps): import("react/jsx-runtime").JSX.Element;
+export declare function ThemeProvider({ theme, coloring, overrides, children, }: ThemeProviderProps): import("react/jsx-runtime").JSX.Element;

@@ -1,8 +1,8 @@
-# UI Brief — pyseas-ui
+# UI Brief — ui
 
 ## Purpose & Scope
 
-`pyseas-ui` is a domain-neutral component library. It provides the visual layer for web apps built on the pyseas platform (e.g. `pyseas-yard-gui`, `pyseas-dock-gui`). It contains no engineering logic, no domain wording, and no API calls. Any app using it must supply its own data layer.
+`ui` is a domain-neutral component library. It provides the visual layer for web apps built on the pyseas platform (e.g. `pyseas-yard-gui`, `pyseas-dock-gui`). It contains no engineering logic, no domain wording, and no API calls. Any app using it must supply its own data layer.
 
 Target aesthetic: engineering workbench, not marketing. Dense, precise, legible.
 
@@ -23,7 +23,7 @@ Target aesthetic: engineering workbench, not marketing. Dense, precise, legible.
 ## Design References
 
 Keep a short, current list of external sites that express the visual direction
-we want `pyseas-ui` to learn from. The list is for taste calibration only: copy
+we want `ui` to learn from. The list is for taste calibration only: copy
 the useful principles, not the site layout or brand.
 
 Current reference list: [`docs/design-references.md`](design-references.md).
@@ -32,7 +32,7 @@ The current baseline is Bun's website: clean developer-tool UI, restrained
 system typography, dark-first surfaces, and JetBrains Mono for code-like and
 numeric content.
 
-`pyseas-ui` adopts this as the default token direction: system sans for normal
+`ui` adopts this as the default token direction: system sans for normal
 UI text, and packaged JetBrains Mono for technical labels, code-like text, and
 numeric fields.
 
@@ -116,7 +116,7 @@ Default component radius: `--ps-radius-none`. Inputs and badges may use `--ps-ra
 
 ## Layout Philosophy
 
-Engineering apps use a **workbench** composition: a persistent navigation rail on the left, and three to four working panes filling the remaining space. `pyseas-ui` provides the shell, pane, tabstrip, and workspace primitives; host apps own fixed page compositions.
+Engineering apps use a **workbench** composition: a persistent navigation rail on the left, and three to four working panes filling the remaining space. `ui` provides the shell, pane, tabstrip, and workspace primitives; host apps own fixed page compositions.
 
 ```
 ┌──────────────────────────────────────────────────────┐

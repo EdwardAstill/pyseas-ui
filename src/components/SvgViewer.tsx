@@ -95,7 +95,7 @@ export function SvgViewer({ svg, label, className, style }: SvgViewerProps) {
 		<div
 			className={cx(styles.viewer, className)}
 			style={style}
-			data-pyseas-ui="svg-viewer"
+			data-ui="svg-viewer"
 		>
 			<div className={styles.toolbar}>
 				<div className={styles.toolbarGroup}>

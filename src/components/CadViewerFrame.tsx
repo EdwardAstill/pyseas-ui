@@ -111,7 +111,7 @@ export function CadViewerFrame({
 			ref={frameRef}
 			className={cx(styles.viewer, className)}
 			style={style}
-			data-pyseas-ui="cad-viewer"
+			data-ui="cad-viewer"
 			data-cad-theme={theme}
 		>
 			{hasToolbar && (

@@ -77,10 +77,10 @@ export function Dialog({
         className={dialogCls}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        data-pyseas-ui="dialog"
+        data-ui="dialog"
       >
         {hasTitle && (
-          <div className={styles.titleBar} data-pyseas-ui="dialog-title-bar">
+          <div className={styles.titleBar} data-ui="dialog-title-bar">
             <span className={styles.title}>{title}</span>
             {titleActions !== undefined && (
               <div className={styles.titleActions}>{titleActions}</div>
@@ -95,9 +95,9 @@ export function Dialog({
             </button>
           </div>
         )}
-        <div className={styles.body} data-pyseas-ui="dialog-body">{children}</div>
+        <div className={styles.body} data-ui="dialog-body">{children}</div>
         {hasFooter && (
-          <div className={styles.footer} data-pyseas-ui="dialog-footer">{footer}</div>
+          <div className={styles.footer} data-ui="dialog-footer">{footer}</div>
         )}
       </div>
     </div>,

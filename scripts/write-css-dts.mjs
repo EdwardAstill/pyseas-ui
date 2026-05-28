@@ -7,5 +7,5 @@ const declaration = [
 ].join('\n')
 
 mkdirSync('dist/types', { recursive: true })
-writeFileSync('dist/pyseas-ui.d.css.ts', declaration)
+writeFileSync('dist/ui.d.css.ts', declaration)
 writeFileSync('dist/types/styles.d.css.ts', declaration)

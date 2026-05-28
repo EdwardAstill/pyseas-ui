@@ -1,9 +1,9 @@
 {
-  "name": "pyseas-ui",
+  "name": "ui",
   "version": "0.1.0",
   "type": "module",
-  "main": "./dist/pyseas-ui.es.js",
-  "module": "./dist/pyseas-ui.es.js",
+  "main": "./dist/ui.es.js",
+  "module": "./dist/ui.es.js",
   "types": "./dist/types/index.d.ts",
   "files": [
     "bin",
@@ -13,21 +13,21 @@
     "!docs/handoff.md"
   ],
   "bin": {
-    "pyseas-ui": "./bin/pyseas-ui.mjs"
+    "ui": "./bin/ui.mjs"
   },
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/pyseas-ui.es.js"
+      "import": "./dist/ui.es.js"
     },
-    "./dist/pyseas-ui.css": {
-      "types": "./dist/pyseas-ui.d.css.ts",
-      "default": "./dist/pyseas-ui.css"
+    "./dist/ui.css": {
+      "types": "./dist/ui.d.css.ts",
+      "default": "./dist/ui.css"
     }
   },
   "scripts": {
     "dev": "vite",
-    "demo": "bun ./bin/pyseas-ui.mjs demo",
+    "demo": "bun ./bin/ui.mjs demo",
     "build": "vite build && tsc -p tsconfig.build.json && node scripts/write-css-dts.mjs",
     "typecheck": "tsc -b --noEmit",
     "test": "bun test",

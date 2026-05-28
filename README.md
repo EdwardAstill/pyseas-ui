@@ -1,4 +1,4 @@
-# pyseas-ui
+# ui
 
 Domain-neutral React component library for web-based engineering workbench applications. Provides the visual layer — layout, primitives, and theming — shared by `pyseas-yard-gui` and `pyseas-dock-gui`. No engineering logic, no domain wording, no API calls.
 
@@ -34,7 +34,7 @@ In a consuming app's `package.json`, add a path reference:
 ```json
 {
   "dependencies": {
-    "pyseas-ui": "file:../pyseas-ui"
+    "ui": "file:../ui"
   }
 }
 ```
@@ -44,7 +44,7 @@ Or, if both packages share a workspace root (e.g. a Bun or pnpm workspace), decl
 ```json
 {
   "dependencies": {
-    "pyseas-ui": "workspace:*"
+    "ui": "workspace:*"
   }
 }
 ```
@@ -58,10 +58,10 @@ Then run `bun install` (or the workspace manager's equivalent) in the consuming 
 The package ships a single CSS file containing all design tokens and component styles. Import it once, near the root of the consuming app (e.g. in `main.tsx` or the top-level entry module):
 
 ```ts
-import 'pyseas-ui/dist/pyseas-ui.css'
+import 'ui/dist/ui.css'
 ```
 
-This must load before any `pyseas-ui` component renders. Without it the theme tokens are absent and components will be unstyled.
+This must load before any `ui` component renders. Without it the theme tokens are absent and components will be unstyled.
 
 ---
 
@@ -80,7 +80,7 @@ import {
   ThemeProvider,
   type ThemeAppearanceName,
   type ThemeColoringName,
-} from 'pyseas-ui'
+} from 'ui'
 
 function App() {
   const [theme, setTheme] = useState<ThemeAppearanceName>('default')
@@ -150,11 +150,11 @@ preview format such as SVG before passing it to this component.
 ## Workspace example
 
 Use `Workspace` for workspace-driven applications where panels must be
-resizable and movable. The app owns the panel IDs and panel content; `pyseas-ui`
+resizable and movable. The app owns the panel IDs and panel content; `ui`
 owns only the generic layout tree and interaction behavior.
 
 ```tsx
-import 'pyseas-ui/dist/pyseas-ui.css'
+import 'ui/dist/ui.css'
 import {
   AppShell,
   IconSidebar,
@@ -163,7 +163,7 @@ import {
   TopBar,
   ThemeProvider,
   type LayoutNode,
-} from 'pyseas-ui'
+} from 'ui'
 
 type PanelId = 'parts' | 'part' | 'condition' | 'analysis' | 'standards' | 'diagram' | 'result'
 
@@ -218,7 +218,7 @@ available for tests, persistence, or app-specific layout commands.
 
 ## Boundaries with pyseas-yard-gui and pyseas-dock-gui
 
-`pyseas-ui` owns:
+`ui` owns:
 
 - Presentation primitives (buttons, fields, panels, badges, log view)
 - Source-agnostic drawing preview presentation (`DrawingViewer`)
@@ -244,7 +244,7 @@ Neither library nor app should encode the other's concerns.
 ```sh
 bun install          # install dependencies
 bun run dev          # start Vite dev server (serves examples/showcase)
-bun run demo         # start the examples/showcase through the pyseas-ui CLI wrapper
+bun run demo         # start the examples/showcase through the ui CLI wrapper
 bun run typecheck    # TypeScript type-check (no emit)
 bun run build        # build library to dist/
 bun test             # run tests
@@ -255,7 +255,7 @@ The dev server serves `examples/` as the root. Open `http://localhost:5173` to s
 The package also exposes a Bun-native developer CLI:
 
 ```sh
-pyseas-ui demo [--port <port>] [--host <host>] [--open] [--strict-port]
+ui demo [--port <port>] [--host <host>] [--open] [--strict-port]
 ```
 
 Install the local CLI globally with `bun link`. If installing through Bun's
@@ -263,8 +263,8 @@ global package store, use `bun install -g --backend=symlink .` so the command
 serves this checkout's `examples/` and local dev dependencies.
 
 Build output goes to `dist/`:
-- `dist/pyseas-ui.es.js` — ES module bundle
-- `dist/pyseas-ui.css` — all tokens and styles
+- `dist/ui.es.js` — ES module bundle
+- `dist/ui.css` — all tokens and styles
 - `dist/types/` — TypeScript declarations
 
 ---

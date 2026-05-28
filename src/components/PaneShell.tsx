@@ -104,9 +104,9 @@ export function PaneShell({
   }
 
   return (
-    <div className={cls} style={combinedStyle} data-pyseas-ui="pane-shell">
+    <div className={cls} style={combinedStyle} data-ui="pane-shell">
       {hasRail && (
-        <aside className={styles.rail} data-pyseas-ui="pane-rail">
+        <aside className={styles.rail} data-ui="pane-rail">
           <Tabs
             orientation="vertical"
             marker="bracket"
@@ -117,7 +117,7 @@ export function PaneShell({
           {railResizable && (
             <div
               className={styles.railResizeHandle}
-              data-pyseas-ui="pane-rail-handle"
+              data-ui="pane-rail-handle"
               data-dragging={isDragging ? 'true' : undefined}
               onPointerDown={onPointerDown}
               onPointerMove={onPointerMove}
@@ -131,7 +131,7 @@ export function PaneShell({
         </aside>
       )}
       {hasSection && (
-        <div className={styles.section} data-pyseas-ui="pane-section">
+        <div className={styles.section} data-ui="pane-section">
           <div className={styles.sectionTabs}>
             <Tabs
               marker="slash"
@@ -141,13 +141,13 @@ export function PaneShell({
             />
           </div>
           {sectionOptions !== undefined && sectionOptions !== null && (
-            <div className={styles.sectionOptions} data-pyseas-ui="pane-section-options">
+            <div className={styles.sectionOptions} data-ui="pane-section-options">
               {sectionOptions}
             </div>
           )}
         </div>
       )}
-      <div className={cx(styles.body, flushBody && styles.bodyFlush)} data-pyseas-ui="pane-body">
+      <div className={cx(styles.body, flushBody && styles.bodyFlush)} data-ui="pane-body">
         {children}
       </div>
     </div>

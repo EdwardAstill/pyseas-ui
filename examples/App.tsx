@@ -216,15 +216,15 @@ export function App() {
 		<ThemeProvider theme={theme} coloring={coloring}>
 			<div className={styles.catalog}>
 				<div className={styles.announcement}>
-					pyseas-ui demo, tuned toward bun.com →
+					ui demo, tuned toward bun.com →
 				</div>
 
 				<header className={styles.header}>
-					<a className={styles.brand} href="#" aria-label="pyseas-ui demo home">
+					<a className={styles.brand} href="#" aria-label="ui demo home">
 						<span className={styles.bunMark} aria-hidden="true">
 							ps
 						</span>
-						<span>pyseas-ui</span>
+						<span>ui</span>
 					</a>
 					<nav
 						className={classNames(
@@ -279,7 +279,7 @@ export function App() {
 							<span>component catalog</span>
 						</h1>
 						<p className={styles.summary}>
-							Same exported pyseas-ui components, presented with a bun.com-style
+							Same exported ui components, presented with a bun.com-style
 							shell: charcoal surfaces, pink accents, rounded code panels, and
 							dense developer-tool chrome.
 						</p>

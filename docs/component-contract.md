@@ -1,4 +1,4 @@
-# Component Contract — pyseas-ui 0.1
+# Component Contract — ui 0.1
 
 All components are:
 - **Controlled** — no internal state beyond UI interaction feedback (hover, focus).

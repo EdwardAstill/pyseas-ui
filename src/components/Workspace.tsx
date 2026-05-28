@@ -135,7 +135,7 @@ export function Workspace<TTab extends string = string>({
     const splitClass = cx(styles.split, node.dir === 'row' ? styles.splitRow : styles.splitCol)
 
     return (
-      <div className={splitClass} data-pyseas-ui="workspace-split" data-direction={node.dir}>
+      <div className={splitClass} data-ui="workspace-split" data-direction={node.dir}>
         {node.children.map((child, index) => (
           <Fragment key={`${path.join('.')}.${index}.${child.type === 'leaf' ? child.id : child.dir}`}>
             <div className={styles.splitChild} style={{ flex: `${sizes[index]} 1 0px` }}>
@@ -145,7 +145,7 @@ export function Workspace<TTab extends string = string>({
               <div
                 aria-label="Resize pane"
                 className={cx(styles.resizeHandle, node.dir === 'row' ? styles.resizeVertical : styles.resizeHorizontal)}
-                data-pyseas-ui="workspace-resize-handle"
+                data-ui="workspace-resize-handle"
                 onPointerDown={(event) => startResize(event, node, path, index)}
                 role="separator"
               />
@@ -165,14 +165,14 @@ export function Workspace<TTab extends string = string>({
         className={cx(styles.leaf, activeDrop !== null && styles.dropActive)}
         data-drop-edge={activeDrop ?? undefined}
         data-leaf-id={leaf.id}
-        data-pyseas-ui="pane-leaf"
+        data-ui="pane-leaf"
         onDragOver={(event) => updateDropTarget(event, leaf.id)}
         onDrop={(event) => applyDrop(event, leaf.id)}
         onDragLeave={(event) => clearDropTarget(event)}
       >
         <div
           className={styles.tabStrip}
-          data-pyseas-ui="pane-tabstrip"
+          data-ui="pane-tabstrip"
           draggable
           onDragEnd={() => setDragState(null)}
           onDragStart={(event) => startTabStripDrag(event, leaf.id)}
@@ -183,7 +183,7 @@ export function Workspace<TTab extends string = string>({
             <button
               aria-selected={leaf.activeTab === tab}
               className={cx(styles.tab, leaf.activeTab === tab && styles.tabActive)}
-              data-pyseas-ui="pane-tab"
+              data-ui="pane-tab"
               draggable
               key={tab}
               onClick={() => updateLayout((current) => setActiveTab(current, leaf.id, tab))}
@@ -196,7 +196,7 @@ export function Workspace<TTab extends string = string>({
               <span>{renderTabLabel?.(tab) ?? tab}</span>
             </button>
           ))}
-          {toolbar !== undefined && <div className={styles.leafToolbar} data-pyseas-ui="pane-toolbar">{toolbar}</div>}
+          {toolbar !== undefined && <div className={styles.leafToolbar} data-ui="pane-toolbar">{toolbar}</div>}
         </div>
         <div className={styles.panelBody} role="tabpanel">
           {renderPanel(leaf.activeTab)}
@@ -236,8 +236,8 @@ export function Workspace<TTab extends string = string>({
 
   function startTabStripDrag(event: DragEvent<HTMLDivElement>, sourceLeafId: string) {
     const target = event.target
-    if (target instanceof HTMLElement && target.closest('[data-pyseas-ui="pane-tab"]') !== null) return
-    if (target instanceof HTMLElement && target.closest('[data-pyseas-ui="pane-toolbar"]') !== null) {
+    if (target instanceof HTMLElement && target.closest('[data-ui="pane-tab"]') !== null) return
+    if (target instanceof HTMLElement && target.closest('[data-ui="pane-toolbar"]') !== null) {
       event.preventDefault()
       return
     }

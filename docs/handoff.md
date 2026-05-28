@@ -1,4 +1,4 @@
-# Handoff — pyseas-ui
+# Handoff — ui
 
 This is session state for maintainers, not public package documentation. `package.json` excludes this file from npm package contents.
 

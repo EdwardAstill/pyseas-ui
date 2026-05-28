@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "pyseas-ui",
+      "name": "ui",
       "dependencies": {
         "katex": "^0.17.0",
         "markdown-it": "^14.2.0",

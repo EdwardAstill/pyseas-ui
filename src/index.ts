@@ -1,6 +1,6 @@
 import "./styles.css";
 
-// pyseas-ui public API
+// ui public API
 
 export { ThemeProvider, useTheme } from "./components/ThemeProvider";
 export type {

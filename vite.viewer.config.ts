@@ -26,10 +26,10 @@ function cadFilePlugin(): Plugin {
     name: 'cad-file-server',
     configureServer(server) {
       server.middlewares.use('/__pyseas/meta', (_req, res) => {
-        const filePath = process.env['PYSEAS_VIEW_FILE'] ?? ''
+        const filePath = process.env['UI_VIEW_FILE'] ?? ''
         if (!filePath) {
           res.statusCode = 400
-          res.end(JSON.stringify({ error: 'PYSEAS_VIEW_FILE not set' }))
+          res.end(JSON.stringify({ error: 'UI_VIEW_FILE not set' }))
           return
         }
         const name = filePath.split('/').pop() ?? filePath
@@ -40,10 +40,10 @@ function cadFilePlugin(): Plugin {
       })
 
       server.middlewares.use('/__pyseas/file', (_req, res) => {
-        const filePath = process.env['PYSEAS_VIEW_FILE'] ?? ''
+        const filePath = process.env['UI_VIEW_FILE'] ?? ''
         if (!filePath) {
           res.statusCode = 400
-          res.end('PYSEAS_VIEW_FILE not set')
+          res.end('UI_VIEW_FILE not set')
           return
         }
         const buf = readFileSync(filePath)
@@ -54,10 +54,10 @@ function cadFilePlugin(): Plugin {
       })
 
       server.middlewares.use('/__pyseas/mesh', async (_req, res) => {
-        const filePath = process.env['PYSEAS_VIEW_FILE'] ?? ''
+        const filePath = process.env['UI_VIEW_FILE'] ?? ''
         if (!filePath) {
           res.statusCode = 400
-          res.end(JSON.stringify({ error: 'PYSEAS_VIEW_FILE not set' }))
+          res.end(JSON.stringify({ error: 'UI_VIEW_FILE not set' }))
           return
         }
         try {

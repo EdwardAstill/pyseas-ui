@@ -3,12 +3,12 @@ import { resolve } from 'node:path'
 
 const packageRoot = resolve(import.meta.dir, '..')
 
-const helpText = `pyseas-ui - developer tools for pyseas-ui
+const helpText = `ui - developer tools for ui
 
 USAGE:
-  pyseas-ui demo [--port <port>] [--host <host>] [--open] [--strict-port]
-  pyseas-ui view <file>
-  pyseas-ui --help
+  ui demo [--port <port>] [--host <host>] [--open] [--strict-port]
+  ui view <file>
+  ui --help
 
 COMMANDS:
   demo       Start the examples showcase with Vite
@@ -22,15 +22,15 @@ OPTIONS (demo):
   -h, --help        Show help
 
 EXAMPLES:
-  pyseas-ui demo
-  pyseas-ui demo --open
-  pyseas-ui view plate.dxf
-  pyseas-ui view model.step
-  pyseas-ui view part.stl
+  ui demo
+  ui demo --open
+  ui view plate.dxf
+  ui view model.step
+  ui view part.stl
 `
 
 function usageError(message) {
-  process.stderr.write(`${message}\nRun \`pyseas-ui --help\` for usage.\n`)
+  process.stderr.write(`${message}\nRun \`ui --help\` for usage.\n`)
   process.exit(2)
 }
 
@@ -93,10 +93,10 @@ function parseViewArgs(args) {
 }
 
 function resolveDemoCommand(viteArgs) {
-  if (process.env.PYSEAS_UI_DEMO_CHILD_JSON) {
-    const parsed = JSON.parse(process.env.PYSEAS_UI_DEMO_CHILD_JSON)
+  if (process.env.UI_DEMO_CHILD_JSON) {
+    const parsed = JSON.parse(process.env.UI_DEMO_CHILD_JSON)
     if (!Array.isArray(parsed) || parsed.some((item) => typeof item !== 'string')) {
-      usageError('invalid PYSEAS_UI_DEMO_CHILD_JSON')
+      usageError('invalid UI_DEMO_CHILD_JSON')
     }
     return parsed
   }
@@ -176,7 +176,7 @@ async function runDemo(rawArgs) {
   const viteArgs = parseDemoArgs(rawArgs)
   const demoCommand = resolveDemoCommand(viteArgs)
 
-  if (process.env.PYSEAS_UI_DEMO_PRINT_ARGS === '1') {
+  if (process.env.UI_DEMO_PRINT_ARGS === '1') {
     process.stdout.write(`${JSON.stringify({ cwd: packageRoot, viteArgs })}\n`)
     return
   }
@@ -189,13 +189,13 @@ async function runDemo(rawArgs) {
 async function runView(rawArgs) {
   const absPath = parseViewArgs(rawArgs)
 
-  if (process.env.PYSEAS_UI_VIEW_PRINT_ARGS === '1') {
+  if (process.env.UI_VIEW_PRINT_ARGS === '1') {
     process.stdout.write(`${absPath}\n`)
     return
   }
 
   const command = ['bun', 'run', 'vite', '--config', 'vite.viewer.config.ts', '--open']
-  const env = { ...process.env, PYSEAS_VIEW_FILE: absPath }
+  const env = { ...process.env, UI_VIEW_FILE: absPath }
   if (env.BROWSER) {
     const browser = browserExecutable(env.BROWSER)
     if (browser && !Bun.which(browser)) delete env.BROWSER

@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test'
 import { resolve } from 'node:path'
 
 const root = resolve(import.meta.dir, '..')
-const cli = resolve(root, 'bin/pyseas-ui.mjs')
+const cli = resolve(root, 'bin/ui.mjs')
 
 type RunResult = {
   exitCode: number
@@ -32,7 +32,7 @@ test('prints help', async () => {
   const result = await runCli(['--help'])
 
   expect(result.exitCode).toBe(0)
-  expect(result.stdout).toContain('pyseas-ui demo [--port <port>] [--host <host>] [--open] [--strict-port]')
+  expect(result.stdout).toContain('ui demo [--port <port>] [--host <host>] [--open] [--strict-port]')
   expect(result.stderr).toBe('')
 })
 
@@ -54,7 +54,7 @@ test('rejects unknown demo option with usage exit code', async () => {
 
 test('forwards demo flags to Vite', async () => {
   const result = await runCli(['demo', '--port', '5178', '--host', '127.0.0.1', '--open', '--strict-port'], {
-    PYSEAS_UI_DEMO_PRINT_ARGS: '1',
+    UI_DEMO_PRINT_ARGS: '1',
   })
 
   expect(result.exitCode).toBe(0)
@@ -76,7 +76,7 @@ test('forwards SIGINT and exits 130 quietly', async () => {
     cwd: root,
     env: {
       ...process.env,
-      PYSEAS_UI_DEMO_CHILD_JSON: JSON.stringify([process.execPath, '-e', childScript]),
+      UI_DEMO_CHILD_JSON: JSON.stringify([process.execPath, '-e', childScript]),
     },
     stdout: 'pipe',
     stderr: 'pipe',
@@ -107,7 +107,7 @@ test('forwards SIGTERM and exits 143 quietly', async () => {
     cwd: root,
     env: {
       ...process.env,
-      PYSEAS_UI_DEMO_CHILD_JSON: JSON.stringify([process.execPath, '-e', childScript]),
+      UI_DEMO_CHILD_JSON: JSON.stringify([process.execPath, '-e', childScript]),
     },
     stdout: 'pipe',
     stderr: 'pipe',

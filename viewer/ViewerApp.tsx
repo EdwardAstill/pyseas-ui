@@ -50,7 +50,7 @@ export function ViewerApp() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100vw', height: '100vh' }}>
-      <div style={labelStyle}>{meta ? meta.name : 'pyseas-ui viewer'}</div>
+      <div style={labelStyle}>{meta ? meta.name : 'ui viewer'}</div>
       <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
         {renderContent()}
       </div>

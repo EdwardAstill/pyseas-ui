@@ -1,10 +1,10 @@
-# pyseas-ui CAD Viewer Implementation Plan
+# ui CAD Viewer Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add a `pyseas-ui view <file>` CLI command that opens DXF, STL, and STEP files in a browser viewer.
+**Goal:** Add a `ui view <file>` CLI command that opens DXF, STL, and STEP files in a browser viewer.
 
-**Architecture:** A new `view` subcommand in `bin/pyseas-ui.mjs` spawns a Vite dev server (using a separate `vite.viewer.config.ts`) with a custom plugin that serves the CAD file and — for STEP — tessellates it server-side with `occt-import-js`. The browser renders DXF with `dxf-viewer`, STL/STEP geometry with Three.js.
+**Architecture:** A new `view` subcommand in `bin/ui.mjs` spawns a Vite dev server (using a separate `vite.viewer.config.ts`) with a custom plugin that serves the CAD file and — for STEP — tessellates it server-side with `occt-import-js`. The browser renders DXF with `dxf-viewer`, STL/STEP geometry with Three.js.
 
 **Tech Stack:** Bun, Vite 6, React 19, TypeScript 5.8, Three.js, dxf-viewer (vagran), occt-import-js (WASM OpenCASCADE for STEP tessellation).
 
@@ -16,7 +16,7 @@
 |---|---|
 | `package.json` | Modify — add `three`, `@types/three`, `dxf-viewer`, `occt-import-js` to devDependencies |
 | `tsconfig.app.json` | Modify — add `"viewer"` to `include` |
-| `bin/pyseas-ui.mjs` | Modify — add `view` command: `parseViewArgs`, `runView`, updated helpText, updated dispatch |
+| `bin/ui.mjs` | Modify — add `view` command: `parseViewArgs`, `runView`, updated helpText, updated dispatch |
 | `vite.viewer.config.ts` | Create — Vite config for viewer mode + file-serving plugin |
 | `viewer/index.html` | Create — HTML entry for viewer app |
 | `viewer/main.tsx` | Create — React root |
@@ -39,7 +39,7 @@
 
 - [ ] **Step 1: Install new packages**
 
-Run from `/home/eastill/projects/pyseas-ui`:
+Run from `/home/eastill/projects/ui`:
 ```bash
 bun add -D three @types/three dxf-viewer occt-import-js
 ```
@@ -80,7 +80,7 @@ git commit -m "chore: add three, dxf-viewer, occt-import-js dependencies"
 - Create: `tests/fixtures/test.dxf`
 - Create: `tests/fixtures/test.stl`
 - Create: `tests/viewer-cli.test.ts`
-- Modify: `bin/pyseas-ui.mjs`
+- Modify: `bin/ui.mjs`
 
 - [ ] **Step 1: Create test fixtures**
 
@@ -111,7 +111,7 @@ import { describe, test, expect } from 'bun:test'
 import { spawnSync } from 'node:child_process'
 import { resolve } from 'node:path'
 
-const CLI = resolve(import.meta.dir, '../bin/pyseas-ui.mjs')
+const CLI = resolve(import.meta.dir, '../bin/ui.mjs')
 const FIXTURES = resolve(import.meta.dir, 'fixtures')
 
 function runCli(args: string[], env: Record<string, string> = {}) {
@@ -150,27 +150,27 @@ describe('view command — argument errors', () => {
 describe('view command — accepted formats', () => {
   test('accepts .step and prints resolved path', () => {
     const file = resolve(FIXTURES, 'test.step')
-    const r = runCli(['view', file], { PYSEAS_UI_VIEW_PRINT_ARGS: '1' })
+    const r = runCli(['view', file], { UI_VIEW_PRINT_ARGS: '1' })
     expect(r.status).toBe(0)
     expect(r.stdout.trim()).toBe(file)
   })
 
   test('accepts .dxf and prints resolved path', () => {
     const file = resolve(FIXTURES, 'test.dxf')
-    const r = runCli(['view', file], { PYSEAS_UI_VIEW_PRINT_ARGS: '1' })
+    const r = runCli(['view', file], { UI_VIEW_PRINT_ARGS: '1' })
     expect(r.status).toBe(0)
     expect(r.stdout.trim()).toBe(file)
   })
 
   test('accepts .stl and prints resolved path', () => {
     const file = resolve(FIXTURES, 'test.stl')
-    const r = runCli(['view', file], { PYSEAS_UI_VIEW_PRINT_ARGS: '1' })
+    const r = runCli(['view', file], { UI_VIEW_PRINT_ARGS: '1' })
     expect(r.status).toBe(0)
     expect(r.stdout.trim()).toBe(file)
   })
 
   test('accepts relative path and resolves to absolute', () => {
-    const r = runCli(['view', 'tests/fixtures/test.step'], { PYSEAS_UI_VIEW_PRINT_ARGS: '1' })
+    const r = runCli(['view', 'tests/fixtures/test.step'], { UI_VIEW_PRINT_ARGS: '1' })
     expect(r.status).toBe(0)
     expect(r.stdout.trim()).toMatch(/^\//)
   })
@@ -184,7 +184,7 @@ bun test tests/viewer-cli.test.ts
 ```
 Expected: FAIL — `view` command does not exist yet, all tests fail or error
 
-- [ ] **Step 4: Implement view command in bin/pyseas-ui.mjs**
+- [ ] **Step 4: Implement view command in bin/ui.mjs**
 
 Replace the entire file content with:
 
@@ -194,12 +194,12 @@ import { resolve } from 'node:path'
 
 const packageRoot = resolve(import.meta.dir, '..')
 
-const helpText = `pyseas-ui - developer tools for pyseas-ui
+const helpText = `ui - developer tools for ui
 
 USAGE:
-  pyseas-ui demo [--port <port>] [--host <host>] [--open] [--strict-port]
-  pyseas-ui view <file>
-  pyseas-ui --help
+  ui demo [--port <port>] [--host <host>] [--open] [--strict-port]
+  ui view <file>
+  ui --help
 
 COMMANDS:
   demo       Start the examples showcase with Vite
@@ -213,15 +213,15 @@ OPTIONS (demo):
   -h, --help        Show help
 
 EXAMPLES:
-  pyseas-ui demo
-  pyseas-ui demo --open
-  pyseas-ui view plate.dxf
-  pyseas-ui view model.step
-  pyseas-ui view part.stl
+  ui demo
+  ui demo --open
+  ui view plate.dxf
+  ui view model.step
+  ui view part.stl
 `
 
 function usageError(message) {
-  process.stderr.write(`${message}\nRun \`pyseas-ui --help\` for usage.\n`)
+  process.stderr.write(`${message}\nRun \`ui --help\` for usage.\n`)
   process.exit(2)
 }
 
@@ -285,10 +285,10 @@ function parseViewArgs(args) {
 }
 
 function resolveDemoCommand(viteArgs) {
-  if (process.env.PYSEAS_UI_DEMO_CHILD_JSON) {
-    const parsed = JSON.parse(process.env.PYSEAS_UI_DEMO_CHILD_JSON)
+  if (process.env.UI_DEMO_CHILD_JSON) {
+    const parsed = JSON.parse(process.env.UI_DEMO_CHILD_JSON)
     if (!Array.isArray(parsed) || parsed.some((item) => typeof item !== 'string')) {
-      usageError('invalid PYSEAS_UI_DEMO_CHILD_JSON')
+      usageError('invalid UI_DEMO_CHILD_JSON')
     }
     return parsed
   }
@@ -368,7 +368,7 @@ async function runDemo(rawArgs) {
   const viteArgs = parseDemoArgs(rawArgs)
   const demoCommand = resolveDemoCommand(viteArgs)
 
-  if (process.env.PYSEAS_UI_DEMO_PRINT_ARGS === '1') {
+  if (process.env.UI_DEMO_PRINT_ARGS === '1') {
     process.stdout.write(`${JSON.stringify({ cwd: packageRoot, viteArgs })}\n`)
     return
   }
@@ -381,13 +381,13 @@ async function runDemo(rawArgs) {
 async function runView(rawArgs) {
   const absPath = parseViewArgs(rawArgs)
 
-  if (process.env.PYSEAS_UI_VIEW_PRINT_ARGS === '1') {
+  if (process.env.UI_VIEW_PRINT_ARGS === '1') {
     process.stdout.write(`${absPath}\n`)
     return
   }
 
   const command = ['bun', 'run', 'vite', '--config', 'vite.viewer.config.ts', '--open']
-  const env = { ...process.env, PYSEAS_VIEW_FILE: absPath }
+  const env = { ...process.env, UI_VIEW_FILE: absPath }
   await spawnAndWait(command, env)
 }
 
@@ -424,7 +424,7 @@ Expected: all tests pass
 - [ ] **Step 7: Commit**
 
 ```bash
-git add bin/pyseas-ui.mjs tests/viewer-cli.test.ts tests/fixtures/
+git add bin/ui.mjs tests/viewer-cli.test.ts tests/fixtures/
 git commit -m "feat(cli): add view command for DXF/STL/STEP files"
 ```
 
@@ -468,10 +468,10 @@ function cadFilePlugin(): Plugin {
     name: 'cad-file-server',
     configureServer(server) {
       server.middlewares.use('/__pyseas/meta', (_req, res) => {
-        const filePath = process.env['PYSEAS_VIEW_FILE'] ?? ''
+        const filePath = process.env['UI_VIEW_FILE'] ?? ''
         if (!filePath) {
           res.statusCode = 400
-          res.end(JSON.stringify({ error: 'PYSEAS_VIEW_FILE not set' }))
+          res.end(JSON.stringify({ error: 'UI_VIEW_FILE not set' }))
           return
         }
         const name = filePath.split('/').pop() ?? filePath
@@ -482,10 +482,10 @@ function cadFilePlugin(): Plugin {
       })
 
       server.middlewares.use('/__pyseas/file', (_req, res) => {
-        const filePath = process.env['PYSEAS_VIEW_FILE'] ?? ''
+        const filePath = process.env['UI_VIEW_FILE'] ?? ''
         if (!filePath) {
           res.statusCode = 400
-          res.end('PYSEAS_VIEW_FILE not set')
+          res.end('UI_VIEW_FILE not set')
           return
         }
         const buf = readFileSync(filePath)
@@ -496,10 +496,10 @@ function cadFilePlugin(): Plugin {
       })
 
       server.middlewares.use('/__pyseas/mesh', async (_req, res) => {
-        const filePath = process.env['PYSEAS_VIEW_FILE'] ?? ''
+        const filePath = process.env['UI_VIEW_FILE'] ?? ''
         if (!filePath) {
           res.statusCode = 400
-          res.end(JSON.stringify({ error: 'PYSEAS_VIEW_FILE not set' }))
+          res.end(JSON.stringify({ error: 'UI_VIEW_FILE not set' }))
           return
         }
         try {
@@ -562,7 +562,7 @@ git commit -m "feat(viewer): add Vite viewer config with CAD file-serving plugin
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pyseas-ui viewer</title>
+    <title>ui viewer</title>
     <style>
       *, *::before, *::after { box-sizing: border-box; }
       body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #1a1a1a; }
@@ -641,7 +641,7 @@ export function ViewerApp() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100vw', height: '100vh' }}>
-      <div style={labelStyle}>{meta ? meta.name : 'pyseas-ui viewer'}</div>
+      <div style={labelStyle}>{meta ? meta.name : 'ui viewer'}</div>
       <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
         {error && <div style={{ ...messageStyle, color: '#e55' }}>Error: {error}</div>}
         {!error && !meta && <div style={messageStyle}>Loading…</div>}
@@ -1017,9 +1017,9 @@ Expected: 0 errors. If `dxf-viewer` import raises a `no-explicit-any` or similar
 
 - [ ] **Step 4: Manual smoke test — DXF**
 
-Run from the pyseas-ui directory:
+Run from the ui directory:
 ```bash
-PYTHONPATH=../pyseas-cad/src bun run bin/pyseas-ui.mjs view ../pyseas-cad/examples/gallery/production_plate.dxf
+PYTHONPATH=../pyseas-cad/src bun run bin/ui.mjs view ../pyseas-cad/examples/gallery/production_plate.dxf
 ```
 
 Expected:
@@ -1030,7 +1030,7 @@ Expected:
 - [ ] **Step 5: Manual smoke test — STL**
 
 ```bash
-bun run bin/pyseas-ui.mjs view ../pyseas-cad/examples/gallery/model_plate.stl
+bun run bin/ui.mjs view ../pyseas-cad/examples/gallery/model_plate.stl
 ```
 
 Expected:
@@ -1040,7 +1040,7 @@ Expected:
 - [ ] **Step 6: Manual smoke test — STEP**
 
 ```bash
-bun run bin/pyseas-ui.mjs view ../pyseas-cad/examples/gallery/production_plate.step
+bun run bin/ui.mjs view ../pyseas-cad/examples/gallery/production_plate.step
 ```
 
 Expected:
@@ -1063,9 +1063,9 @@ git commit -m "feat(viewer): wire viewer gates — all tests pass, smoke tested"
 bun test
 bun run typecheck
 bun run lint
-bun run bin/pyseas-ui.mjs view ../pyseas-cad/examples/gallery/production_plate.dxf
-bun run bin/pyseas-ui.mjs view ../pyseas-cad/examples/gallery/model_plate.stl
-bun run bin/pyseas-ui.mjs view ../pyseas-cad/examples/gallery/production_plate.step
+bun run bin/ui.mjs view ../pyseas-cad/examples/gallery/production_plate.dxf
+bun run bin/ui.mjs view ../pyseas-cad/examples/gallery/model_plate.stl
+bun run bin/ui.mjs view ../pyseas-cad/examples/gallery/production_plate.step
 ```
 
 ## Notes for Implementer

@@ -60,7 +60,7 @@ export function DesignLab() {
       >
         <header className={styles.header}>
           <div>
-            <span className={styles.kicker}>pyseas-ui design lab</span>
+            <span className={styles.kicker}>ui design lab</span>
             <h1 className={styles.title}>Font and number field direction</h1>
             <p className={styles.copy}>
               Separate live surface for comparing Bun-style typography and spinner-free numeric input treatment.

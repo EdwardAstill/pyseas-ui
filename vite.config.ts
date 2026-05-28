@@ -25,8 +25,8 @@ export default defineConfig(({ command }) => {
       : {
           lib: {
             entry: resolve(__dirname, 'src/index.ts'),
-            name: 'PyseasUi',
-            fileName: (format) => `pyseas-ui.${format}.js`,
+            name: 'Ui',
+            fileName: (format) => `ui.${format}.js`,
             formats: ['es'],
           },
           rollupOptions: {

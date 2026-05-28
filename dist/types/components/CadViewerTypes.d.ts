@@ -1,6 +1,8 @@
-import type { CSSProperties, ReactNode } from 'react';
-export type CadViewerStatus = 'idle' | 'loading' | 'error' | 'ready';
-export type CadViewerTheme = 'dark' | 'light';
+import type { CSSProperties, ReactNode } from "react";
+export type CadViewerStatus = "idle" | "loading" | "error" | "ready";
+export type CadViewerTheme = "dark" | "light";
+export type CadStepSurfaceMode = "flat" | "shaded";
+export type CadStepEdgeMode = "none" | "visible" | "hidden" | "wire";
 export interface CadViewerDownload {
     href: string;
     filename?: string;
@@ -25,4 +27,10 @@ export interface CadDxfViewerProps extends BaseCadViewerProps {
 export interface CadStepViewerProps extends BaseCadViewerProps {
     meshUrl?: string | null;
     theme?: CadViewerTheme | undefined;
+    /** Initial surface style. Default: flat colour with no lighting/shading. */
+    surfaceMode?: CadStepSurfaceMode | undefined;
+    /** Initial edge style. Default: no edge overlay. */
+    edgeMode?: CadStepEdgeMode | undefined;
+    /** Enable OrbitControls damping/inertia. Default: false for immediate CAD-style response. */
+    dampedControls?: boolean | undefined;
 }

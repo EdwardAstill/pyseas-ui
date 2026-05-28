@@ -123,7 +123,7 @@ export const csvDemoData: CsvData = {
 	],
 };
 
-export const codeDemoSnippet = `import { Button, Panel, Toolbar } from "pyseas-ui";
+export const codeDemoSnippet = `import { Button, Panel, Toolbar } from "ui";
 
 interface LiftPointProps {
   id: string;

@@ -120,7 +120,7 @@ export function DrawingViewer({
   }
 
   return (
-    <div className={cx(styles.viewer, className)} style={style} data-pyseas-ui="drawing-viewer">
+    <div className={cx(styles.viewer, className)} style={style} data-ui="drawing-viewer">
       <div className={styles.toolbar}>
         <div className={styles.toolbarGroup}>
           <IconButton title="Zoom out" size="sm" icon={<span>−</span>} disabled={!canInteract} onClick={() => zoomBy(1 / ZOOM_STEP)} />
