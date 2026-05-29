@@ -1,5 +1,5 @@
-import { type CSSProperties, type ReactNode } from 'react';
-import { type LayoutNode, type LeafNode } from './paneLayout';
+import { type CSSProperties, type ReactNode } from "react";
+import { type LayoutNode, type LeafNode } from "./paneLayout";
 export interface WorkspaceProps<TTab extends string = string> {
     defaultLayout: LayoutNode<TTab>;
     layout?: LayoutNode<TTab>;
@@ -10,6 +10,6 @@ export interface WorkspaceProps<TTab extends string = string> {
     minPaneSize?: number;
     className?: string;
     style?: CSSProperties;
-    'aria-label'?: string;
+    "aria-label"?: string;
 }
-export declare function Workspace<TTab extends string = string>({ defaultLayout, layout, onLayoutChange, renderPanel, renderTabLabel, renderToolbar, minPaneSize, className, style, 'aria-label': ariaLabel, }: WorkspaceProps<TTab>): import("react/jsx-runtime").JSX.Element;
+export declare function Workspace<TTab extends string = string>({ defaultLayout, layout, onLayoutChange, renderPanel, renderTabLabel, renderToolbar, minPaneSize, className, style, "aria-label": ariaLabel, }: WorkspaceProps<TTab>): import("react/jsx-runtime").JSX.Element;

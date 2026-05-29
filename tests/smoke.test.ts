@@ -41,6 +41,19 @@ import type {
 	IconSidebarItem,
 	StatusBarProps,
 	LayoutNode,
+	SegmentedGroupProps,
+	SegmentedGroupOption,
+	SliderProps,
+	BreadcrumbItem,
+	BreadcrumbProps,
+	TagPillProps,
+	TagPillSize,
+	TagPillVariant,
+	LightboxProps,
+	CommandPaletteItem,
+	CommandPaletteProps,
+	TreeNavNode,
+	TreeNavProps,
 } from "../src/index";
 
 // Type-level smoke: all exports resolve. Runtime check: basic instantiation.
@@ -187,6 +200,57 @@ test("all component types are importable", () => {
 
 	const statusProps: StatusBarProps = { left: "ready" };
 	expect(statusProps.left).toBe("ready");
+
+	// New gap components
+	const sgOption: SegmentedGroupOption = { value: "a", label: "A" };
+	const sgProps: SegmentedGroupProps = {
+		options: [sgOption],
+		value: "a",
+		onChange: () => {},
+	};
+	expect(sgProps.value).toBe("a");
+
+	const sliderProps: SliderProps = {
+		value: 50,
+		onChange: () => {},
+		min: 0,
+		max: 100,
+	};
+	expect(sliderProps.value).toBe(50);
+
+	const bcItem: BreadcrumbItem = { label: "Home" };
+	const bcProps: BreadcrumbProps = { items: [bcItem] };
+	expect(bcProps.items[0]!.label).toBe("Home");
+
+	const tpProps: TagPillProps = { label: "Tag" };
+	const tpSize: TagPillSize = "sm";
+	const tpVariant: TagPillVariant = "accent";
+	expect(tpProps.label).toBe("Tag");
+	expect(tpSize).toBe("sm");
+	expect(tpVariant).toBe("accent");
+
+	const lightboxProps: LightboxProps = {
+		open: false,
+		onClose: () => {},
+		src: "image.png",
+	};
+	expect(lightboxProps.open).toBe(false);
+
+	const cpItem: CommandPaletteItem = {
+		id: "1",
+		label: "Run",
+		onSelect: () => {},
+	};
+	const cpProps: CommandPaletteProps = {
+		open: false,
+		onClose: () => {},
+		items: [cpItem],
+	};
+	expect(cpProps.open).toBe(false);
+
+	const tnNode: TreeNavNode = { id: "root", label: "Root" };
+	const tnProps: TreeNavProps = { nodes: [tnNode] };
+	expect(tnProps.nodes[0]!.id).toBe("root");
 });
 
 test("named exports are present", async () => {
@@ -223,6 +287,14 @@ test("named exports are present", async () => {
 		"TopBar",
 		"IconSidebar",
 		"StatusBar",
+		"ContextMenu",
+		"SegmentedGroup",
+		"Slider",
+		"Breadcrumb",
+		"TagPill",
+		"Lightbox",
+		"CommandPalette",
+		"TreeNav",
 	];
 	for (const name of expected) {
 		expect(typeof (mod as Record<string, unknown>)[name]).toBe("function");

@@ -3,8 +3,8 @@ export interface TabItem {
     label: string;
     disabled?: boolean;
 }
-export type TabsOrientation = 'horizontal' | 'vertical';
-export type TabsMarker = 'underline' | 'bracket' | 'slash';
+export type TabsOrientation = "horizontal" | "vertical";
+export type TabsMarker = "underline" | "bracket" | "slash";
 export interface TabsProps {
     items: TabItem[];
     value: string;

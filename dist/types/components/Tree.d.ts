@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode } from 'react';
+import { type CSSProperties, type ReactNode } from "react";
 export interface TreeNode<T = unknown> {
     id: string;
     label: string;
@@ -17,7 +17,7 @@ export interface TreeRenderArgs<T> {
 export interface TreeDisclosureArgs<T> extends TreeRenderArgs<T> {
     disabled: boolean;
 }
-export type TreeDropPosition = 'before' | 'inside' | 'after';
+export type TreeDropPosition = "before" | "inside" | "after";
 export interface TreeMoveArgs<T = unknown> {
     draggedId: string;
     targetId: string;
@@ -38,6 +38,6 @@ export interface TreeProps<T = unknown> {
     renderNode?: (args: TreeRenderArgs<T>) => ReactNode;
     className?: string;
     style?: CSSProperties;
-    'aria-label'?: string;
+    "aria-label"?: string;
 }
-export declare function Tree<T = unknown>({ nodes, expanded, onExpandedChange, selected, onSelect, onMove, canDrop, indent, renderDisclosure, renderNode, className, style, 'aria-label': ariaLabel, }: TreeProps<T>): import("react/jsx-runtime").JSX.Element;
+export declare function Tree<T = unknown>({ nodes, expanded, onExpandedChange, selected, onSelect, onMove, canDrop, indent, renderDisclosure, renderNode, className, style, "aria-label": ariaLabel, }: TreeProps<T>): import("react/jsx-runtime").JSX.Element;

@@ -1086,3 +1086,24 @@
 	font-size: var(--ps-text-sm);
 	font-family: var(--ps-font-mono);
 }
+
+.sliderSpecimen {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ps-space-md);
+	padding: var(--ps-space-sm) 0;
+}
+
+.breadcrumbSpecimen {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ps-space-md);
+	padding: var(--ps-space-sm) 0;
+}
+
+.treeNavFrame {
+	width: 240px;
+	border: 1px solid var(--ps-border);
+	border-radius: var(--ps-radius-xs);
+	padding: var(--ps-space-xs);
+}

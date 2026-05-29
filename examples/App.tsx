@@ -5,11 +5,13 @@ import { useEffect, useMemo, useState } from "react";
 import styles from "./App.module.css";
 import {
 	AppShell,
+	Breadcrumb,
 	Button,
 	CadDxfViewer,
 	CadStepViewer,
 	Checkbox,
 	CodeViewer,
+	CommandPalette,
 	ContextMenu,
 	CsvViewer,
 	Dialog,
@@ -17,6 +19,7 @@ import {
 	FreeformCanvas,
 	IconButton,
 	IconSidebar,
+	Lightbox,
 	LogView,
 	MarkdownViewer,
 	NumberField,
@@ -24,12 +27,15 @@ import {
 	Panel,
 	PdfViewer,
 	Result,
+	SegmentedGroup,
 	Select,
+	Slider,
 	SortableList,
 	StatusBadge,
 	SvgViewer,
 	StatusBar,
 	Tabs,
+	TagPill,
 	TextField,
 	TextViewer,
 	ThemeProvider,
@@ -37,6 +43,7 @@ import {
 	Toolbar,
 	TopBar,
 	Tree,
+	TreeNav,
 	Workspace,
 	type ContextMenuItem,
 	type FreeformCanvasItem,
@@ -125,6 +132,13 @@ export function App() {
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null);
 	const [navOpen, setNavOpen] = useState(false);
+	const [segmentedValue, setSegmentedValue] = useState("auto");
+	const [sliderValue, setSliderValue] = useState(50);
+	const [sidebarExpanded, setSidebarExpanded] = useState<Set<string>>(
+		() => new Set(["projects", "docs"]),
+	);
+	const [lightboxOpen, setLightboxOpen] = useState(false);
+	const [paletteOpen, setPaletteOpen] = useState(false);
 	const ctxMenuItems: ContextMenuItem[] = [
 		{ label: "Rename", shortcut: "F2", onClick: () => alert("Rename") },
 		{
@@ -618,6 +632,133 @@ export function App() {
 								</div>
 							</ComponentBlock>
 						</div>
+
+						<ComponentBlock
+							name="<SegmentedGroup>"
+							source="src/components/SegmentedGroup.tsx"
+							meta="single-select horizontal button strip; sizes: sm | md"
+						>
+							<div className={styles.wrapRow}>
+								<SegmentedGroup
+									options={[
+										{ value: "auto", label: "Auto" },
+										{ value: "scroll", label: "Scroll" },
+										{ value: "sticky", label: "Sticky" },
+										{ value: "cards", label: "Cards", disabled: true },
+									]}
+									value={segmentedValue}
+									onChange={setSegmentedValue}
+								/>
+								<SegmentedGroup
+									options={[
+										{ value: "a", label: "A" },
+										{ value: "b", label: "B" },
+										{ value: "c", label: "C" },
+									]}
+									value={segmentedValue}
+									onChange={setSegmentedValue}
+									size="sm"
+								/>
+								<SegmentedGroup
+									options={[
+										{ value: "auto", label: "Auto" },
+										{ value: "scroll", label: "Scroll" },
+									]}
+									value={segmentedValue}
+									onChange={setSegmentedValue}
+									disabled
+								/>
+							</div>
+						</ComponentBlock>
+
+						<ComponentBlock
+							name="<Slider>"
+							source="src/components/Slider.tsx"
+							meta="controlled range slider; sizes: sm | md"
+						>
+							<div className={styles.sliderSpecimen}>
+								<Slider
+									value={sliderValue}
+									onChange={setSliderValue}
+									min={0}
+									max={100}
+									label="Width"
+								/>
+								<Slider
+									value={sliderValue}
+									onChange={setSliderValue}
+									min={0}
+									max={100}
+									label="Size"
+									size="sm"
+								/>
+								<Slider
+									value={75}
+									onChange={() => {}}
+									min={0}
+									max={100}
+									label="Zoom"
+									disabled
+								/>
+							</div>
+						</ComponentBlock>
+
+						<ComponentBlock
+							name="<Breadcrumb>"
+							source="src/components/Breadcrumb.tsx"
+							meta="path segments with separator; maxItems for truncation"
+						>
+							<div className={styles.breadcrumbSpecimen}>
+								<Breadcrumb
+									items={[
+										{ label: "Home", onClick: () => {} },
+										{ label: "Projects", onClick: () => {} },
+										{ label: "ui", href: "#" },
+										{ label: "components" },
+									]}
+								/>
+								<Breadcrumb
+									items={[
+										{ label: "src", onClick: () => {} },
+										{ label: "components", onClick: () => {} },
+										{ label: "Button", onClick: () => {} },
+										{ label: "Button.tsx" },
+									]}
+									separator="›"
+								/>
+								<Breadcrumb
+									items={[
+										{ label: "Home", onClick: () => {} },
+										{ label: "Projects", onClick: () => {} },
+										{ label: "ui", onClick: () => {} },
+										{ label: "src", onClick: () => {} },
+										{ label: "components", onClick: () => {} },
+										{ label: "Button.tsx" },
+									]}
+									maxItems={4}
+								/>
+							</div>
+						</ComponentBlock>
+
+						<ComponentBlock
+							name="<TagPill>"
+							source="src/components/TagPill.tsx"
+							meta="inline tag; variants: default | accent | status; sizes: sm | md; removable"
+						>
+							<div className={styles.wrapRow}>
+								<TagPill label="Default" />
+								<TagPill label="Accent" variant="accent" />
+								<TagPill label="Status" variant="status" />
+								<TagPill label="Link" href="#" />
+								<TagPill label="Removable" onRemove={() => {}} />
+								<TagPill label="Medium" size="md" variant="accent" />
+								<TagPill
+									label="Removable accent"
+									variant="accent"
+									onRemove={() => {}}
+								/>
+							</div>
+						</ComponentBlock>
 					</DocSection>
 
 					<DocSection title="Fields">
@@ -838,6 +979,52 @@ export function App() {
 										}
 										renderNode={(args) => renderFileTreeNode(args, treeVisual)}
 										aria-label="Filesystem Tree specimen"
+									/>
+								</div>
+							</ComponentBlock>
+
+							<ComponentBlock
+								name="<TreeNav>"
+								source="src/components/TreeNav.tsx"
+								meta="expandable navigation tree with link support; controlled or uncontrolled expansion"
+							>
+								<div className={styles.treeNavFrame}>
+									<TreeNav
+										nodes={[
+											{
+												id: "projects",
+												label: "Projects",
+												children: [
+													{ id: "ui", label: "ui", href: "#" },
+													{ id: "readrun", label: "readrun", href: "#" },
+													{
+														id: "pyseas",
+														label: "Pyseas",
+														disabled: true,
+													},
+												],
+											},
+											{
+												id: "docs",
+												label: "Documentation",
+												active: true,
+												children: [
+													{ id: "api", label: "API Reference", href: "#" },
+													{ id: "guide", label: "Guide", href: "#" },
+												],
+											},
+											{ id: "settings", label: "Settings" },
+										]}
+										expandedIds={sidebarExpanded}
+										onToggle={(id) =>
+											setSidebarExpanded((prev) => {
+												const next = new Set(prev);
+												if (next.has(id)) next.delete(id);
+												else next.add(id);
+												return next;
+											})
+										}
+										onNodeClick={(node) => node.href && setNavOpen(true)}
 									/>
 								</div>
 							</ComponentBlock>
@@ -1292,6 +1479,83 @@ export function App() {
 										onClose={() => setCtxMenu(null)}
 									/>
 								)}
+							</ComponentBlock>
+
+							<ComponentBlock
+								name="<Lightbox>"
+								source="src/components/Lightbox.tsx"
+								meta="image full-screen viewer with backdrop blur"
+							>
+								<div className={styles.wrapRow}>
+									<Button onClick={() => setLightboxOpen(true)}>
+										Open Lightbox
+									</Button>
+									<StatusBadge
+										variant="info"
+										label="open=false by default"
+										size="control"
+									/>
+								</div>
+								<Lightbox
+									open={lightboxOpen}
+									onClose={() => setLightboxOpen(false)}
+									src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%23161617'/%3E%3Ctext x='200' y='150' text-anchor='middle' fill='%23e8e8e8' font-family='monospace' font-size='16'%3ELightbox Demo%3C/text%3E%3C/svg%3E"
+									alt="Lightbox specimen"
+								/>
+							</ComponentBlock>
+
+							<ComponentBlock
+								name="<CommandPalette>"
+								source="src/components/CommandPalette.tsx"
+								meta="search-as-you-type overlay with keyboard navigation"
+							>
+								<div className={styles.wrapRow}>
+									<Button onClick={() => setPaletteOpen(true)}>
+										Open Palette
+									</Button>
+									<StatusBadge
+										variant="info"
+										label="open=false by default"
+										size="control"
+									/>
+								</div>
+								<CommandPalette
+									open={paletteOpen}
+									onClose={() => setPaletteOpen(false)}
+									items={[
+										{
+											id: "goto-file",
+											label: "Go to File",
+											description: "Navigate to a source file",
+											onSelect: () => alert("Go to File"),
+										},
+										{
+											id: "run-tests",
+											label: "Run Tests",
+											description: "Execute test suite",
+											onSelect: () => alert("Run Tests"),
+										},
+										{
+											id: "toggle-theme",
+											label: "Toggle Theme",
+											description: "Switch between dark and light",
+											onSelect: () => alert("Toggle Theme"),
+										},
+										{
+											id: "build",
+											label: "Build Project",
+											description: "Run the build pipeline",
+											onSelect: () => alert("Build"),
+										},
+										{
+											id: "search",
+											label: "Search",
+											description: "Global search across files",
+											keywords: ["find", "grep"],
+											onSelect: () => alert("Search"),
+										},
+									]}
+								/>
 							</ComponentBlock>
 						</div>
 					</DocSection>
