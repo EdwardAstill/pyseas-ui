@@ -10,6 +10,7 @@ import {
 	CadStepViewer,
 	Checkbox,
 	CodeViewer,
+	ContextMenu,
 	CsvViewer,
 	Dialog,
 	DrawingViewer,
@@ -37,6 +38,7 @@ import {
 	TopBar,
 	Tree,
 	Workspace,
+	type ContextMenuItem,
 	type FreeformCanvasItem,
 	type TreeMoveArgs,
 	type TreeNode,
@@ -121,7 +123,23 @@ export function App() {
 	const [freeformSelected, setFreeformSelected] = useState<string | null>(null);
 	const [sidebarItem, setSidebarItem] = useState("one");
 	const [dialogOpen, setDialogOpen] = useState(false);
+	const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null);
 	const [navOpen, setNavOpen] = useState(false);
+	const ctxMenuItems: ContextMenuItem[] = [
+		{ label: "Rename", shortcut: "F2", onClick: () => alert("Rename") },
+		{
+			label: "Duplicate",
+			shortcut: "Ctrl+D",
+			onClick: () => alert("Duplicate"),
+		},
+		{ type: "divider" },
+		{ label: "Cut", shortcut: "Ctrl+X", onClick: () => alert("Cut") },
+		{ label: "Copy", shortcut: "Ctrl+C", onClick: () => alert("Copy") },
+		{ label: "Paste", shortcut: "Ctrl+V", disabled: true },
+		{ type: "divider" },
+		{ label: "Delete", shortcut: "Del", disabled: true },
+	];
+
 	const [activeSection, setActiveSection] = useState<NavSectionId>("theming");
 
 	useEffect(() => {
@@ -279,9 +297,9 @@ export function App() {
 							<span>component catalog</span>
 						</h1>
 						<p className={styles.summary}>
-							Same exported ui components, presented with a bun.com-style
-							shell: charcoal surfaces, pink accents, rounded code panels, and
-							dense developer-tool chrome.
+							Same exported ui components, presented with a bun.com-style shell:
+							charcoal surfaces, pink accents, rounded code panels, and dense
+							developer-tool chrome.
 						</p>
 						<div className={styles.heroActions}>
 							<Button
@@ -1241,6 +1259,39 @@ export function App() {
 										Dialog children render in the body slot.
 									</div>
 								</Dialog>
+							</ComponentBlock>
+
+							<ComponentBlock
+								name="<ContextMenu>"
+								source="src/components/ContextMenu.tsx"
+								meta="right-click menu with portal, auto-position, keyboard nav"
+							>
+								<div className={styles.wrapRow}>
+									<StatusBadge
+										variant="info"
+										label="right-click the area below"
+										size="control"
+									/>
+								</div>
+								<div
+									className={styles.ctxTarget}
+									onContextMenu={(e) => {
+										e.preventDefault();
+										setCtxMenu({ x: e.clientX, y: e.clientY });
+									}}
+								>
+									<span className={styles.ctxHint}>
+										Right-click here to open context menu
+									</span>
+								</div>
+								{ctxMenu !== null && (
+									<ContextMenu
+										items={ctxMenuItems}
+										x={ctxMenu.x}
+										y={ctxMenu.y}
+										onClose={() => setCtxMenu(null)}
+									/>
+								)}
 							</ComponentBlock>
 						</div>
 					</DocSection>

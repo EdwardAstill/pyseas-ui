@@ -18,7 +18,8 @@ export type NavSectionId =
 	| "controls"
 	| "data-display"
 	| "layout-components"
-	| "viewers";
+	| "viewers"
+	| "overlays";
 
 export const appearanceOptions: Array<{
 	value: ThemeAppearance;
@@ -51,6 +52,7 @@ export const navItems: Array<{ id: NavSectionId; label: string }> = [
 	{ id: "data-display", label: "Data" },
 	{ id: "layout-components", label: "Layout" },
 	{ id: "viewers", label: "Viewers" },
+	{ id: "overlays", label: "Overlays" },
 ];
 
 export const workspaceLayout: LayoutNode<WorkspaceTab> = {

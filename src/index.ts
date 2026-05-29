@@ -116,6 +116,49 @@ export type {
 	StatusBarProps,
 } from "./components/AppShell";
 
+export { ContextMenu } from "./components/ContextMenu";
+export type {
+	ContextMenuItem,
+	ContextMenuProps,
+} from "./components/ContextMenu";
+
+export { SegmentedGroup } from "./components/SegmentedGroup";
+export type {
+	SegmentedGroupOption,
+	SegmentedGroupProps,
+} from "./components/SegmentedGroup";
+
+export { Slider } from "./components/Slider";
+export type { SliderProps } from "./components/Slider";
+
+export { Breadcrumb } from "./components/Breadcrumb";
+export type {
+	BreadcrumbItem,
+	BreadcrumbProps,
+} from "./components/Breadcrumb";
+
+export { TagPill } from "./components/TagPill";
+export type {
+	TagPillProps,
+	TagPillSize,
+	TagPillVariant,
+} from "./components/TagPill";
+
+export { Lightbox } from "./components/Lightbox";
+export type { LightboxProps } from "./components/Lightbox";
+
+export { CommandPalette } from "./components/CommandPalette";
+export type {
+	CommandPaletteItem,
+	CommandPaletteProps,
+} from "./components/CommandPalette";
+
+export { TreeNav } from "./components/TreeNav";
+export type {
+	TreeNavNode,
+	TreeNavProps,
+} from "./components/TreeNav";
+
 export { SortableList } from "./components/SortableList";
 export type { SortableListProps } from "./components/SortableList";
 
