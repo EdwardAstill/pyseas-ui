@@ -10,6 +10,10 @@ A collection of controlled, composable UI primitives and layout building blocks.
 
 The design direction is tracked in [`docs/ui-brief.md`](docs/ui-brief.md), with external inspiration recorded in [`docs/design-references.md`](docs/design-references.md).
 
+## Stack policy
+
+`ui` uses React, CSS Modules, and package-owned `--ps-*` design tokens. It does not require Tailwind, shadcn/ui, or app-level styling configuration. If an accessibility primitive becomes too expensive to maintain locally, adopt focused Radix primitives behind the existing `ui` component API rather than switching the library to a shadcn/Tailwind component model.
+
 ## What it is NOT
 
 - No Yard or Dock domain logic (no padeye geometry, no lift conditions, no check results)

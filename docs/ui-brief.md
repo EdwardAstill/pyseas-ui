@@ -17,6 +17,7 @@ Target aesthetic: engineering workbench, not marketing. Dense, precise, legible.
 - **Motion** — state transitions only (color, opacity, border). No entrance/exit animations. No spring physics.
 - **Typography** — monospace for labels, headings, numeric values, and unit strings. Sans-serif for body/prose content.
 - **Themes** — composable token packs. `theme` controls appearance (`default`, `bun`, `compact`); `coloring` controls colour (`dark`, `light`, `neon-pink`, `cobalt`). Legacy single-value names still resolve for older callers. No hard-coded colour values in components.
+- **Stack** — CSS Modules plus `--ps-*` tokens are the styling contract. Do not require Tailwind or shadcn/ui in consumers. Radix primitives may be used selectively only when they stay hidden behind the existing `ui` API.
 
 ---
 

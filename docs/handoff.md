@@ -4,7 +4,7 @@ This is session state for maintainers, not public package documentation. `packag
 
 ## Project status
 
-Pre-publish component library. All checks pass (typecheck, lint, test, build).
+Local/workspace component library. All checks pass (typecheck, lint, test, build).
 Demo runs via `bun run demo`.
 
 ## Theme system
@@ -25,22 +25,20 @@ Coloring schemes:
 
 ## Recent changes
 
-- Dialog replaces Modal (new component, backsplash + focus trap + theme propagation)
-- useTheme() hook exported for portal components
-- Tree: disclosure uses rounded SVG chevron (stroke-linecap: round), with 3 visual modes
-- NumberField: native non-passive wheel listener prevents page scroll on hover/focus
-- StatusBadge, AppShell subtitle/statusbar, Dialog title all use system sans (not mono)
-- Demo redesigned: bun.com-style hero, hamburger dropdown nav, Theming section with clickable appearance/coloring cards
-- WorkbenchLayout removed (replaced by Workspace)
-- CadViewer: CadDxfViewer / CadStepViewer status/error props wired through
+- Dialog has focus trap, focus restore, title labelling, Escape close, and theme propagation.
+- TextField, NumberField, and Select labels are programmatically associated; hints use `aria-describedby` when an `id` is supplied.
+- Tabs and Workspace pane tabs support roving keyboard activation with arrow/Home/End keys.
+- Tree supports visible-row keyboard navigation with ArrowUp/ArrowDown/Home/End plus ArrowLeft/ArrowRight expand/collapse.
+- Styling contract is CSS Modules + `--ps-*` tokens. Do not require Tailwind or shadcn/ui in consumers; use focused Radix primitives only if hidden behind existing `ui` APIs.
+- Component CSS no longer has raw hex/rgb colours outside token definitions.
 
 ## Verification
 
 - `bun run typecheck` — clean
 - `bun run lint` — clean
-- `bun test` — 51 pass
+- `bun test` — 60 pass
 - `bun run build` — dist/ builds cleanly
-- Browser: NumberField wheel prevents page scroll, Dialog updates with theme changes
+- Demo smoke: `ui showcase` served from `bun run demo -- --host 127.0.0.1 --port 5174 --strict-port`
 
 ## Next build step
 

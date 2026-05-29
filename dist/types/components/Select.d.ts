@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties } from "react";
 export interface SelectOption {
     value: string;
     label: string;
@@ -12,6 +12,7 @@ export interface SelectProps {
     disabled?: boolean;
     error?: boolean;
     label?: string;
+    id?: string;
     style?: CSSProperties;
 }
-export declare function Select({ options, value, onChange, placeholder, disabled, error, label, style, }: SelectProps): import("react/jsx-runtime").JSX.Element;
+export declare function Select({ options, value, onChange, placeholder, disabled, error, label, id, style, }: SelectProps): import("react/jsx-runtime").JSX.Element;

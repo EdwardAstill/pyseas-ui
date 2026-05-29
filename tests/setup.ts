@@ -9,7 +9,12 @@ const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
 const g = globalThis as Record<string, unknown>;
 g.document = dom.window.document;
 g.window = dom.window;
+g.HTMLElement = dom.window.HTMLElement;
+g.KeyboardEvent = dom.window.KeyboardEvent;
+g.MouseEvent = dom.window.MouseEvent;
 
-afterEach(() => {
+afterEach(async () => {
+	const { cleanup } = await import("@testing-library/react");
+	cleanup();
 	dom.window.document.body.replaceChildren();
 });

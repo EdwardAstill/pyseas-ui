@@ -1,5 +1,5 @@
-import { type ReactNode } from 'react';
-export type DialogSize = 'sm' | 'md' | 'lg';
+import { type ReactNode } from "react";
+export type DialogSize = "sm" | "md" | "lg";
 export interface DialogProps {
     open: boolean;
     onClose: () => void;
@@ -9,5 +9,6 @@ export interface DialogProps {
     size?: DialogSize;
     children: ReactNode;
     className?: string;
+    "aria-label"?: string;
 }
-export declare function Dialog({ open, onClose, title, titleActions, footer, size, children, className, }: DialogProps): import("react").ReactPortal | null;
+export declare function Dialog({ open, onClose, title, titleActions, footer, size, children, className, "aria-label": ariaLabel, }: DialogProps): import("react").ReactPortal | null;

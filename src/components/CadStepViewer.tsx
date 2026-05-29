@@ -310,6 +310,7 @@ export function CadStepViewer({
 		meshUrl,
 		sceneBg,
 		edgeColor,
+		activeTheme,
 	]);
 
 	return (

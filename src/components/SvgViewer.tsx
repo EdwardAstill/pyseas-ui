@@ -138,7 +138,7 @@ export function SvgViewer({ svg, label, className, style }: SvgViewerProps) {
 						className={styles.svgSlot}
 						role="img"
 						aria-label={label ?? "SVG preview"}
-						// eslint-disable-next-line react/no-danger
+						// Raw SVG is caller-supplied drawing content; callers should sanitize untrusted SVG before passing it here.
 						dangerouslySetInnerHTML={{ __html: svg }}
 					/>
 				</div>

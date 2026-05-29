@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties } from "react";
 export interface TextFieldProps {
     value: string;
     onChange: (value: string) => void;
@@ -9,7 +9,8 @@ export interface TextFieldProps {
     label?: string;
     hint?: string;
     name?: string;
+    id?: string;
     autoFocus?: boolean;
     style?: CSSProperties;
 }
-export declare function TextField({ value, onChange, placeholder, disabled, readOnly, error, label, hint, name, autoFocus, style, }: TextFieldProps): import("react/jsx-runtime").JSX.Element;
+export declare function TextField({ value, onChange, placeholder, disabled, readOnly, error, label, hint, name, id, autoFocus, style, }: TextFieldProps): import("react/jsx-runtime").JSX.Element;
