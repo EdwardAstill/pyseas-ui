@@ -1,4 +1,7 @@
 node_modules/
-dist/
 .DS_Store
-*.log
+*.tsbuildinfo
+.code-map/
+.worktrees/
+.warden/runtime/
+.pi-lens/

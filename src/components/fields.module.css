@@ -1,0 +1,217 @@
+.fieldRoot {
+	display: grid;
+	grid-template-columns: minmax(96px, 34%) minmax(90px, 1fr);
+	align-items: center;
+	gap: var(--ps-space-sm);
+	min-height: var(--ps-control-height-md);
+}
+
+.label {
+	font-family: var(--ps-font-sans);
+	font-size: var(--ps-text-sm);
+	color: var(--ps-text-muted);
+	user-select: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.hint {
+	font-family: var(--ps-font-mono);
+	font-size: var(--ps-text-xs);
+	color: var(--ps-text-muted);
+	opacity: 0.75;
+	grid-column: 2;
+}
+
+.input {
+	background: var(--ps-panel-elevated);
+	border: 1px solid var(--ps-border);
+	border-radius: var(--ps-radius-none);
+	color: var(--ps-text);
+	font-family: var(--ps-font-sans);
+	font-size: var(--ps-text-md);
+	height: var(--ps-control-height-md);
+	padding: 0 var(--ps-space-sm);
+	outline: none;
+	transition: border-color 0.1s;
+	width: 100%;
+}
+
+.input::placeholder {
+	color: var(--ps-text-muted);
+}
+
+.input:focus {
+	border-color: color-mix(in srgb, var(--ps-accent) 28%, transparent);
+}
+
+.input:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.input[readonly] {
+	opacity: 0.7;
+	cursor: default;
+}
+
+.inputError {
+	border-color: var(--ps-danger) !important;
+}
+
+.numberInput {
+	font-family: var(--ps-font-mono);
+	font-variant-numeric: tabular-nums;
+	text-align: right;
+}
+
+/* Select */
+.select {
+	appearance: none;
+	background: var(--ps-panel-elevated);
+	border: 1px solid var(--ps-border);
+	border-radius: var(--ps-radius-none);
+	color: var(--ps-text);
+	font-family: var(--ps-font-mono);
+	font-size: var(--ps-text-md);
+	height: var(--ps-control-height-md);
+	padding: 0 var(--ps-space-sm);
+	padding-right: calc(var(--ps-control-height-md) - 4px);
+	outline: none;
+	transition: border-color 0.1s;
+	width: 100%;
+	cursor: pointer;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 6px center;
+}
+
+.select:focus {
+	border-color: color-mix(in srgb, var(--ps-accent) 28%, transparent);
+}
+
+.select:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.selectError {
+	border-color: var(--ps-danger) !important;
+}
+
+/* Checkbox */
+.checkboxRoot {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--ps-space-sm);
+	cursor: pointer;
+	user-select: none;
+	min-height: var(--ps-control-height-md);
+}
+
+.checkboxInput {
+	width: var(--ps-text-md);
+	height: var(--ps-text-md);
+	accent-color: var(--ps-accent);
+	cursor: pointer;
+	flex-shrink: 0;
+}
+
+.checkboxInput:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.checkboxLabel {
+	font-family: var(--ps-font-sans);
+	font-size: var(--ps-text-sm);
+	color: var(--ps-text);
+}
+
+.checkboxDisabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+/* Toggle */
+.toggleRoot {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--ps-space-sm);
+	cursor: pointer;
+	user-select: none;
+}
+
+.toggleRoot.toggleDisabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.toggleTrack {
+	position: relative;
+	border-radius: 999px;
+	background: var(--ps-border-strong);
+	transition: background 0.15s;
+	flex-shrink: 0;
+}
+
+.toggleTrackOn {
+	background: var(--ps-accent);
+}
+
+.toggleSm .toggleTrack {
+	width: 28px;
+	height: 14px;
+}
+
+.toggleMd .toggleTrack {
+	width: 36px;
+	height: 18px;
+}
+
+.toggleThumb {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: var(--ps-control-thumb);
+	border-radius: 50%;
+	transition: left 0.15s;
+}
+
+.toggleSm .toggleThumb {
+	width: 10px;
+	height: 10px;
+	left: 2px;
+}
+
+.toggleSm .toggleThumbOn {
+	left: calc(28px - 12px);
+}
+
+.toggleMd .toggleThumb {
+	width: 14px;
+	height: 14px;
+	left: 2px;
+}
+
+.toggleMd .toggleThumbOn {
+	left: calc(36px - 16px);
+}
+
+.toggleLabel {
+	font-family: var(--ps-font-sans);
+	font-size: var(--ps-text-sm);
+	color: var(--ps-text);
+}
+
+@media (max-width: 700px) {
+	.fieldRoot {
+		grid-template-columns: 1fr;
+		gap: var(--ps-space-xs);
+	}
+
+	.hint {
+		grid-column: 1;
+	}
+}

@@ -1,0 +1,107 @@
+.overlay {
+	position: fixed;
+	inset: 0;
+	background: var(--ps-overlay);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.dialog {
+	background: var(--ps-panel-elevated);
+	border: 1px solid var(--ps-border-strong);
+	border-radius: var(--ps-radius-none);
+	display: flex;
+	flex-direction: column;
+	max-height: calc(100vh - 64px);
+	outline: none;
+	overflow: hidden;
+}
+
+.sm {
+	width: 360px;
+}
+.md {
+	width: 520px;
+}
+.lg {
+	width: 720px;
+}
+
+.titleBar {
+	display: flex;
+	align-items: center;
+	gap: var(--ps-space-sm);
+	padding: var(--ps-space-sm) var(--ps-space-md);
+	border-bottom: 1px solid var(--ps-border);
+	background: var(--ps-panel);
+	min-height: var(--ps-dialog-title-height);
+	flex-shrink: 0;
+}
+
+.title {
+	font-family: var(--ps-font-sans);
+	font-size: var(--ps-text-lg);
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	text-transform: none;
+	color: var(--ps-text);
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.titleActions {
+	display: flex;
+	align-items: center;
+	gap: var(--ps-space-xs);
+	margin-left: auto;
+}
+
+.closeButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: none;
+	color: var(--ps-text-muted);
+	cursor: pointer;
+	font-size: var(--ps-text-lg);
+	line-height: 1;
+	width: var(--ps-control-height-sm);
+	height: var(--ps-control-height-sm);
+	border-radius: var(--ps-radius-xs);
+	transition: color 0.1s;
+	outline: none;
+	flex-shrink: 0;
+}
+
+.closeButton:hover {
+	color: var(--ps-text);
+}
+
+.closeButton:focus-visible {
+	outline: 2px solid var(--ps-accent);
+	outline-offset: 1px;
+}
+
+.body {
+	flex: 1;
+	overflow-y: auto;
+	padding: var(--ps-space-md);
+	background: var(--ps-panel-elevated);
+}
+
+.footer {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: var(--ps-space-sm);
+	padding: var(--ps-space-sm) var(--ps-space-md);
+	border-top: 1px solid var(--ps-border);
+	background: var(--ps-panel);
+	flex-shrink: 0;
+}

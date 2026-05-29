@@ -1,0 +1,21 @@
+.logView {
+  background: var(--ps-panel-elevated);
+  border: 1px solid var(--ps-border);
+  font-family: var(--ps-font-mono);
+  font-size: var(--ps-text-xs);
+  color: var(--ps-text);
+  overflow-y: auto;
+  overflow-x: auto;
+  padding: var(--ps-space-md);
+}
+
+.line {
+  display: block;
+  white-space: pre;
+  line-height: 1.5;
+}
+
+.wrap .line {
+  white-space: pre-wrap;
+  word-break: break-all;
+}

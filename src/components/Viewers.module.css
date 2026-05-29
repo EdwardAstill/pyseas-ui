@@ -1,0 +1,386 @@
+/* ==============================================
+   Shared viewer styles — CSV, Code, Text, PDF
+   ============================================== */
+
+/* --- Toolbar (filter bar used by CSV viewer) --- */
+.toolbar {
+	display: flex;
+	align-items: center;
+	gap: var(--ps-space-sm);
+	padding: var(--ps-space-sm);
+	background: var(--ps-panel);
+	border-bottom: 1px solid var(--ps-border);
+	position: sticky;
+	top: 0;
+	z-index: 2;
+}
+
+.filter {
+	font-family: var(--ps-font-mono);
+	font-size: var(--ps-text-xs);
+	color: var(--ps-text);
+	background: var(--ps-surface);
+	border: 1px solid var(--ps-border);
+	border-radius: var(--ps-radius-xs);
+	padding: 2px var(--ps-space-sm);
+	width: 100%;
+	outline: none;
+	height: var(--ps-control-height-sm);
+	box-sizing: border-box;
+}
+
+.filter::placeholder {
+	color: var(--ps-text-subtle);
+}
+
+.filter:focus {
+	border-color: var(--ps-accent);
+}
+
+/* --- Table wrapper (shared by CSV viewer) --- */
+.tableWrap {
+	flex: 1;
+	overflow: auto;
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	font-family: var(--ps-font-mono);
+	font-size: var(--ps-text-xs);
+	table-layout: auto;
+}
+
+.table thead {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+}
+
+.table th {
+	text-align: left;
+	padding: 4px var(--ps-space-sm);
+	border-bottom: 2px solid var(--ps-border);
+	color: var(--ps-text-muted);
+	font-weight: 600;
+	white-space: nowrap;
+	user-select: none;
+	cursor: pointer;
+	background: var(--ps-panel);
+}
+
+.table th:hover {
+	color: var(--ps-text);
+	background: var(--ps-panel-elevated);
+}
+
+.table td {
+	padding: 2px var(--ps-space-sm);
+	border-bottom: 1px solid var(--ps-border);
+	color: var(--ps-text);
+	white-space: nowrap;
+	max-width: 300px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.table tr:hover td {
+	background: var(--ps-panel-elevated);
+}
+
+.sortArrow {
+	opacity: 0.4;
+	font-size: 0.75em;
+	margin-left: 2px;
+}
+
+.sortArrowActive {
+	opacity: 1;
+	color: var(--ps-accent);
+}
+
+/* --- Pagination --- */
+.pagination {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: var(--ps-space-xs);
+	padding: var(--ps-space-sm);
+	background: var(--ps-panel);
+	border-top: 1px solid var(--ps-border);
+	position: sticky;
+	bottom: 0;
+	z-index: 2;
+}
+
+.pageInfo {
+	font-size: var(--ps-text-xs);
+	color: var(--ps-text-muted);
+	font-family: var(--ps-font-mono);
+	margin-right: var(--ps-space-sm);
+}
+
+.pageBtn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: var(--ps-control-height-sm);
+	padding: 0 var(--ps-space-sm);
+	font-size: var(--ps-text-xs);
+	font-family: var(--ps-font-mono);
+	color: var(--ps-text);
+	background: var(--ps-surface);
+	border: 1px solid var(--ps-border);
+	border-radius: var(--ps-radius-xs);
+	cursor: pointer;
+	min-width: 28px;
+}
+
+.pageBtn:hover:not(:disabled) {
+	background: var(--ps-panel-elevated);
+	border-color: var(--ps-border-strong);
+}
+
+.pageBtn:disabled {
+	opacity: 0.3;
+	cursor: default;
+}
+
+/* --- Container (wraps all viewers consistently) --- */
+.container {
+	display: flex;
+	flex-direction: column;
+	background: var(--ps-surface);
+	border: 1px solid var(--ps-border);
+	border-radius: var(--ps-radius-sm);
+	overflow: hidden;
+}
+
+/* --- Empty state --- */
+.empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--ps-space-xl);
+	color: var(--ps-text-muted);
+	font-size: var(--ps-text-xs);
+	font-family: var(--ps-font-mono);
+}
+
+/* --- Code / Text viewer shared --- */
+.codeWrap {
+	overflow: auto;
+	counter-reset: code-line;
+	font-family: var(--ps-font-mono);
+	font-size: var(--ps-text-xs);
+	line-height: 1.6;
+}
+
+.codeWrap pre {
+	margin: 0;
+	display: flex;
+	min-height: 100%;
+}
+
+.lineNumbers {
+	display: table;
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.lineRow {
+	display: table-row;
+}
+
+.lineNum {
+	display: table-cell;
+	text-align: right;
+	padding: 0 var(--ps-space-sm);
+	color: var(--ps-text-subtle);
+	user-select: none;
+	min-width: 3em;
+	border-right: 1px solid var(--ps-border);
+	background: var(--ps-panel);
+	position: sticky;
+	left: 0;
+	z-index: 1;
+}
+
+.lineContent {
+	display: table-cell;
+	padding: 0 var(--ps-space-sm);
+	white-space: pre;
+	tab-size: 4;
+}
+
+/* Language badge */
+.langBadge {
+	font-family: var(--ps-font-mono);
+	font-size: var(--ps-text-xs);
+	color: var(--ps-text-muted);
+	background: var(--ps-panel);
+	border-bottom: 1px solid var(--ps-border);
+	padding: 2px var(--ps-space-sm);
+	text-transform: lowercase;
+	letter-spacing: 0.05em;
+}
+
+/* --- PDF viewer --- */
+.pdfWrap {
+	position: relative;
+	width: 100%;
+	background: var(--ps-panel);
+}
+
+.pdfWrap iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+/* --- Markdown prose --- */
+.markdownProse {
+	padding: var(--ps-space-md) var(--ps-space-lg);
+	overflow: auto;
+	color: var(--ps-text);
+	font-family: var(--ps-font-sans);
+	font-size: var(--ps-text-sm);
+	line-height: 1.65;
+}
+
+.markdownProse h1,
+.markdownProse h2,
+.markdownProse h3,
+.markdownProse h4 {
+	margin: 1.25em 0 0.5em;
+	color: var(--ps-text);
+	font-weight: 700;
+	line-height: 1.25;
+}
+
+.markdownProse h1 {
+	font-size: 1.42em;
+	border-bottom: 1px solid var(--ps-border);
+	padding-bottom: 0.3em;
+}
+.markdownProse h2 {
+	font-size: 1.22em;
+}
+.markdownProse h3 {
+	font-size: 1.08em;
+}
+.markdownProse h4 {
+	font-size: 1em;
+}
+
+.markdownProse h1:first-child,
+.markdownProse h2:first-child,
+.markdownProse h3:first-child {
+	margin-top: 0;
+}
+
+.markdownProse p {
+	margin: 0.65em 0;
+}
+
+.markdownProse a {
+	color: var(--ps-accent);
+	text-decoration: none;
+}
+
+.markdownProse a:hover {
+	text-decoration: underline;
+}
+
+.markdownProse code {
+	font-family: var(--ps-font-mono);
+	font-size: 0.9em;
+	padding: 0.15em 0.35em;
+	border-radius: var(--ps-radius-xs);
+	background: var(--ps-panel-elevated);
+	color: var(--ps-text);
+}
+
+.markdownProse pre {
+	margin: 0.75em 0;
+	padding: var(--ps-space-md);
+	border: 1px solid var(--ps-border);
+	border-radius: var(--ps-radius-sm);
+	background: var(--ps-panel);
+	overflow: auto;
+}
+
+.markdownProse pre code {
+	padding: 0;
+	background: transparent;
+	font-size: 0.85em;
+	line-height: 1.55;
+}
+
+.markdownProse ul,
+.markdownProse ol {
+	margin: 0.5em 0;
+	padding-left: 1.6em;
+}
+
+.markdownProse li {
+	margin: 0.2em 0;
+}
+
+.markdownProse blockquote {
+	margin: 0.65em 0;
+	padding: 0.35em 0 0.35em 0.85em;
+	border-left: 3px solid var(--ps-accent);
+	color: var(--ps-text-muted);
+}
+
+.markdownProse table {
+	width: 100%;
+	margin: 0.65em 0;
+	border-collapse: collapse;
+	font-family: var(--ps-font-mono);
+	font-size: 0.9em;
+}
+
+.markdownProse th,
+.markdownProse td {
+	padding: 4px var(--ps-space-sm);
+	border: 1px solid var(--ps-border);
+	text-align: left;
+	vertical-align: top;
+}
+
+.markdownProse th {
+	background: var(--ps-panel);
+	font-weight: 650;
+	color: var(--ps-text-muted);
+}
+
+.markdownProse tr:nth-child(even) td {
+	background: var(--ps-panel-elevated);
+}
+
+.markdownProse hr {
+	margin: 1em 0;
+	border: 0;
+	border-top: 1px solid var(--ps-border);
+}
+
+/* KaTeX overrides */
+.markdownProse .katex-display {
+	margin: 0.75em 0;
+}
+
+.markdownProse .katex {
+	font-size: 1.05em;
+}
+
+/* --- Viewer root (flex column) --- */
+.root {
+	display: flex;
+	flex-direction: column;
+	background: var(--ps-surface);
+	border: 1px solid var(--ps-border);
+	border-radius: var(--ps-radius-sm);
+	overflow: hidden;
+}

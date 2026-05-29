@@ -1,0 +1,106 @@
+import { useEffect, useRef } from 'react'
+import * as THREE from 'three'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+
+export function StlView() {
+  const mountRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const mount = mountRef.current
+    if (!mount) return
+
+    const scene = new THREE.Scene()
+    scene.background = new THREE.Color(0x1a1a1a)
+
+    const camera = new THREE.PerspectiveCamera(45, mount.clientWidth / mount.clientHeight, 0.001, 100000)
+    camera.position.set(0, 0, 5)
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true })
+    renderer.setSize(mount.clientWidth, mount.clientHeight)
+    renderer.setPixelRatio(window.devicePixelRatio)
+    mount.appendChild(renderer.domElement)
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5))
+    const dir = new THREE.DirectionalLight(0xffffff, 1)
+    dir.position.set(1, 2, 3)
+    scene.add(dir)
+
+    const controls = new OrbitControls(camera, renderer.domElement)
+    controls.enableDamping = true
+
+    let cancelled = false
+    let loadedMesh: THREE.Mesh | null = null
+    let loadedEdges: THREE.LineSegments | null = null
+
+    const loader = new STLLoader()
+    loader.load('/__pyseas/file', (geometry) => {
+      if (cancelled) {
+        geometry.dispose()
+        return
+      }
+      geometry.computeBoundingSphere()
+      const sphere = geometry.boundingSphere
+      if (sphere) {
+        const r = sphere.radius
+        camera.position.copy(sphere.center).add(new THREE.Vector3(0, 0, r * 3))
+        camera.near = r * 0.01
+        camera.far = r * 100
+        camera.updateProjectionMatrix()
+        controls.target.copy(sphere.center)
+        controls.update()
+      }
+      const material = new THREE.MeshPhongMaterial({
+        color: 0x6688aa,
+        specular: 0x222222,
+        shininess: 40,
+        polygonOffset: true,
+        polygonOffsetFactor: 4,
+        polygonOffsetUnits: 4,
+      })
+      const mesh = new THREE.Mesh(geometry, material)
+      loadedMesh = mesh
+      scene.add(mesh)
+
+      const edgesGeometry = new THREE.EdgesGeometry(geometry, 20)
+      const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 })
+      const edges = new THREE.LineSegments(edgesGeometry, edgesMaterial)
+      loadedEdges = edges
+      scene.add(edges)
+    })
+
+    let frameId = 0
+    const animate = () => {
+      frameId = requestAnimationFrame(animate)
+      controls.update()
+      renderer.render(scene, camera)
+    }
+    animate()
+
+    const observer = new ResizeObserver(() => {
+      if (!mount || mount.clientWidth === 0 || mount.clientHeight === 0) return
+      camera.aspect = mount.clientWidth / mount.clientHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(mount.clientWidth, mount.clientHeight)
+    })
+    observer.observe(mount)
+
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(frameId)
+      observer.disconnect()
+      if (loadedMesh) {
+        loadedMesh.geometry.dispose()
+        ;(loadedMesh.material as THREE.Material).dispose()
+      }
+      if (loadedEdges) {
+        loadedEdges.geometry.dispose()
+        ;(loadedEdges.material as THREE.Material).dispose()
+      }
+      if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement)
+      renderer.dispose()
+    }
+  }, [])
+
+  return <div ref={mountRef} style={{ width: '100%', height: '100%' }} />
+}

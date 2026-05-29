@@ -1,0 +1,94 @@
+.group {
+	display: inline-flex;
+	align-items: stretch;
+	border: 1px solid var(--ps-border);
+	border-radius: var(--ps-radius-none);
+	user-select: none;
+}
+
+.groupDisabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
+.groupSm {
+	height: var(--ps-control-height-sm);
+}
+
+.groupMd {
+	height: var(--ps-control-height-md);
+}
+
+.option {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: none;
+	color: var(--ps-text-muted);
+	font-family: var(--ps-font-sans);
+	cursor: pointer;
+	transition:
+		background 0.1s,
+		color 0.1s;
+	outline: none;
+	white-space: nowrap;
+	position: relative;
+}
+
+.option:focus-visible {
+	outline: 2px solid var(--ps-accent);
+	outline-offset: -2px;
+	z-index: 1;
+}
+
+.groupSm .option {
+	height: var(--ps-control-height-sm);
+	padding: 0 var(--ps-control-padding-sm);
+	font-size: var(--ps-text-xs);
+}
+
+.groupMd .option {
+	height: var(--ps-control-height-md);
+	padding: 0 var(--ps-control-padding-md);
+	font-size: var(--ps-text-sm);
+}
+
+.optionFirst {
+	border-radius: var(--ps-radius-none) 0 0 var(--ps-radius-none);
+}
+
+.optionLast {
+	border-radius: 0 var(--ps-radius-none) var(--ps-radius-none) 0;
+}
+
+.optionMiddle {
+	border-radius: 0;
+}
+
+.option + .option::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 4px;
+	bottom: 4px;
+	width: 1px;
+	background: var(--ps-border);
+}
+
+.option:hover:not(.optionDisabled):not(.optionActive) {
+	background: color-mix(in srgb, var(--ps-accent) 4%, transparent);
+	color: var(--ps-text);
+}
+
+.optionActive {
+	background: var(--ps-accent);
+	color: var(--ps-surface);
+}
+
+.optionDisabled {
+	color: var(--ps-text-subtle);
+	cursor: not-allowed;
+	pointer-events: none;
+}

@@ -1,0 +1,178 @@
+.appShell {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--ps-surface);
+  color: var(--ps-text);
+}
+
+.topbarSlot,
+.statusbarSlot {
+  flex: 0 0 auto;
+}
+
+.mainRow {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.sidebarSlot {
+  flex: 0 0 auto;
+  min-height: 0;
+  display: flex;
+  border-right: 1px solid var(--ps-border);
+}
+
+.contentSlot {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.topbar {
+  height: var(--ps-topbar-height);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--ps-border);
+  background: var(--ps-surface);
+}
+
+.title {
+  color: var(--ps-text);
+  font-family: var(--ps-font-sans);
+  font-size: var(--ps-text-lg);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.subtitle {
+  color: var(--ps-text-subtle, var(--ps-text-muted));
+  font-family: var(--ps-font-sans);
+  font-size: var(--ps-text-sm);
+  white-space: nowrap;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.iconSidebar {
+  width: 48px;
+  min-width: 48px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+  background: var(--ps-surface);
+}
+
+.sidebarBrand {
+  flex: 0 0 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ps-text);
+}
+
+.sidebarItems {
+  flex: 0 0 auto;
+  display: grid;
+  gap: 0;
+}
+
+.sidebarSpacer {
+  flex: 1;
+}
+
+.sidebarButton {
+  width: 48px;
+  height: 40px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ps-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebarButton:hover:not(:disabled),
+.sidebarButtonActive {
+  color: var(--ps-text);
+  background: color-mix(in srgb, var(--ps-accent) 8%, transparent);
+}
+
+.sidebarButton:disabled {
+  cursor: default;
+  opacity: 0.42;
+}
+
+.sidebarIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.statusbar {
+  height: var(--ps-statusbar-height);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border-top: 1px solid var(--ps-border);
+  background: var(--ps-surface);
+  color: var(--ps-text-muted);
+  font-family: var(--ps-font-sans);
+  font-size: var(--ps-text-xs);
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .appShell {
+    min-height: 100%;
+    height: auto;
+    overflow: auto;
+  }
+
+  .mainRow {
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .sidebarSlot {
+    border-right: none;
+    border-bottom: 1px solid var(--ps-border);
+  }
+
+  .iconSidebar {
+    width: 100%;
+    height: 48px;
+    min-width: 0;
+    flex-direction: row;
+  }
+
+  .sidebarBrand {
+    flex: 0 0 48px;
+  }
+
+  .sidebarItems {
+    display: flex;
+  }
+
+  .contentSlot {
+    overflow: visible;
+  }
+}
